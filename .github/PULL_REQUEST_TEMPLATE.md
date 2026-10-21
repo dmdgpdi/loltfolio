@@ -1,12 +1,15 @@
 - Close #ISSUE_NUMBER
 
 <!--title -->
+
 ## What is this PR? 🔍
+
 <!--issue -->
+
 - #000
+
 <!-- description -->
-
-
+<!-- 의도를 적어주세요. -->
 
 <!--
 ## ScreenShot 📷
@@ -20,7 +23,6 @@
 ## Precaution
 
 ## P.S
-
 
 <!-- ## ✔️ Please check if the PR fulfills these requirements
 
