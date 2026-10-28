@@ -1,4 +1,4 @@
-import "./globals.css";
+import "../frontend/globals.css";
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (

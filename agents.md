@@ -4,39 +4,15 @@
 
 - **Common**: TypeScript, pnpm; Biome for linting and formatting.
 - **Framework**: Next.js (App Router) for frontend and server-side code.
-- **Frontend**: React, Tailwind CSS via `@tailwindcss/turbopack`; TanStack Query for server state, with React Query Devtools for debugging.
-- **Backend / Database**: Neon PostgreSQL via `@neondatabase/serverless`; Drizzle ORM for database access and Drizzle Kit for schema and migration tooling.
-- **Testing**: Vitest for Model and ViewModel unit tests.
+- **Testing**: Vitest.
 - **Tooling**: `tsx` for TypeScript scripts, `dotenv` for loading environment variables in standalone scripts, React Compiler via `babel-plugin-react-compiler`.
 
-## Architecture
+## Code Organization
 
-### Frontend
-
-Follow a lightweight Model–ViewModel–View architecture.
-
-- **Model**: Owns business logic, rules, and data structures. Must be unit tested.
-- **ViewModel**: Exposes typed interfaces to Views, transforms Model data, and manages presentation state and actions. Must be tested.
-- **View (Component)**: Renders UI and handles user interactions through ViewModel. Keep business logic out of Views.
-
-Dependency direction: `View → ViewModel → Model`
-
-Frontend MVVM defines responsibilities, not a mandatory folder structure.
-
-### Backend
-
-Organize backend code into domain modules. Keep each domain's Controller, Service, entities, aggregates, Repository interface, and Repository implementation together.
-
-- **Route Handler (`app/**/route.ts`)**: Thin Next.js entry point that delegates HTTP methods to the domain Controller.
-- **Controller**: Parses and validates input, passes authentication context to the Service, and maps results and errors to HTTP responses.
-- **Service**: Orchestrates use cases and transaction boundaries using domain objects and Repository interfaces. Keep HTTP types out of its interface.
-- **Entity / Aggregate**: Owns business rules, invariants, and state changes. Must not depend on Next.js or Drizzle.
-- **Repository interface**: Defines domain persistence contracts without Drizzle-specific types.
-- **Repository implementation**: Implements those contracts using Drizzle. Keep database table definitions distinct from domain entities.
-
-Dependency direction: `Route Handler → Controller → Service → domain objects / Repository interfaces`. Drizzle implementations depend on Repository interfaces; Services must not depend directly on those implementations.
-
-Unit test domain rules and Service behavior; use Repository test doubles for Service tests. Add roles only when a feature needs them, rather than creating every layer in advance.
+- `src/app`: Thin Next.js page, layout, and Route Handler entry points.
+- `src/frontend`: Frontend implementations; follow [Frontend Guidelines](src/frontend/AGENTS.md).
+- `src/backend`: Domain modules and database infrastructure; follow [Backend Guidelines](src/backend/AGENTS.md).
+- Entry points in `src/app` follow the relevant frontend or backend architecture linked above.
 
 ## Development Rules
 
