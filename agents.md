@@ -1,14 +1,17 @@
-# Frontend Agent Guidelines
+# Agent Guidelines
 
 ## Tech Stack
 
-- React, TypeScript, Vite, Tailwind CSS
-- Vitest, Testing Library
-- Oxlint, Oxfmt
-- TanStack Query for server state when needed
-- Zustand only when shared client state is necessary
+- **Common**: TypeScript, pnpm; Biome for linting and formatting.
+- **Framework**: Next.js (App Router) for frontend and server-side code.
+- **Frontend**: React, Tailwind CSS via `@tailwindcss/turbopack`; TanStack Query for server state, with React Query Devtools for debugging.
+- **Backend / Database**: Neon PostgreSQL via `@neondatabase/serverless`; Drizzle ORM for database access and Drizzle Kit for schema and migration tooling.
+- **Testing**: Vitest for Model and ViewModel unit tests.
+- **Tooling**: `tsx` for TypeScript scripts, `dotenv` for loading environment variables in standalone scripts, React Compiler via `babel-plugin-react-compiler`.
 
 ## Architecture
+
+### Frontend
 
 Follow a lightweight Model–ViewModel–View architecture.
 
@@ -18,7 +21,22 @@ Follow a lightweight Model–ViewModel–View architecture.
 
 Dependency direction: `View → ViewModel → Model`
 
-Architecture defines responsibilities, not folder structure. Do not enforce directories or domain boundaries.
+Frontend MVVM defines responsibilities, not a mandatory folder structure.
+
+### Backend
+
+Organize backend code into domain modules. Keep each domain's Controller, Service, entities, aggregates, Repository interface, and Repository implementation together.
+
+- **Route Handler (`app/**/route.ts`)**: Thin Next.js entry point that delegates HTTP methods to the domain Controller.
+- **Controller**: Parses and validates input, passes authentication context to the Service, and maps results and errors to HTTP responses.
+- **Service**: Orchestrates use cases and transaction boundaries using domain objects and Repository interfaces. Keep HTTP types out of its interface.
+- **Entity / Aggregate**: Owns business rules, invariants, and state changes. Must not depend on Next.js or Drizzle.
+- **Repository interface**: Defines domain persistence contracts without Drizzle-specific types.
+- **Repository implementation**: Implements those contracts using Drizzle. Keep database table definitions distinct from domain entities.
+
+Dependency direction: `Route Handler → Controller → Service → domain objects / Repository interfaces`. Drizzle implementations depend on Repository interfaces; Services must not depend directly on those implementations.
+
+Unit test domain rules and Service behavior; use Repository test doubles for Service tests. Add roles only when a feature needs them, rather than creating every layer in advance.
 
 ## Development Rules
 
@@ -47,11 +65,21 @@ Add links here as documents are created.
 
 After every task, run:
 
-1. `npm run fmt`
-2. `npm run lint`
-3. `npm run test -- --run`
+1. `pnpm run fmt`
+2. `pnpm run lint`
+3. `pnpm run test -- --run`
 
 - Fix issues introduced by the changes.
 - Do not make unrelated changes to resolve pre-existing issues.
 - Report any remaining failures.
 - Do not consider a task complete without running these checks.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+## This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->
