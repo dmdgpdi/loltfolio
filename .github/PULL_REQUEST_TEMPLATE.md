@@ -4,14 +4,10 @@
 
 ## What is this PR? 🔍
 
-<!--issue -->
-
-- #000
-
 <!-- description -->
 <!-- 의도를 적어주세요. -->
 
-<!--
+<!-- 필요하다면 추가.
 ## ScreenShot 📷
 이번 PR에서의 변경점
 
@@ -22,10 +18,3 @@
 
 ## Precaution
 
-## P.S
-
-<!-- ## ✔️ Please check if the PR fulfills these requirements
-
-- [ ] It's submitted to the correct branch, not the `develop` branch unconditionally?
-- [ ] If on a hotfix branch, ensure it targets `main`?
-- [ ] There are no warning message when you run `yarn lint` -->
