@@ -18,14 +18,18 @@
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.2.0",
+    "@praha/byethrow": "^0.13.0",
+    "@praha/error-factory": "^1.4.1",
     "@tanstack/react-query": "^5.105.0",
     "@tanstack/react-query-devtools": "^5.105.0",
     "dotenv": "^18.0.9",
     "drizzle-orm": "1.0.0-rc.5",
+    "ky": "1.14.0",
     "next": "16.4.3",
     "pg": "^8.23.1",
     "react": "19.3.0",
-    "react-dom": "19.3.0"
+    "react-dom": "19.3.0",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.2",

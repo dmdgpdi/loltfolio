@@ -169,6 +169,12 @@ importers:
       '@neondatabase/serverless':
         specifier: ^1.2.0
         version: 1.2.0
+      '@praha/byethrow':
+        specifier: ^0.13.0
+        version: 0.13.0(typescript@5.9.3)
+      '@praha/error-factory':
+        specifier: ^1.4.1
+        version: 1.4.1
       '@tanstack/react-query':
         specifier: ^5.105.0
         version: 5.105.0(@types/react@19.3.0)(react@19.3.0)
@@ -180,7 +186,10 @@ importers:
         version: 18.0.9
       drizzle-orm:
         specifier: 1.0.0-rc.5
-        version: 1.0.0-rc.5(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)
+        version: 1.0.0-rc.5(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(zod@4.6.7)
+      ky:
+        specifier: 1.14.0
+        version: 1.14.0
       next:
         specifier: 16.4.3
         version: 16.4.3(@types/node@20.19.43)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
@@ -193,6 +202,9 @@ importers:
       react-dom:
         specifier: 19.3.0
         version: 19.3.0(react@19.3.0)
+      zod:
+        specifier: ^4.6.7
+        version: 4.6.7
     devDependencies:
       '@biomejs/biome':
         specifier: 2.4.2
@@ -217,7 +229,7 @@ importers:
         version: 1.0.0
       drizzle-kit:
         specifier: 1.0.0-rc.5
-        version: 1.0.0-rc.5(drizzle-orm@1.0.0-rc.5(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1))
+        version: 1.0.0-rc.5(drizzle-orm@1.0.0-rc.5(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(zod@4.6.7))
       tailwindcss:
         specifier: ^4
         version: 4.3.3
@@ -732,6 +744,14 @@ packages:
   '@oxc-project/types@0.155.0':
     resolution: {integrity: sha512-SeE8JPwW1xs1tHeNycjUtUBdhorRa8o4jlvjwk49R7/Z291i+4DQa7JJIgOm/TaYQZx+QrPQbVJ/9c8dMIZN8Q==}
 
+  '@praha/byethrow@0.13.0':
+    resolution: {integrity: sha512-YbmTlWzvtwiaK1ZhUOzXleJFju6XvBILxkL3AmvHona7zalABaQsPIGwc6YkugirpwG3n4Sc2iKGSwnTEv/hsQ==}
+    peerDependencies:
+      typescript: '>=5.0.0'
+
+  '@praha/error-factory@1.4.1':
+    resolution: {integrity: sha512-HA+y+xwmQIl9EPvZonRk1/hsSAvAlpDjlpruyW8kTAQ++Oq5Fi7hFV0Y84TLHXJ6SciYHlKGqrekrS5wzkD5+Q==}
+
   '@rolldown/binding-android-arm-eabi@1.2.15':
     resolution: {integrity: sha512-aLcgK9gIJ3YRvrrtfSBbRa27F5WrpiTaPulnFpsHPxpUHgFlSgnU4854MHwoRGEBhfRJDWCS2WQ7lIjskE9Olw==}
     engines: {node: ^20.19.0 || >=22.12.0}
@@ -895,6 +915,9 @@ packages:
     resolution: {integrity: sha512-ISSB5QX1qP2ynrheIpYwc4oKR5Ny4siNuUyf1qZniy+Il+p/PtDB0QK1Dnle8noiHpwRD3gpPdubOC3qI/Zamg==}
     peerDependencies:
       solid-js: ^1.6.12
+
+  '@standard-schema/spec@1.1.0':
+    resolution: {integrity: sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==}
 
   '@swc/helpers@0.5.23':
     resolution: {integrity: sha512-5lSsMOTXURePglDfvuAQUqkGek9Hg2kksOYay2m0+XR++b2NWYL/4sWyuvVBIs8oKnJaxkdi9whaL/sqN13afw==}
@@ -1307,6 +1330,10 @@ packages:
   jiti@2.7.0:
     resolution: {integrity: sha512-AC/7JofJvZGrrneWNaEnJeOLUx+JlGt7tNa0wZiRPT4MY1wmfKjt2+6O2p2uz2+skll8OZZmJMNqeke7kKbNgQ==}
     hasBin: true
+
+  ky@1.14.0:
+    resolution: {integrity: sha512-Rczb6FMM6JT0lvrOlP5WUOCB7s9XKxzwgErzhKlKde1bEV90FXplV1o87fpt4PU/asJFiqjYJxAJyzJhcrxOsQ==}
+    engines: {node: '>=18'}
 
   lightningcss-android-arm64@1.32.0:
     resolution: {integrity: sha512-YK7/ClTt4kAK0vo6w3X+Pnm0D2cf2vPHbhOXdoNti1Ga0al1P4TBZhwjATvjNwLEBCnKvjJc2jQgHXH0NEwlAg==}
@@ -1776,6 +1803,9 @@ packages:
     resolution: {integrity: sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==}
     engines: {node: '>=0.4'}
 
+  zod@4.6.7:
+    resolution: {integrity: sha512-g8W2D2kU6a8untc053fX1uVBKzM7yqAxW/3zwk83+6RyF2+SKOuV+c0wBDhUwzV1PaGapmZH+rmcUzPf+3CGwg==}
+
 snapshots:
 
   '@alloc/quick-lru@5.3.0': {}
@@ -2105,6 +2135,13 @@ snapshots:
 
   '@oxc-project/types@0.155.0': {}
 
+  '@praha/byethrow@0.13.0(typescript@5.9.3)':
+    dependencies:
+      '@standard-schema/spec': 1.1.0
+      typescript: 5.9.3
+
+  '@praha/error-factory@1.4.1': {}
+
   '@rolldown/binding-android-arm-eabi@1.2.15':
     optional: true
 
@@ -2219,6 +2256,8 @@ snapshots:
   '@solid-primitives/utils@6.4.1(solid-js@1.9.17)':
     dependencies:
       solid-js: 1.9.17
+
+  '@standard-schema/spec@1.1.0': {}
 
   '@swc/helpers@0.5.23':
     dependencies:
@@ -2393,15 +2432,16 @@ snapshots:
 
   dotenv@18.0.9: {}
 
-  drizzle-kit@1.0.0-rc.5(drizzle-orm@1.0.0-rc.5(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)):
+  drizzle-kit@1.0.0-rc.5(drizzle-orm@1.0.0-rc.5(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(zod@4.6.7)):
     optionalDependencies:
-      drizzle-orm: 1.0.0-rc.5(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)
+      drizzle-orm: 1.0.0-rc.5(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(zod@4.6.7)
 
-  drizzle-orm@1.0.0-rc.5(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1):
+  drizzle-orm@1.0.0-rc.5(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(zod@4.6.7):
     optionalDependencies:
       '@neondatabase/serverless': 1.2.0
       '@types/pg': 8.23.1
       pg: 8.23.1
+      zod: 4.6.7
 
   enhanced-resolve@5.26.0:
     dependencies:
@@ -2459,6 +2499,8 @@ snapshots:
   graceful-fs@4.2.11: {}
 
   jiti@2.7.0: {}
+
+  ky@1.14.0: {}
 
   lightningcss-android-arm64@1.32.0:
     optional: true
@@ -2832,3 +2874,5 @@ snapshots:
   why-is-node-running@3.2.1: {}
 
   xtend@4.0.2: {}
+
+  zod@4.6.7: {}
