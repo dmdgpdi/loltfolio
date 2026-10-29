@@ -23,6 +23,12 @@
 - Keep changes minimal and focused.
 - Update relevant tests when behavior changes.
 
+## PR Preparation
+
+- Before requesting review, explain the change's intent and key behavior, then ask 3–5 comprehension questions.
+- Wait for the user's answers and resolve misunderstandings before requesting review.
+- Use `.github/PULL_REQUEST_TEMPLATE.md` for the PR description.
+
 ## Documentation
 
 - Keep AGENTS.md concise and focused on essential rules.
