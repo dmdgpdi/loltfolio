@@ -19,6 +19,16 @@ Dependency direction: `Route Handler → Controller → Service → domain objec
 
 Unit test domain rules and Service behavior; use Repository test doubles for Service tests. Add roles only when a feature needs them, rather than creating every layer in advance.
 
+## Testing
+
+- Prefer classicist tests: use real domain objects and verify observable behavior.
+- Structure tests with Arrange–Act–Assert; use test doubles at external boundaries when needed.
+
+## Error Handling
+
+- Use railway-oriented error handling with `@praha/byethrow` for expected failures.
+- Define custom errors with `@praha/error-factory` in the owning layer's `errors/` directory.
+
 ## Database
 
 - DB client and table schema entry point: `db/client.ts`, `db/schema.ts`.
