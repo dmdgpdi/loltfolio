@@ -191,3 +191,35 @@ it("복사할 때 플레이어와 큐 식별자를 모두 보존한다", () => {
   expect(copy.puuid).toBe("player-puuid");
   expect(copy.queueId).toBe(440);
 });
+
+it("부분 성공도 최신화 시각과 20분 제한을 기록하되 완전 성공과 상태를 구분한다", () => {
+  const sync = new MatchSync("player", 420);
+  Result.unwrap(sync.start(at(0)));
+  expect(sync.partiallySucceed(at(1))).toEqual(Result.succeed(undefined));
+  expect(sync.status).toBe("PARTIALLY_SUCCEEDED");
+  expect(sync.lastSucceededAt).toEqual(at(1));
+  expect(sync.canStart(at(20))).toBe(false);
+  expect(sync.canStart(at(21))).toBe(true);
+  expect(sync.copy().status).toBe("PARTIALLY_SUCCEEDED");
+});
+
+it("진행 중이 아니면 부분 성공으로 완료할 수 없다", () => {
+  expect(new MatchSync("player", 420).partiallySucceed(at(0))).toEqual(
+    Result.fail(expect.any(MatchSyncNotInProgressError)),
+  );
+});
+
+it("부분 성공으로 완료된 작업을 다시 완료하거나 실패로 바꿀 수 없다", () => {
+  const sync = new MatchSync("player", 420);
+  Result.unwrap(sync.start(at(0)));
+  Result.unwrap(sync.partiallySucceed(at(1)));
+  expect(sync.partiallySucceed(at(2))).toEqual(
+    Result.fail(expect.any(MatchSyncNotInProgressError)),
+  );
+  expect(sync.succeed(at(2))).toEqual(
+    Result.fail(expect.any(MatchSyncNotInProgressError)),
+  );
+  expect(sync.fail()).toEqual(
+    Result.fail(expect.any(MatchSyncNotInProgressError)),
+  );
+});

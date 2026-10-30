@@ -13,9 +13,10 @@ export interface RiotMatchClient {
     start?: number,
   ): Promise<Result.Result<readonly string[], MatchCollectionError>>;
 
-  /** Riot 응답에서 요청한 플레이어 한 명의 기록만 추출해 반환한다. */
+  /** @description 플레이어 한 명의 기록을 추출하며 중단 신호로 상세·Timeline의 후속 HTTP 요청을 취소할 수 있다. */
   findPlayerMatch(
     matchId: string,
     puuid: string,
+    signal?: AbortSignal,
   ): Promise<Result.Result<PlayerMatch, MatchCollectionError>>;
 }

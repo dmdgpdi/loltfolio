@@ -193,4 +193,19 @@ describe.skipIf(!connectionString)("로컬 PostgreSQL 경기 저장소", () => {
     expect(restored.position).toEqual({ status: "UNKNOWN" });
     expect(restored.gameMode).toEqual({ status: "UNKNOWN" });
   });
+  it("부분 성공을 DB에 저장하고 성공 시각 기준 20분 제한을 유지한다", async () => {
+    const sync = Result.unwrap(await syncs.tryStart("partial", 420, at(0)));
+    Result.unwrap(sync.partiallySucceed(at(1)));
+    Result.unwrap(await syncs.update(sync));
+    const stored = await pool.query(
+      "SELECT status FROM match_syncs WHERE puuid = $1",
+      ["partial"],
+    );
+    expect(stored.rows[0].status).toBe("PARTIALLY_SUCCEEDED");
+    expect(await syncs.tryStart("partial", 420, at(20))).toEqual(
+      Result.fail(expect.any(MatchSyncStartNotAllowedError)),
+    );
+    const next = Result.unwrap(await syncs.tryStart("partial", 420, at(21)));
+    expect(next.lastSucceededAt).toEqual(at(1));
+  });
 });
