@@ -1,0 +1,38 @@
+[
+  {
+    "id": 202102,
+    "source": "https://kr.api.riotgames.com/lol/challenges/v1/challenges/202102/config",
+    "localizedNames": {
+      "ko_KR": {
+        "description": "같은 포지션 상대보다 골드 및 경험치를 20% 많이 획득하며 공격로 대치 단계 (게임 시작 후 14분) 종료",
+        "name": "공격로 지배",
+        "shortDescription": "14분에 골드 및 경험치 20% 우위 달성"
+      },
+      "en_US": {
+        "description": "End the laning phase (14 minutes) with 20% more gold and experience than your role opponent",
+        "name": "Lane Domination",
+        "shortDescription": "Be up 20% gold and XP at 14min"
+      }
+    },
+    "state": "ENABLED",
+    "retrievedOn": "2026-10-30"
+  },
+  {
+    "id": 202103,
+    "source": "https://kr.api.riotgames.com/lol/challenges/v1/challenges/202103/config",
+    "localizedNames": {
+      "ko_KR": {
+        "description": "같은 포지션 상대보다 골드 및 경험치를 20% 많이 획득하며 공격로 대치 단계 초반 (게임 시작 후 7분) 종료",
+        "name": "공격로 통제",
+        "shortDescription": "7분에 골드 및 경험치 우위 20% 달성"
+      },
+      "en_US": {
+        "description": "End the early laning phase (7 minutes) with 20% more gold and experience than your role opponent",
+        "name": "Lane Command",
+        "shortDescription": "Be up 20% gold and XP at 7min"
+      }
+    },
+    "state": "ENABLED",
+    "retrievedOn": "2026-10-30"
+  }
+]

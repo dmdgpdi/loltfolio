@@ -1,0 +1,502 @@
+[
+  {
+    "player": "Faker",
+    "matchId": "KR_8421752997",
+    "role": "MIDDLE",
+    "minute": 7,
+    "actualTimestampMs": 420159,
+    "apiValue": 0,
+    "calculated20PercentGoldAndXp": false,
+    "matches": true
+  },
+  {
+    "player": "Faker",
+    "matchId": "KR_8421721409",
+    "role": "MIDDLE",
+    "minute": 7,
+    "actualTimestampMs": 420150,
+    "apiValue": 0,
+    "calculated20PercentGoldAndXp": false,
+    "matches": true
+  },
+  {
+    "player": "Chovy",
+    "matchId": "KR_8420448348",
+    "role": "UTILITY",
+    "minute": 7,
+    "actualTimestampMs": 420204,
+    "apiValue": 0,
+    "calculated20PercentGoldAndXp": false,
+    "matches": true
+  },
+  {
+    "player": "Chovy",
+    "matchId": "KR_8419523152",
+    "role": "TOP",
+    "minute": 7,
+    "actualTimestampMs": 420210,
+    "apiValue": 1,
+    "calculated20PercentGoldAndXp": true,
+    "matches": true
+  },
+  {
+    "player": "Chovy",
+    "matchId": "KR_8419501041",
+    "role": "MIDDLE",
+    "minute": 7,
+    "actualTimestampMs": 420204,
+    "apiValue": 0,
+    "calculated20PercentGoldAndXp": false,
+    "matches": true
+  },
+  {
+    "player": "Keria",
+    "matchId": "KR_8421640437",
+    "role": "TOP",
+    "minute": 7,
+    "actualTimestampMs": 420154,
+    "apiValue": 0,
+    "calculated20PercentGoldAndXp": false,
+    "matches": true
+  },
+  {
+    "player": "Keria",
+    "matchId": "KR_8420505385",
+    "role": "TOP",
+    "minute": 7,
+    "actualTimestampMs": 420168,
+    "apiValue": 1,
+    "calculated20PercentGoldAndXp": true,
+    "matches": true
+  },
+  {
+    "player": "Gumayusi",
+    "matchId": "KR_8422737101",
+    "role": "BOTTOM",
+    "minute": 7,
+    "actualTimestampMs": 420229,
+    "apiValue": 0,
+    "calculated20PercentGoldAndXp": false,
+    "matches": true
+  },
+  {
+    "player": "Gumayusi",
+    "matchId": "KR_8422675615",
+    "role": "BOTTOM",
+    "minute": 7,
+    "actualTimestampMs": 420169,
+    "apiValue": 0,
+    "calculated20PercentGoldAndXp": false,
+    "matches": true
+  },
+  {
+    "player": "Zeus",
+    "matchId": "KR_8422343743",
+    "role": "TOP",
+    "minute": 7,
+    "actualTimestampMs": 420151,
+    "apiValue": 0,
+    "calculated20PercentGoldAndXp": false,
+    "matches": true
+  },
+  {
+    "player": "Zeus",
+    "matchId": "KR_8421674902",
+    "role": "TOP",
+    "minute": 7,
+    "actualTimestampMs": 420167,
+    "apiValue": 0,
+    "calculated20PercentGoldAndXp": false,
+    "matches": true
+  },
+  {
+    "player": "Zeus",
+    "matchId": "KR_8421327840",
+    "role": "TOP",
+    "minute": 7,
+    "actualTimestampMs": 420221,
+    "apiValue": 0,
+    "calculated20PercentGoldAndXp": false,
+    "matches": true
+  },
+  {
+    "player": "Kiin",
+    "matchId": "KR_8421327840",
+    "role": "UTILITY",
+    "minute": 7,
+    "actualTimestampMs": 420221,
+    "apiValue": 0,
+    "calculated20PercentGoldAndXp": false,
+    "matches": true
+  },
+  {
+    "player": "Kiin",
+    "matchId": "KR_8420474016",
+    "role": "UTILITY",
+    "minute": 7,
+    "actualTimestampMs": 420191,
+    "apiValue": 0,
+    "calculated20PercentGoldAndXp": false,
+    "matches": true
+  },
+  {
+    "player": "Kiin",
+    "matchId": "KR_8419523152",
+    "role": "TOP",
+    "minute": 7,
+    "actualTimestampMs": 420210,
+    "apiValue": 0,
+    "calculated20PercentGoldAndXp": false,
+    "matches": true
+  },
+  {
+    "player": "ShowMaker",
+    "matchId": "KR_8419501041",
+    "role": "TOP",
+    "minute": 7,
+    "actualTimestampMs": 420204,
+    "apiValue": 0,
+    "calculated20PercentGoldAndXp": false,
+    "matches": true
+  },
+  {
+    "player": "ShowMaker",
+    "matchId": "KR_8419173644",
+    "role": "MIDDLE",
+    "minute": 7,
+    "actualTimestampMs": 420234,
+    "apiValue": 0,
+    "calculated20PercentGoldAndXp": false,
+    "matches": true
+  },
+  {
+    "player": "Oner",
+    "matchId": "KR_8421752997",
+    "role": "JUNGLE",
+    "minute": 7,
+    "actualTimestampMs": 420159,
+    "apiValue": 0,
+    "calculated20PercentGoldAndXp": false,
+    "matches": true
+  },
+  {
+    "player": "Oner",
+    "matchId": "KR_8421611354",
+    "role": "BOTTOM",
+    "minute": 7,
+    "actualTimestampMs": 420159,
+    "apiValue": 1,
+    "calculated20PercentGoldAndXp": true,
+    "matches": true
+  },
+  {
+    "player": "Oner",
+    "matchId": "KR_8420534543",
+    "role": "BOTTOM",
+    "minute": 7,
+    "actualTimestampMs": 420181,
+    "apiValue": 0,
+    "calculated20PercentGoldAndXp": false,
+    "matches": true
+  },
+  {
+    "player": "Doran",
+    "matchId": "KR_8422700463",
+    "role": "TOP",
+    "minute": 7,
+    "actualTimestampMs": 420185,
+    "apiValue": 1,
+    "calculated20PercentGoldAndXp": true,
+    "matches": true
+  },
+  {
+    "player": "Doran",
+    "matchId": "KR_8422666206",
+    "role": "TOP",
+    "minute": 7,
+    "actualTimestampMs": 420173,
+    "apiValue": 0,
+    "calculated20PercentGoldAndXp": false,
+    "matches": true
+  },
+  {
+    "player": "Doran",
+    "matchId": "KR_8420262535",
+    "role": "TOP",
+    "minute": 7,
+    "actualTimestampMs": 420146,
+    "apiValue": 0,
+    "calculated20PercentGoldAndXp": false,
+    "matches": true
+  },
+  {
+    "player": "Ruler",
+    "matchId": "KR_8420262535",
+    "role": "BOTTOM",
+    "minute": 7,
+    "actualTimestampMs": 420146,
+    "apiValue": 1,
+    "calculated20PercentGoldAndXp": true,
+    "matches": true
+  },
+  {
+    "player": "Ruler",
+    "matchId": "KR_8420188756",
+    "role": "BOTTOM",
+    "minute": 7,
+    "actualTimestampMs": 420115,
+    "apiValue": 0,
+    "calculated20PercentGoldAndXp": false,
+    "matches": true
+  },
+  {
+    "player": "Faker",
+    "matchId": "KR_8421752997",
+    "role": "MIDDLE",
+    "minute": 14,
+    "actualTimestampMs": 840295,
+    "apiValue": 0,
+    "calculated20PercentGoldAndXp": false,
+    "matches": true
+  },
+  {
+    "player": "Faker",
+    "matchId": "KR_8421721409",
+    "role": "MIDDLE",
+    "minute": 14,
+    "actualTimestampMs": 840298,
+    "apiValue": 0,
+    "calculated20PercentGoldAndXp": false,
+    "matches": true
+  },
+  {
+    "player": "Chovy",
+    "matchId": "KR_8420448348",
+    "role": "UTILITY",
+    "minute": 14,
+    "actualTimestampMs": 840328,
+    "apiValue": 1,
+    "calculated20PercentGoldAndXp": true,
+    "matches": true
+  },
+  {
+    "player": "Chovy",
+    "matchId": "KR_8419523152",
+    "role": "TOP",
+    "minute": 14,
+    "actualTimestampMs": 840298,
+    "apiValue": 0,
+    "calculated20PercentGoldAndXp": false,
+    "matches": true
+  },
+  {
+    "player": "Chovy",
+    "matchId": "KR_8419501041",
+    "role": "MIDDLE",
+    "minute": 14,
+    "actualTimestampMs": 840342,
+    "apiValue": 0,
+    "calculated20PercentGoldAndXp": false,
+    "matches": true
+  },
+  {
+    "player": "Keria",
+    "matchId": "KR_8421640437",
+    "role": "TOP",
+    "minute": 14,
+    "actualTimestampMs": 840300,
+    "apiValue": 0,
+    "calculated20PercentGoldAndXp": false,
+    "matches": true
+  },
+  {
+    "player": "Keria",
+    "matchId": "KR_8420505385",
+    "role": "TOP",
+    "minute": 14,
+    "actualTimestampMs": 840246,
+    "apiValue": 0,
+    "calculated20PercentGoldAndXp": false,
+    "matches": true
+  },
+  {
+    "player": "Gumayusi",
+    "matchId": "KR_8422737101",
+    "role": "BOTTOM",
+    "minute": 14,
+    "actualTimestampMs": 840326,
+    "apiValue": 0,
+    "calculated20PercentGoldAndXp": false,
+    "matches": true
+  },
+  {
+    "player": "Gumayusi",
+    "matchId": "KR_8422675615",
+    "role": "BOTTOM",
+    "minute": 14,
+    "actualTimestampMs": 840314,
+    "apiValue": 0,
+    "calculated20PercentGoldAndXp": false,
+    "matches": true
+  },
+  {
+    "player": "Zeus",
+    "matchId": "KR_8422343743",
+    "role": "TOP",
+    "minute": 14,
+    "actualTimestampMs": 840256,
+    "apiValue": 1,
+    "calculated20PercentGoldAndXp": true,
+    "matches": true
+  },
+  {
+    "player": "Zeus",
+    "matchId": "KR_8421674902",
+    "role": "TOP",
+    "minute": 14,
+    "actualTimestampMs": 840319,
+    "apiValue": 0,
+    "calculated20PercentGoldAndXp": false,
+    "matches": true
+  },
+  {
+    "player": "Zeus",
+    "matchId": "KR_8421327840",
+    "role": "TOP",
+    "minute": 14,
+    "actualTimestampMs": 840321,
+    "apiValue": 0,
+    "calculated20PercentGoldAndXp": false,
+    "matches": true
+  },
+  {
+    "player": "Kiin",
+    "matchId": "KR_8421327840",
+    "role": "UTILITY",
+    "minute": 14,
+    "actualTimestampMs": 840321,
+    "apiValue": 0,
+    "calculated20PercentGoldAndXp": false,
+    "matches": true
+  },
+  {
+    "player": "Kiin",
+    "matchId": "KR_8420474016",
+    "role": "UTILITY",
+    "minute": 14,
+    "actualTimestampMs": 840289,
+    "apiValue": 0,
+    "calculated20PercentGoldAndXp": false,
+    "matches": true
+  },
+  {
+    "player": "Kiin",
+    "matchId": "KR_8419523152",
+    "role": "TOP",
+    "minute": 14,
+    "actualTimestampMs": 840298,
+    "apiValue": 0,
+    "calculated20PercentGoldAndXp": false,
+    "matches": true
+  },
+  {
+    "player": "ShowMaker",
+    "matchId": "KR_8419501041",
+    "role": "TOP",
+    "minute": 14,
+    "actualTimestampMs": 840342,
+    "apiValue": 1,
+    "calculated20PercentGoldAndXp": true,
+    "matches": true
+  },
+  {
+    "player": "ShowMaker",
+    "matchId": "KR_8419173644",
+    "role": "MIDDLE",
+    "minute": 14,
+    "actualTimestampMs": 840346,
+    "apiValue": 0,
+    "calculated20PercentGoldAndXp": false,
+    "matches": true
+  },
+  {
+    "player": "Oner",
+    "matchId": "KR_8421752997",
+    "role": "JUNGLE",
+    "minute": 14,
+    "actualTimestampMs": 840295,
+    "apiValue": 0,
+    "calculated20PercentGoldAndXp": false,
+    "matches": true
+  },
+  {
+    "player": "Oner",
+    "matchId": "KR_8421611354",
+    "role": "BOTTOM",
+    "minute": 14,
+    "actualTimestampMs": 840255,
+    "apiValue": 0,
+    "calculated20PercentGoldAndXp": false,
+    "matches": true
+  },
+  {
+    "player": "Oner",
+    "matchId": "KR_8420534543",
+    "role": "BOTTOM",
+    "minute": 14,
+    "actualTimestampMs": 840334,
+    "apiValue": 0,
+    "calculated20PercentGoldAndXp": false,
+    "matches": true
+  },
+  {
+    "player": "Doran",
+    "matchId": "KR_8422700463",
+    "role": "TOP",
+    "minute": 14,
+    "actualTimestampMs": 840360,
+    "apiValue": 1,
+    "calculated20PercentGoldAndXp": true,
+    "matches": true
+  },
+  {
+    "player": "Doran",
+    "matchId": "KR_8422666206",
+    "role": "TOP",
+    "minute": 14,
+    "actualTimestampMs": 840305,
+    "apiValue": 0,
+    "calculated20PercentGoldAndXp": false,
+    "matches": true
+  },
+  {
+    "player": "Doran",
+    "matchId": "KR_8420262535",
+    "role": "TOP",
+    "minute": 14,
+    "actualTimestampMs": 840270,
+    "apiValue": 1,
+    "calculated20PercentGoldAndXp": true,
+    "matches": true
+  },
+  {
+    "player": "Ruler",
+    "matchId": "KR_8420262535",
+    "role": "BOTTOM",
+    "minute": 14,
+    "actualTimestampMs": 840270,
+    "apiValue": 0,
+    "calculated20PercentGoldAndXp": false,
+    "matches": true
+  },
+  {
+    "player": "Ruler",
+    "matchId": "KR_8420188756",
+    "role": "BOTTOM",
+    "minute": 14,
+    "actualTimestampMs": 840308,
+    "apiValue": 0,
+    "calculated20PercentGoldAndXp": true,
+    "matches": false
+  }
+]

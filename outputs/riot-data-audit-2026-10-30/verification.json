@@ -1,0 +1,11 @@
+{
+  "10_players": true,
+  "20_per_player": true,
+  "200_records": true,
+  "unique_player_match_pairs": true,
+  "queue_420_only": true,
+  "early_flag_values_0_1": true,
+  "both_snapshot_targets_available": true,
+  "api_key_not_in_artifacts": true,
+  "no_puuid_in_selected_participant": true
+}

@@ -1,0 +1,1556 @@
+[
+  {
+    "time": "2026-10-30T11:01:39.812507+00:00",
+    "endpoint": "/riot/account/v1/accounts/by-riot-id/Hide%20on%20bush/KR1",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "2:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:01:41.119501+00:00",
+    "endpoint": "/lol/match/v5/matches",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "3:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:01:42.514894+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8421752997",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "4:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:01:43.873532+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8421721409",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "5:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:01:45.287001+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8421541861",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "6:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:01:46.607365+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8420523502",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "7:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:01:48.010181+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8420482763",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "8:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:01:49.362727+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8419502782",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "9:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:01:50.664570+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8419462969",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "10:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:01:52.115917+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8419370694",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "11:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:01:53.364005+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8419325995",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "12:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:01:54.748209+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8419173902",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "13:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:01:56.110275+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8418430992",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "14:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:01:57.448186+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8418421321",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "15:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:01:58.806804+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8418363935",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "16:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:02:00.164849+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8418328999",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "17:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:02:01.501808+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8418283410",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "1:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:02:02.894524+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8417436523",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "2:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:02:04.216520+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8417416031",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "3:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:02:05.569410+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8417094219",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "4:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:02:06.926804+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8416737784",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "5:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:02:08.359214+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8416357836",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "6:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:02:09.561129+00:00",
+    "endpoint": "/riot/account/v1/accounts/by-riot-id/%ED%97%88%EA%B1%B0%EB%8D%A9/0303",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "7:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:02:10.921451+00:00",
+    "endpoint": "/lol/match/v5/matches",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "8:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:02:12.334612+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8420448348",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "9:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:02:13.730494+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8419523152",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "10:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:02:15.045633+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8419501041",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "11:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:02:16.459873+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8419443638",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "12:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:02:17.756165+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8409276365",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "13:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:02:19.127083+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8409214344",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "14:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:02:20.499880+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8409142582",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "15:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:02:21.839684+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8409106438",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "16:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:02:23.241131+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8402440710",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "17:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:02:24.541164+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8399335345",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "18:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:02:25.901955+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8399139900",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "19:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:02:27.253817+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8399120694",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "20:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:02:28.590000+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8399096543",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "21:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:02:29.955615+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8399068683",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "22:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:02:31.411918+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8378679536",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "23:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:02:32.688848+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8378586238",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "24:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:02:34.006332+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8378524799",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "25:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:02:35.413423+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8378479119",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "26:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:02:36.731252+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8378418404",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "27:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:02:38.098841+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8378286847",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "28:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:02:39.353091+00:00",
+    "endpoint": "/riot/account/v1/accounts/by-riot-id/Ciro/KR10",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "29:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:02:40.777823+00:00",
+    "endpoint": "/lol/match/v5/matches",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "30:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:02:42.092787+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8421640437",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "31:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:02:43.482636+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8420949963",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "32:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:02:44.832909+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8420938069",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "33:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:02:46.246533+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8420535857",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "34:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:02:47.593282+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8420505385",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "35:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:02:48.965657+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8419530279",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "36:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:02:50.277156+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8419506083",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "37:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:02:51.633377+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8419456339",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "38:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:02:53.230896+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8419431011",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "39:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:02:54.451539+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8419358486",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "40:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:02:55.690864+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8418454562",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "41:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:02:57.201975+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8418417754",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "42:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:02:58.434171+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8418399276",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "43:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:02:59.738544+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8418336588",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "44:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:03:01.124467+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8418265855",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "45:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:03:02.493333+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8417362840",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "46:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:03:03.874162+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8417340093",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "47:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:03:05.217775+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8417273918",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "48:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:03:06.583075+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8417076465",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "49:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:03:07.938816+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8416800398",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "50:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:03:09.153758+00:00",
+    "endpoint": "/riot/account/v1/accounts/by-riot-id/HLE%20Gumayusi/0298",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "51:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:03:10.508850+00:00",
+    "endpoint": "/lol/match/v5/matches",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "52:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:03:11.887220+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8422737101",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "53:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:03:13.261303+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8422675615",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "54:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:03:14.598045+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8422641713",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "55:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:03:15.998616+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8422605618",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "56:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:03:17.353799+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8422546823",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "57:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:03:18.709336+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8421887361",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "58:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:03:20.029017+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8421875339",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "59:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:03:21.377644+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8421831667",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "60:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:03:22.739974+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8421782952",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "61:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:03:24.087638+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8421697992",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "62:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:03:25.527263+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8421299027",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "63:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:03:26.822562+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8420609249",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "64:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:03:28.215223+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8420585073",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "65:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:03:29.536564+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8419823656",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "66:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:03:30.911111+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8419798537",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "67:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:03:32.281856+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8419755906",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "68:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:03:33.612446+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8419564321",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "69:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:03:34.930147+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8419550352",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "70:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:03:36.343574+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8419513980",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "71:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:03:37.661191+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8419510165",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "72:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:03:38.949625+00:00",
+    "endpoint": "/riot/account/v1/accounts/by-riot-id/Athene/lll",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "73:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:03:40.278458+00:00",
+    "endpoint": "/lol/match/v5/matches",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "74:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:03:41.712749+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8422343743",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "75:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:03:43.084945+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8421674902",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "76:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:03:44.458399+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8421629997",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "77:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:03:45.827433+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8421327840",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "78:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:03:47.266139+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8421266617",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "79:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:03:48.459137+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8420039896",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "80:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:03:49.835784+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8418921760",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "81:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:03:51.173784+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8418897929",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "82:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:03:52.654053+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8418795450",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "83:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:03:53.947789+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8418774559",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "84:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:03:55.261602+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8418753700",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "85:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:03:56.620542+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8418720516",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "86:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:03:57.979052+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8418692872",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "87:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:03:59.378353+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8418416500",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "88:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:04:00.678469+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8418383384",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "89:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:04:02.029374+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8418305080",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "1:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:04:03.403963+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8418271238",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "2:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:04:04.759643+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8418216262",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "3:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:04:06.018635+00:00",
+    "endpoint": "/riot/account/v1/accounts/by-riot-id/kiin/KR1",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "4:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:04:07.387756+00:00",
+    "endpoint": "/lol/match/v5/matches",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "5:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:04:08.765755+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8420474016",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "6:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:04:10.176033+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8420430355",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "7:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:04:11.484878+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8420354497",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "8:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:04:12.887116+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8420203497",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "9:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:04:14.280645+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8419477902",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "10:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:04:15.557774+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8419416841",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "11:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:04:16.972238+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8419365885",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "12:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:04:18.297760+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8418443038",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "13:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:04:19.664079+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8418402612",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "14:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:04:21.092701+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8417461090",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "15:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:04:22.401894+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8417430737",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "16:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:04:23.787309+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8417402754",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "17:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:04:25.112441+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8417394204",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "18:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:04:26.480409+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8417370066",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "19:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:04:27.840018+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8417333325",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "20:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:04:29.186449+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8417242961",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "21:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:04:30.439493+00:00",
+    "endpoint": "/riot/account/v1/accounts/by-riot-id/DK%20ShowMaker/KR1",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "22:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:04:31.819631+00:00",
+    "endpoint": "/lol/match/v5/matches",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "23:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:04:33.278896+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8419173644",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "24:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:04:34.578105+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8418783037",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "25:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:04:36.016844+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8418736265",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "26:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:04:37.294850+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8417460158",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "27:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:04:38.680262+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8417432363",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "28:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:04:40.103577+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8417389877",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "29:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:04:41.412816+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8417361517",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "30:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:04:42.738935+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8417332201",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "31:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:04:44.104276+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8414801682",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "32:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:04:45.520121+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8414726710",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "33:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:04:46.812524+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8413352544",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "34:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:04:48.174114+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8413298583",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "35:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:04:49.537926+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8413219670",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "36:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:04:50.903875+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8408202698",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "37:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:04:52.282552+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8408137884",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "38:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:04:53.587798+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8408089819",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "39:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:04:54.987188+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8408025284",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "40:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:04:56.340672+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8405574397",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "41:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:04:57.698435+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8405519792",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "42:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:04:58.963757+00:00",
+    "endpoint": "/riot/account/v1/accounts/by-riot-id/%EC%98%A4%20%EB%84%88/111",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "43:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:05:00.314634+00:00",
+    "endpoint": "/lol/match/v5/matches",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "44:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:05:01.748425+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8421711144",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "45:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:05:03.089708+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8421611354",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "46:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:05:04.466604+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8420534543",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "47:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:05:05.865490+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8420490847",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "48:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:05:07.196466+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8420429777",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "49:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:05:08.585503+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8419421087",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "50:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:05:09.881540+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8419364305",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "51:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:05:11.255759+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8418410573",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "52:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:05:12.619255+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8418361915",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "53:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:05:13.938618+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8418330616",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "54:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:05:15.306786+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8417449137",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "55:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:05:16.707127+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8417418667",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "56:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:05:17.960405+00:00",
+    "endpoint": "/riot/account/v1/accounts/by-riot-id/%EC%96%B4%EB%A6%AC%EA%B3%A0%EC%8B%B6%EB%8B%A4/KR1",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "57:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:05:19.312218+00:00",
+    "endpoint": "/lol/match/v5/matches",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "58:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:05:20.713771+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8422700463",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "59:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:05:22.097791+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8422666206",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "60:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:05:23.531901+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8422607551",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "61:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:05:24.823767+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8422559982",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "62:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:05:26.150236+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8422538187",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "63:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:05:27.549345+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8421667747",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "64:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:05:28.897679+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8421622131",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "65:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:05:30.232224+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8421510745",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "66:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:05:31.728375+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8421440366",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "67:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:05:32.952777+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8420585688",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "68:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:05:34.384392+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8420566593",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "69:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:05:35.666856+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8420540502",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "70:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:05:37.038287+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8420517562",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "71:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:05:38.413341+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8420450596",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "72:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:05:39.766392+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8420398764",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "73:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:05:41.138706+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8420376512",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "74:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:05:42.568599+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8420330301",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "75:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:05:43.806064+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8420262535",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "76:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:05:45.197850+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8419561163",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "77:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:05:46.454014+00:00",
+    "endpoint": "/riot/account/v1/accounts/by-riot-id/%EA%B0%95%20%EC%B2%A0/%EC%83%A4%20%EB%84%AC",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "78:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:05:47.826517+00:00",
+    "endpoint": "/lol/match/v5/matches",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "79:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:05:49.258326+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8420383379",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "80:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:05:50.631361+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8420320526",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "81:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:05:52.001662+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8420188756",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "82:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:05:53.476178+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8420161426",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "83:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:05:54.700194+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8419505872",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "84:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:05:56.065938+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8419468220",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "85:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:05:57.420111+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8417052911",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "86:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:05:58.774104+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8416074165",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "87:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:06:00.155385+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8416003418",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "88:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:06:01.480727+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8414851320",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "89:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:06:02.832861+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8414766185",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "1:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:06:04.208880+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8410261531",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "2:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:06:05.591133+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8409277205",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "3:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:06:06.930828+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8409115168",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "4:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:06:08.272189+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8409052957",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "5:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:06:09.602080+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8408792104",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "6:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:06:10.974019+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8408775426",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "7:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:06:12.347728+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8407070827",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "8:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:06:13.845426+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8421752997/timeline",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "9:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:06:15.303601+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8421721409/timeline",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "10:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:06:16.664378+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8420448348/timeline",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "11:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:06:18.039352+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8419523152/timeline",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "12:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:06:19.257773+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8421640437/timeline",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "13:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:06:20.739508+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8420505385/timeline",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "14:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:06:22.064189+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8422737101/timeline",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "15:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:06:23.409439+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8422675615/timeline",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "16:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:06:24.754818+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8422343743/timeline",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "17:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:06:26.220918+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8421674902/timeline",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "18:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:06:27.475199+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8421327840/timeline",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "19:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:06:28.849067+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8420474016/timeline",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "20:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:06:30.164708+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8419501041/timeline",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "21:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:06:31.517931+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8419173644/timeline",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "22:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:06:32.964803+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8421611354/timeline",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "23:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:06:34.228562+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8420534543/timeline",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "24:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:06:35.584830+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8422700463/timeline",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "25:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:06:36.911030+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8422666206/timeline",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "26:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:06:38.414828+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8420262535/timeline",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "27:120,1:1"
+  },
+  {
+    "time": "2026-10-30T11:06:39.752558+00:00",
+    "endpoint": "/lol/match/v5/matches/KR_8420188756/timeline",
+    "status": 200,
+    "appLimit": "100:120,20:1",
+    "appCount": "28:120,1:1"
+  }
+]

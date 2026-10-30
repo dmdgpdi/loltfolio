@@ -1,0 +1,776 @@
+{
+  "collectedAtUtc": "2026-10-30T11:07:01.933964+00:00",
+  "scope": "KR public pro-linked accounts; queue 420; own-participant-only extraction; 20 eligible records per account where available",
+  "playerCount": 10,
+  "playerMatchCount": 200,
+  "uniqueMatches": 182,
+  "timelineRows": 25,
+  "uniqueTimelines": 20,
+  "apiCallsInCollector": 222,
+  "statusCounts": {
+    "200": 222
+  },
+  "players": [
+    {
+      "player": "Faker",
+      "riotId": "Hide on bush#KR1",
+      "accountSource": "https://lolprofile.net/pros/faker",
+      "matchCount": 20,
+      "excluded": [],
+      "roles": {
+        "MIDDLE": 12,
+        "TOP": 6,
+        "UTILITY": 2
+      },
+      "wins": 13,
+      "firstStartedAt": "2026-10-11T16:20:21.935000+00:00",
+      "lastStartedAt": "2026-10-16T16:36:29.612000+00:00",
+      "earlyLaningPhaseGoldExpAdvantage": {
+        "present": 20,
+        "numericCount": 20,
+        "min": 0,
+        "max": 1,
+        "mean": 0.2,
+        "sum": 4,
+        "valueCounts": {
+          "0": 16,
+          "1": 4
+        }
+      },
+      "laningPhaseGoldExpAdvantage": {
+        "present": 20,
+        "numericCount": 20,
+        "min": 0,
+        "max": 1,
+        "mean": 0.15,
+        "sum": 3,
+        "valueCounts": {
+          "0": 17,
+          "1": 3
+        }
+      },
+      "maxCsAdvantageOnLaneOpponent": {
+        "present": 20,
+        "numericCount": 20,
+        "min": 0,
+        "max": 109,
+        "mean": 28.65,
+        "sum": 573,
+        "valueCounts": {
+          "12": 2,
+          "35": 1,
+          "0": 1,
+          "63": 1,
+          "10": 1,
+          "17": 1,
+          "1": 1,
+          "60": 1,
+          "32": 1,
+          "14": 1,
+          "22": 1,
+          "29": 1,
+          "24": 1,
+          "15": 1,
+          "109": 1,
+          "19": 1,
+          "55": 1,
+          "16": 1,
+          "28": 1
+        }
+      },
+      "enemyMissingPings": {
+        "present": 20,
+        "numericCount": 20,
+        "min": 0,
+        "max": 13,
+        "mean": 3.4,
+        "sum": 68
+      }
+    },
+    {
+      "player": "Chovy",
+      "riotId": "허거덩#0303",
+      "accountSource": "https://lolprofile.net/pros/chovy",
+      "matchCount": 20,
+      "excluded": [],
+      "roles": {
+        "UTILITY": 2,
+        "TOP": 1,
+        "MIDDLE": 14,
+        "JUNGLE": 1,
+        "BOTTOM": 2
+      },
+      "wins": 9,
+      "firstStartedAt": "2026-09-12T09:44:30.698000+00:00",
+      "lastStartedAt": "2026-10-15T15:04:19.683000+00:00",
+      "earlyLaningPhaseGoldExpAdvantage": {
+        "present": 20,
+        "numericCount": 20,
+        "min": 0,
+        "max": 1,
+        "mean": 0.1,
+        "sum": 2,
+        "valueCounts": {
+          "0": 18,
+          "1": 2
+        }
+      },
+      "laningPhaseGoldExpAdvantage": {
+        "present": 20,
+        "numericCount": 20,
+        "min": 0,
+        "max": 1,
+        "mean": 0.35,
+        "sum": 7,
+        "valueCounts": {
+          "1": 7,
+          "0": 13
+        }
+      },
+      "maxCsAdvantageOnLaneOpponent": {
+        "present": 20,
+        "numericCount": 20,
+        "min": 1,
+        "max": 109,
+        "mean": 58.97000000625849,
+        "sum": 1179.4000001251698,
+        "valueCounts": {
+          "1": 1,
+          "70.00000002980232": 1,
+          "109": 1,
+          "75": 1,
+          "102.5": 1,
+          "88": 1,
+          "85.20000010728836": 1,
+          "66": 1,
+          "79.5499999821186": 1,
+          "58.75": 1,
+          "55": 1,
+          "29.400000005960464": 1,
+          "6": 1,
+          "45": 1,
+          "43.400000005960464": 1,
+          "47": 1,
+          "28": 1,
+          "39": 1,
+          "86.59999999403954": 1,
+          "65": 1
+        }
+      },
+      "enemyMissingPings": {
+        "present": 20,
+        "numericCount": 20,
+        "min": 0,
+        "max": 5,
+        "mean": 1.5,
+        "sum": 30
+      }
+    },
+    {
+      "player": "Keria",
+      "riotId": "Ciro#KR10",
+      "accountSource": "https://lolprofile.net/pros/keria",
+      "matchCount": 20,
+      "excluded": [],
+      "roles": {
+        "TOP": 4,
+        "JUNGLE": 9,
+        "UTILITY": 3,
+        "BOTTOM": 3,
+        "MIDDLE": 1
+      },
+      "wins": 11,
+      "firstStartedAt": "2026-10-12T08:40:42.340000+00:00",
+      "lastStartedAt": "2026-10-16T15:21:56.596000+00:00",
+      "earlyLaningPhaseGoldExpAdvantage": {
+        "present": 20,
+        "numericCount": 20,
+        "min": 0,
+        "max": 1,
+        "mean": 0.25,
+        "sum": 5,
+        "valueCounts": {
+          "0": 15,
+          "1": 5
+        }
+      },
+      "laningPhaseGoldExpAdvantage": {
+        "present": 20,
+        "numericCount": 20,
+        "min": 0,
+        "max": 1,
+        "mean": 0.2,
+        "sum": 4,
+        "valueCounts": {
+          "0": 16,
+          "1": 4
+        }
+      },
+      "maxCsAdvantageOnLaneOpponent": {
+        "present": 20,
+        "numericCount": 20,
+        "min": 0,
+        "max": 73.05000013113022,
+        "mean": 27.197500039637088,
+        "sum": 543.9500007927418,
+        "valueCounts": {
+          "2": 1,
+          "11.00000011920929": 1,
+          "65.5500001013279": 1,
+          "0": 3,
+          "30": 1,
+          "44.000000178813934": 1,
+          "73.05000013113022": 1,
+          "45.100000113248825": 1,
+          "31": 1,
+          "57.10000002384186": 1,
+          "12.000000208616257": 1,
+          "47.400000005960464": 1,
+          "6": 1,
+          "7.25": 1,
+          "11": 1,
+          "41.699999928474426": 1,
+          "37.79999998211861": 1,
+          "22": 1
+        }
+      },
+      "enemyMissingPings": {
+        "present": 20,
+        "numericCount": 20,
+        "min": 0,
+        "max": 15,
+        "mean": 4,
+        "sum": 80
+      }
+    },
+    {
+      "player": "Gumayusi",
+      "riotId": "HLE Gumayusi#0298",
+      "accountSource": "https://lolprofile.net/pros/gumayusi",
+      "matchCount": 20,
+      "excluded": [],
+      "roles": {
+        "BOTTOM": 20
+      },
+      "wins": 11,
+      "firstStartedAt": "2026-10-14T16:43:45.237000+00:00",
+      "lastStartedAt": "2026-10-17T11:55:33.260000+00:00",
+      "earlyLaningPhaseGoldExpAdvantage": {
+        "present": 20,
+        "numericCount": 20,
+        "min": 0,
+        "max": 1,
+        "mean": 0.05,
+        "sum": 1,
+        "valueCounts": {
+          "0": 19,
+          "1": 1
+        }
+      },
+      "laningPhaseGoldExpAdvantage": {
+        "present": 20,
+        "numericCount": 20,
+        "min": 0,
+        "max": 1,
+        "mean": 0.15,
+        "sum": 3,
+        "valueCounts": {
+          "0": 17,
+          "1": 3
+        }
+      },
+      "maxCsAdvantageOnLaneOpponent": {
+        "present": 20,
+        "numericCount": 20,
+        "min": 0,
+        "max": 87.00000002980232,
+        "mean": 36.82000000327825,
+        "sum": 736.4000000655651,
+        "valueCounts": {
+          "32.00000002980232": 1,
+          "39": 1,
+          "54": 1,
+          "45": 1,
+          "49": 1,
+          "13": 1,
+          "87.00000002980232": 1,
+          "46": 1,
+          "8": 2,
+          "53": 1,
+          "33.39999997615814": 1,
+          "58.5": 1,
+          "7": 1,
+          "33.400000005960464": 1,
+          "84": 1,
+          "4": 1,
+          "0": 1,
+          "34.5": 1,
+          "47.60000002384186": 1
+        }
+      },
+      "enemyMissingPings": {
+        "present": 20,
+        "numericCount": 20,
+        "min": 16,
+        "max": 45,
+        "mean": 31.4,
+        "sum": 628
+      }
+    },
+    {
+      "player": "Zeus",
+      "riotId": "Athene#lll",
+      "accountSource": "https://lolprofile.net/pros/zeus",
+      "matchCount": 20,
+      "excluded": [],
+      "roles": {
+        "TOP": 17,
+        "JUNGLE": 1,
+        "BOTTOM": 1,
+        "UTILITY": 1
+      },
+      "wins": 10,
+      "firstStartedAt": "2026-10-13T13:32:08.832000+00:00",
+      "lastStartedAt": "2026-10-17T07:29:48.323000+00:00",
+      "earlyLaningPhaseGoldExpAdvantage": {
+        "present": 20,
+        "numericCount": 20,
+        "min": 0,
+        "max": 0,
+        "mean": 0,
+        "sum": 0,
+        "valueCounts": {
+          "0": 20
+        }
+      },
+      "laningPhaseGoldExpAdvantage": {
+        "present": 20,
+        "numericCount": 20,
+        "min": 0,
+        "max": 1,
+        "mean": 0.2,
+        "sum": 4,
+        "valueCounts": {
+          "1": 4,
+          "0": 16
+        }
+      },
+      "maxCsAdvantageOnLaneOpponent": {
+        "present": 20,
+        "numericCount": 20,
+        "min": 0,
+        "max": 70.25000011920929,
+        "mean": 23.167500007152558,
+        "sum": 463.35000014305115,
+        "valueCounts": {
+          "20": 1,
+          "50.00000002980232": 1,
+          "2": 1,
+          "0": 1,
+          "8": 1,
+          "70.25000011920929": 1,
+          "7": 1,
+          "47": 1,
+          "36": 1,
+          "31": 1,
+          "39": 1,
+          "17": 1,
+          "19.599999994039536": 1,
+          "18": 1,
+          "6": 1,
+          "10.5": 1,
+          "4": 1,
+          "43": 1,
+          "10": 1,
+          "25": 1
+        }
+      },
+      "enemyMissingPings": {
+        "present": 20,
+        "numericCount": 20,
+        "min": 2,
+        "max": 35,
+        "mean": 9.9,
+        "sum": 198
+      }
+    },
+    {
+      "player": "Kiin",
+      "riotId": "kiin#KR1",
+      "accountSource": "https://lolprofile.net/pros/kiin",
+      "matchCount": 20,
+      "excluded": [],
+      "roles": {
+        "UTILITY": 3,
+        "TOP": 13,
+        "MIDDLE": 1,
+        "JUNGLE": 3
+      },
+      "wins": 9,
+      "firstStartedAt": "2026-10-12T14:19:51.829000+00:00",
+      "lastStartedAt": "2026-10-16T12:51:00.919000+00:00",
+      "earlyLaningPhaseGoldExpAdvantage": {
+        "present": 20,
+        "numericCount": 20,
+        "min": 0,
+        "max": 1,
+        "mean": 0.15,
+        "sum": 3,
+        "valueCounts": {
+          "0": 17,
+          "1": 3
+        }
+      },
+      "laningPhaseGoldExpAdvantage": {
+        "present": 20,
+        "numericCount": 20,
+        "min": 0,
+        "max": 1,
+        "mean": 0.1,
+        "sum": 2,
+        "valueCounts": {
+          "0": 18,
+          "1": 2
+        }
+      },
+      "maxCsAdvantageOnLaneOpponent": {
+        "present": 20,
+        "numericCount": 20,
+        "min": 0,
+        "max": 106,
+        "mean": 31.61500000804663,
+        "sum": 632.3000001609325,
+        "valueCounts": {
+          "0": 3,
+          "2": 1,
+          "25": 1,
+          "10": 1,
+          "4": 1,
+          "47": 1,
+          "106": 1,
+          "34.5": 1,
+          "90": 1,
+          "36": 1,
+          "85": 1,
+          "56": 1,
+          "49": 1,
+          "16": 1,
+          "39": 1,
+          "14.800000101327896": 1,
+          "14": 1,
+          "4.000000059604645": 1
+        }
+      },
+      "enemyMissingPings": {
+        "present": 20,
+        "numericCount": 20,
+        "min": 0,
+        "max": 12,
+        "mean": 5.2,
+        "sum": 104
+      }
+    },
+    {
+      "player": "ShowMaker",
+      "riotId": "DK ShowMaker#KR1",
+      "accountSource": "https://lolprofile.net/pros/showmaker",
+      "matchCount": 20,
+      "excluded": [],
+      "roles": {
+        "TOP": 5,
+        "MIDDLE": 12,
+        "UTILITY": 2,
+        "JUNGLE": 1
+      },
+      "wins": 14,
+      "firstStartedAt": "2026-10-03T16:40:36.628000+00:00",
+      "lastStartedAt": "2026-10-14T16:24:23.422000+00:00",
+      "earlyLaningPhaseGoldExpAdvantage": {
+        "present": 20,
+        "numericCount": 20,
+        "min": 0,
+        "max": 1,
+        "mean": 0.2,
+        "sum": 4,
+        "valueCounts": {
+          "0": 16,
+          "1": 4
+        }
+      },
+      "laningPhaseGoldExpAdvantage": {
+        "present": 20,
+        "numericCount": 20,
+        "min": 0,
+        "max": 1,
+        "mean": 0.2,
+        "sum": 4,
+        "valueCounts": {
+          "1": 4,
+          "0": 16
+        }
+      },
+      "maxCsAdvantageOnLaneOpponent": {
+        "present": 20,
+        "numericCount": 20,
+        "min": 0,
+        "max": 83,
+        "mean": 35.73000000268221,
+        "sum": 714.6000000536442,
+        "valueCounts": {
+          "59": 1,
+          "29": 1,
+          "0": 1,
+          "15": 1,
+          "52": 1,
+          "23": 1,
+          "40": 1,
+          "24.000000029802322": 1,
+          "26": 1,
+          "83": 1,
+          "12": 1,
+          "23.399999976158142": 1,
+          "49": 1,
+          "16": 1,
+          "51": 1,
+          "4.000000029802322": 1,
+          "55": 1,
+          "65.40000000596046": 1,
+          "66.80000001192093": 1,
+          "21": 1
+        }
+      },
+      "enemyMissingPings": {
+        "present": 20,
+        "numericCount": 20,
+        "min": 0,
+        "max": 9,
+        "mean": 3.7,
+        "sum": 74
+      }
+    },
+    {
+      "player": "Oner",
+      "riotId": "오 너#111",
+      "accountSource": "https://mid.gg/streamer/oner",
+      "matchCount": 20,
+      "excluded": [],
+      "roles": {
+        "JUNGLE": 15,
+        "BOTTOM": 5
+      },
+      "wins": 11,
+      "firstStartedAt": "2026-10-12T15:08:39.002000+00:00",
+      "lastStartedAt": "2026-10-16T16:36:29.612000+00:00",
+      "earlyLaningPhaseGoldExpAdvantage": {
+        "present": 20,
+        "numericCount": 20,
+        "min": 0,
+        "max": 1,
+        "mean": 0.1,
+        "sum": 2,
+        "valueCounts": {
+          "0": 18,
+          "1": 2
+        }
+      },
+      "laningPhaseGoldExpAdvantage": {
+        "present": 20,
+        "numericCount": 20,
+        "min": 0,
+        "max": 1,
+        "mean": 0.15,
+        "sum": 3,
+        "valueCounts": {
+          "0": 17,
+          "1": 3
+        }
+      },
+      "maxCsAdvantageOnLaneOpponent": {
+        "present": 20,
+        "numericCount": 20,
+        "min": 0,
+        "max": 75.25,
+        "mean": 28.122500033676623,
+        "sum": 562.4500006735325,
+        "valueCounts": {
+          "14.000000029802322": 1,
+          "25.250000149011612": 1,
+          "53.20000001788139": 1,
+          "5": 1,
+          "16.499999970197678": 1,
+          "75.25": 1,
+          "5.000000029802322": 1,
+          "29": 2,
+          "26.000000059604645": 1,
+          "42.750000059604645": 1,
+          "0": 1,
+          "52.400000154972076": 1,
+          "18.400000035762787": 1,
+          "32.00000002980232": 1,
+          "38.50000008940697": 1,
+          "4": 1,
+          "50.00000011920929": 1,
+          "24.799999982118607": 1,
+          "21.39999994635582": 1
+        }
+      },
+      "enemyMissingPings": {
+        "present": 20,
+        "numericCount": 20,
+        "min": 3,
+        "max": 25,
+        "mean": 10.6,
+        "sum": 212
+      }
+    },
+    {
+      "player": "Doran",
+      "riotId": "어리고싶다#KR1",
+      "accountSource": "https://www.probuild.gg/pro/doran",
+      "matchCount": 20,
+      "excluded": [],
+      "roles": {
+        "TOP": 19,
+        "JUNGLE": 1
+      },
+      "wins": 11,
+      "firstStartedAt": "2026-10-14T18:22:21.406000+00:00",
+      "lastStartedAt": "2026-10-17T11:39:45.220000+00:00",
+      "earlyLaningPhaseGoldExpAdvantage": {
+        "present": 20,
+        "numericCount": 20,
+        "min": 0,
+        "max": 1,
+        "mean": 0.25,
+        "sum": 5,
+        "valueCounts": {
+          "1": 5,
+          "0": 15
+        }
+      },
+      "laningPhaseGoldExpAdvantage": {
+        "present": 20,
+        "numericCount": 20,
+        "min": 0,
+        "max": 1,
+        "mean": 0.25,
+        "sum": 5,
+        "valueCounts": {
+          "1": 5,
+          "0": 15
+        }
+      },
+      "maxCsAdvantageOnLaneOpponent": {
+        "present": 20,
+        "numericCount": 20,
+        "min": 0,
+        "max": 86,
+        "mean": 41.180000002682206,
+        "sum": 823.6000000536442,
+        "valueCounts": {
+          "56.75": 1,
+          "27": 1,
+          "64": 2,
+          "50": 1,
+          "36": 1,
+          "86": 1,
+          "63": 1,
+          "41": 1,
+          "29": 1,
+          "0": 1,
+          "26.25": 1,
+          "9": 1,
+          "54.40000006556511": 1,
+          "20": 1,
+          "51": 1,
+          "16": 1,
+          "42": 1,
+          "49": 1,
+          "39.19999998807907": 1
+        }
+      },
+      "enemyMissingPings": {
+        "present": 20,
+        "numericCount": 20,
+        "min": 0,
+        "max": 15,
+        "mean": 6.9,
+        "sum": 138
+      }
+    },
+    {
+      "player": "Ruler",
+      "riotId": "강 철#샤 넬",
+      "accountSource": "https://www.trackingthepros.com/player/Ruler",
+      "matchCount": 20,
+      "excluded": [],
+      "roles": {
+        "JUNGLE": 3,
+        "BOTTOM": 17
+      },
+      "wins": 9,
+      "firstStartedAt": "2026-10-04T16:16:34.756000+00:00",
+      "lastStartedAt": "2026-10-15T14:20:33.552000+00:00",
+      "earlyLaningPhaseGoldExpAdvantage": {
+        "present": 20,
+        "numericCount": 20,
+        "min": 0,
+        "max": 1,
+        "mean": 0.2,
+        "sum": 4,
+        "valueCounts": {
+          "0": 16,
+          "1": 4
+        }
+      },
+      "laningPhaseGoldExpAdvantage": {
+        "present": 20,
+        "numericCount": 20,
+        "min": 0,
+        "max": 1,
+        "mean": 0.1,
+        "sum": 2,
+        "valueCounts": {
+          "0": 18,
+          "1": 2
+        }
+      },
+      "maxCsAdvantageOnLaneOpponent": {
+        "present": 20,
+        "numericCount": 20,
+        "min": 1,
+        "max": 82,
+        "mean": 36.61250000149012,
+        "sum": 732.2500000298023,
+        "valueCounts": {
+          "14.949999988079071": 1,
+          "78.00000002980232": 1,
+          "22": 2,
+          "68.60000002384186": 1,
+          "12": 1,
+          "6": 1,
+          "1": 1,
+          "39": 1,
+          "76.40000000596046": 1,
+          "21": 1,
+          "5.999999970197678": 1,
+          "79.30000001192093": 1,
+          "52": 1,
+          "44": 1,
+          "8": 1,
+          "42": 2,
+          "82": 1,
+          "16": 1
+        }
+      },
+      "enemyMissingPings": {
+        "present": 20,
+        "numericCount": 20,
+        "min": 1,
+        "max": 13,
+        "mean": 5.2,
+        "sum": 104
+      }
+    }
+  ]
+}
