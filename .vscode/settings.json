@@ -16,5 +16,6 @@
   "editor.quickSuggestions": {
     "strings": "on"
   },
-  "tailwindCSS.experimental.configFile": "src/frontend/globals.css"
+  "tailwindCSS.experimental.configFile": "src/frontend/globals.css",
+  "js/ts.tsdk.path": "node_modules/typescript/lib"
 }
