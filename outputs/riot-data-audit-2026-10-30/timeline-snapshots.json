@@ -1,0 +1,2652 @@
+[
+  {
+    "player": "Faker",
+    "matchId": "KR_8421752997",
+    "role": "MIDDLE",
+    "champion": "Galio",
+    "durationSeconds": 1011,
+    "frameInterval": 60000,
+    "counterpartMethod": "opposite team same teamPosition (estimated role, not path tracking)",
+    "reported": {
+      "earlyLaningPhaseGoldExpAdvantage": 0,
+      "laningPhaseGoldExpAdvantage": 0,
+      "maxCsAdvantageOnLaneOpponent": 12
+    },
+    "snapshots": [
+      {
+        "minute": 7,
+        "available": true,
+        "actualTimestampMs": 420159,
+        "own": {
+          "totalGold": 2958,
+          "currentGold": 483,
+          "xp": 3470,
+          "level": 7,
+          "minionsKilled": 52,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 214,
+          "xp": 296,
+          "level": 1,
+          "minionsKilled": -2,
+          "jungleMinionsKilled": 0,
+          "totalCs": -2
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 10,
+        "available": true,
+        "actualTimestampMs": 600225,
+        "own": {
+          "totalGold": 4472,
+          "currentGold": 647,
+          "xp": 5208,
+          "level": 9,
+          "minionsKilled": 78,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 541,
+          "xp": 434,
+          "level": 1,
+          "minionsKilled": -1,
+          "jungleMinionsKilled": 0,
+          "totalCs": -1
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 14,
+        "available": true,
+        "actualTimestampMs": 840295,
+        "own": {
+          "totalGold": 6493,
+          "currentGold": 613,
+          "xp": 7020,
+          "level": 10,
+          "minionsKilled": 98,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 1308,
+          "xp": 763,
+          "level": 0,
+          "minionsKilled": -4,
+          "jungleMinionsKilled": 0,
+          "totalCs": -4
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 15,
+        "available": true,
+        "actualTimestampMs": 900327,
+        "own": {
+          "totalGold": 7065,
+          "currentGold": 1185,
+          "xp": 8149,
+          "level": 11,
+          "minionsKilled": 113,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 1598,
+          "xp": 1507,
+          "level": 1,
+          "minionsKilled": 4,
+          "jungleMinionsKilled": 0,
+          "totalCs": 4
+        },
+        "goldXp20PercentHypothesis": true
+      }
+    ],
+    "sampledMaxLaneCsDiff": 12,
+    "sampledMaxTotalCsDiff": 12
+  },
+  {
+    "player": "Faker",
+    "matchId": "KR_8421721409",
+    "role": "MIDDLE",
+    "champion": "Leblanc",
+    "durationSeconds": 1452,
+    "frameInterval": 60000,
+    "counterpartMethod": "opposite team same teamPosition (estimated role, not path tracking)",
+    "reported": {
+      "earlyLaningPhaseGoldExpAdvantage": 0,
+      "laningPhaseGoldExpAdvantage": 0,
+      "maxCsAdvantageOnLaneOpponent": 35
+    },
+    "snapshots": [
+      {
+        "minute": 7,
+        "available": true,
+        "actualTimestampMs": 420150,
+        "own": {
+          "totalGold": 2376,
+          "currentGold": 176,
+          "xp": 3097,
+          "level": 6,
+          "minionsKilled": 55,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 114,
+          "xp": -39,
+          "level": 0,
+          "minionsKilled": 19,
+          "jungleMinionsKilled": 0,
+          "totalCs": 19
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 10,
+        "available": true,
+        "actualTimestampMs": 600231,
+        "own": {
+          "totalGold": 3360,
+          "currentGold": 685,
+          "xp": 4556,
+          "level": 8,
+          "minionsKilled": 82,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": -349,
+          "xp": -283,
+          "level": 0,
+          "minionsKilled": 25,
+          "jungleMinionsKilled": -2,
+          "totalCs": 23
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 14,
+        "available": true,
+        "actualTimestampMs": 840298,
+        "own": {
+          "totalGold": 5088,
+          "currentGold": 58,
+          "xp": 6546,
+          "level": 10,
+          "minionsKilled": 117,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": -583,
+          "xp": -414,
+          "level": 0,
+          "minionsKilled": 27,
+          "jungleMinionsKilled": -2,
+          "totalCs": 25
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 15,
+        "available": true,
+        "actualTimestampMs": 900321,
+        "own": {
+          "totalGold": 5412,
+          "currentGold": 372,
+          "xp": 6896,
+          "level": 10,
+          "minionsKilled": 122,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": -464,
+          "xp": -173,
+          "level": 0,
+          "minionsKilled": 32,
+          "jungleMinionsKilled": -2,
+          "totalCs": 30
+        },
+        "goldXp20PercentHypothesis": false
+      }
+    ],
+    "sampledMaxLaneCsDiff": 32,
+    "sampledMaxTotalCsDiff": 30
+  },
+  {
+    "player": "Chovy",
+    "matchId": "KR_8420448348",
+    "role": "UTILITY",
+    "champion": "Rakan",
+    "durationSeconds": 1587,
+    "frameInterval": 60000,
+    "counterpartMethod": "opposite team same teamPosition (estimated role, not path tracking)",
+    "reported": {
+      "earlyLaningPhaseGoldExpAdvantage": 0,
+      "laningPhaseGoldExpAdvantage": 1,
+      "maxCsAdvantageOnLaneOpponent": 1
+    },
+    "snapshots": [
+      {
+        "minute": 7,
+        "available": true,
+        "actualTimestampMs": 420204,
+        "own": {
+          "totalGold": 2357,
+          "currentGold": 157,
+          "xp": 1482,
+          "level": 4,
+          "minionsKilled": 3,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 403,
+          "xp": -248,
+          "level": -1,
+          "minionsKilled": -6,
+          "jungleMinionsKilled": 0,
+          "totalCs": -6
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 10,
+        "available": true,
+        "actualTimestampMs": 600246,
+        "own": {
+          "totalGold": 3214,
+          "currentGold": 234,
+          "xp": 2586,
+          "level": 6,
+          "minionsKilled": 8,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 598,
+          "xp": 646,
+          "level": 1,
+          "minionsKilled": -4,
+          "jungleMinionsKilled": 0,
+          "totalCs": -4
+        },
+        "goldXp20PercentHypothesis": true
+      },
+      {
+        "minute": 14,
+        "available": true,
+        "actualTimestampMs": 840328,
+        "own": {
+          "totalGold": 4504,
+          "currentGold": 439,
+          "xp": 3264,
+          "level": 7,
+          "minionsKilled": 10,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 970,
+          "xp": 690,
+          "level": 1,
+          "minionsKilled": -9,
+          "jungleMinionsKilled": 0,
+          "totalCs": -9
+        },
+        "goldXp20PercentHypothesis": true
+      },
+      {
+        "minute": 15,
+        "available": true,
+        "actualTimestampMs": 900342,
+        "own": {
+          "totalGold": 4795,
+          "currentGold": 285,
+          "xp": 3459,
+          "level": 7,
+          "minionsKilled": 11,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 951,
+          "xp": 336,
+          "level": 1,
+          "minionsKilled": -10,
+          "jungleMinionsKilled": 0,
+          "totalCs": -10
+        },
+        "goldXp20PercentHypothesis": false
+      }
+    ],
+    "sampledMaxLaneCsDiff": 0,
+    "sampledMaxTotalCsDiff": 0
+  },
+  {
+    "player": "Chovy",
+    "matchId": "KR_8419523152",
+    "role": "TOP",
+    "champion": "Yone",
+    "durationSeconds": 1929,
+    "frameInterval": 60000,
+    "counterpartMethod": "opposite team same teamPosition (estimated role, not path tracking)",
+    "reported": {
+      "earlyLaningPhaseGoldExpAdvantage": 1,
+      "laningPhaseGoldExpAdvantage": 0,
+      "maxCsAdvantageOnLaneOpponent": 70.00000002980232
+    },
+    "snapshots": [
+      {
+        "minute": 7,
+        "available": true,
+        "actualTimestampMs": 420210,
+        "own": {
+          "totalGold": 2954,
+          "currentGold": 29,
+          "xp": 3557,
+          "level": 7,
+          "minionsKilled": 57,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 712,
+          "xp": 917,
+          "level": 1,
+          "minionsKilled": 13,
+          "jungleMinionsKilled": 0,
+          "totalCs": 13
+        },
+        "goldXp20PercentHypothesis": true
+      },
+      {
+        "minute": 10,
+        "available": true,
+        "actualTimestampMs": 600236,
+        "own": {
+          "totalGold": 4218,
+          "currentGold": 938,
+          "xp": 5162,
+          "level": 9,
+          "minionsKilled": 84,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 1099,
+          "xp": 1085,
+          "level": 1,
+          "minionsKilled": 20,
+          "jungleMinionsKilled": 0,
+          "totalCs": 20
+        },
+        "goldXp20PercentHypothesis": true
+      },
+      {
+        "minute": 14,
+        "available": true,
+        "actualTimestampMs": 840298,
+        "own": {
+          "totalGold": 5988,
+          "currentGold": 483,
+          "xp": 8263,
+          "level": 11,
+          "minionsKilled": 128,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 1374,
+          "xp": 905,
+          "level": 0,
+          "minionsKilled": 30,
+          "jungleMinionsKilled": 0,
+          "totalCs": 30
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 15,
+        "available": true,
+        "actualTimestampMs": 900308,
+        "own": {
+          "totalGold": 6233,
+          "currentGold": 728,
+          "xp": 8642,
+          "level": 12,
+          "minionsKilled": 135,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 1280,
+          "xp": 581,
+          "level": 1,
+          "minionsKilled": 26,
+          "jungleMinionsKilled": 0,
+          "totalCs": 26
+        },
+        "goldXp20PercentHypothesis": false
+      }
+    ],
+    "sampledMaxLaneCsDiff": 52,
+    "sampledMaxTotalCsDiff": 70
+  },
+  {
+    "player": "Chovy",
+    "matchId": "KR_8419501041",
+    "role": "MIDDLE",
+    "champion": "Locke",
+    "durationSeconds": 1323,
+    "frameInterval": 60000,
+    "counterpartMethod": "opposite team same teamPosition (estimated role, not path tracking)",
+    "reported": {
+      "earlyLaningPhaseGoldExpAdvantage": 0,
+      "laningPhaseGoldExpAdvantage": 0,
+      "maxCsAdvantageOnLaneOpponent": 109
+    },
+    "snapshots": [
+      {
+        "minute": 7,
+        "available": true,
+        "actualTimestampMs": 420204,
+        "own": {
+          "totalGold": 2343,
+          "currentGold": 868,
+          "xp": 3369,
+          "level": 7,
+          "minionsKilled": 50,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 106,
+          "xp": 394,
+          "level": 1,
+          "minionsKilled": 10,
+          "jungleMinionsKilled": 0,
+          "totalCs": 10
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 10,
+        "available": true,
+        "actualTimestampMs": 600277,
+        "own": {
+          "totalGold": 3358,
+          "currentGold": 128,
+          "xp": 5109,
+          "level": 9,
+          "minionsKilled": 80,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 515,
+          "xp": 854,
+          "level": 1,
+          "minionsKilled": 25,
+          "jungleMinionsKilled": 0,
+          "totalCs": 25
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 14,
+        "available": true,
+        "actualTimestampMs": 840342,
+        "own": {
+          "totalGold": 4756,
+          "currentGold": 71,
+          "xp": 7022,
+          "level": 10,
+          "minionsKilled": 122,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 820,
+          "xp": 880,
+          "level": 0,
+          "minionsKilled": 44,
+          "jungleMinionsKilled": 0,
+          "totalCs": 44
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 15,
+        "available": true,
+        "actualTimestampMs": 900364,
+        "own": {
+          "totalGold": 5249,
+          "currentGold": 564,
+          "xp": 7854,
+          "level": 11,
+          "minionsKilled": 139,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 913,
+          "xp": 1420,
+          "level": 1,
+          "minionsKilled": 56,
+          "jungleMinionsKilled": 0,
+          "totalCs": 56
+        },
+        "goldXp20PercentHypothesis": true
+      }
+    ],
+    "sampledMaxLaneCsDiff": 106,
+    "sampledMaxTotalCsDiff": 106
+  },
+  {
+    "player": "Keria",
+    "matchId": "KR_8421640437",
+    "role": "TOP",
+    "champion": "Jayce",
+    "durationSeconds": 1180,
+    "frameInterval": 60000,
+    "counterpartMethod": "opposite team same teamPosition (estimated role, not path tracking)",
+    "reported": {
+      "earlyLaningPhaseGoldExpAdvantage": 0,
+      "laningPhaseGoldExpAdvantage": 0,
+      "maxCsAdvantageOnLaneOpponent": 2
+    },
+    "snapshots": [
+      {
+        "minute": 7,
+        "available": true,
+        "actualTimestampMs": 420154,
+        "own": {
+          "totalGold": 2175,
+          "currentGold": 425,
+          "xp": 2966,
+          "level": 6,
+          "minionsKilled": 49,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": -769,
+          "xp": -345,
+          "level": -1,
+          "minionsKilled": -17,
+          "jungleMinionsKilled": 0,
+          "totalCs": -17
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 10,
+        "available": true,
+        "actualTimestampMs": 600219,
+        "own": {
+          "totalGold": 3031,
+          "currentGold": 331,
+          "xp": 4449,
+          "level": 8,
+          "minionsKilled": 73,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": -1087,
+          "xp": -823,
+          "level": -1,
+          "minionsKilled": -34,
+          "jungleMinionsKilled": 0,
+          "totalCs": -34
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 14,
+        "available": true,
+        "actualTimestampMs": 840300,
+        "own": {
+          "totalGold": 4191,
+          "currentGold": 1066,
+          "xp": 5981,
+          "level": 9,
+          "minionsKilled": 105,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": -2856,
+          "xp": -2972,
+          "level": -3,
+          "minionsKilled": -46,
+          "jungleMinionsKilled": 0,
+          "totalCs": -46
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 15,
+        "available": true,
+        "actualTimestampMs": 900309,
+        "own": {
+          "totalGold": 4793,
+          "currentGold": 293,
+          "xp": 7427,
+          "level": 11,
+          "minionsKilled": 110,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": -2743,
+          "xp": -2229,
+          "level": -1,
+          "minionsKilled": -53,
+          "jungleMinionsKilled": 0,
+          "totalCs": -53
+        },
+        "goldXp20PercentHypothesis": false
+      }
+    ],
+    "sampledMaxLaneCsDiff": 0,
+    "sampledMaxTotalCsDiff": 0
+  },
+  {
+    "player": "Keria",
+    "matchId": "KR_8420505385",
+    "role": "TOP",
+    "champion": "Gwen",
+    "durationSeconds": 1739,
+    "frameInterval": 60000,
+    "counterpartMethod": "opposite team same teamPosition (estimated role, not path tracking)",
+    "reported": {
+      "earlyLaningPhaseGoldExpAdvantage": 1,
+      "laningPhaseGoldExpAdvantage": 0,
+      "maxCsAdvantageOnLaneOpponent": 30
+    },
+    "snapshots": [
+      {
+        "minute": 7,
+        "available": true,
+        "actualTimestampMs": 420168,
+        "own": {
+          "totalGold": 2883,
+          "currentGold": 82,
+          "xp": 3526,
+          "level": 7,
+          "minionsKilled": 58,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 686,
+          "xp": 644,
+          "level": 1,
+          "minionsKilled": 15,
+          "jungleMinionsKilled": 0,
+          "totalCs": 15
+        },
+        "goldXp20PercentHypothesis": true
+      },
+      {
+        "minute": 10,
+        "available": true,
+        "actualTimestampMs": 600193,
+        "own": {
+          "totalGold": 3923,
+          "currentGold": 173,
+          "xp": 5415,
+          "level": 9,
+          "minionsKilled": 93,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 740,
+          "xp": 771,
+          "level": 1,
+          "minionsKilled": 18,
+          "jungleMinionsKilled": 0,
+          "totalCs": 18
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 14,
+        "available": true,
+        "actualTimestampMs": 840246,
+        "own": {
+          "totalGold": 5090,
+          "currentGold": 715,
+          "xp": 8379,
+          "level": 11,
+          "minionsKilled": 119,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 60,
+          "xp": 607,
+          "level": 0,
+          "minionsKilled": 5,
+          "jungleMinionsKilled": 0,
+          "totalCs": 5
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 15,
+        "available": true,
+        "actualTimestampMs": 900254,
+        "own": {
+          "totalGold": 6175,
+          "currentGold": 1800,
+          "xp": 9162,
+          "level": 12,
+          "minionsKilled": 127,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 907,
+          "xp": 623,
+          "level": 1,
+          "minionsKilled": 6,
+          "jungleMinionsKilled": 0,
+          "totalCs": 6
+        },
+        "goldXp20PercentHypothesis": false
+      }
+    ],
+    "sampledMaxLaneCsDiff": 22,
+    "sampledMaxTotalCsDiff": 30
+  },
+  {
+    "player": "Gumayusi",
+    "matchId": "KR_8422737101",
+    "role": "BOTTOM",
+    "champion": "Yasuo",
+    "durationSeconds": 1622,
+    "frameInterval": 60000,
+    "counterpartMethod": "opposite team same teamPosition (estimated role, not path tracking)",
+    "reported": {
+      "earlyLaningPhaseGoldExpAdvantage": 0,
+      "laningPhaseGoldExpAdvantage": 0,
+      "maxCsAdvantageOnLaneOpponent": 32.00000002980232
+    },
+    "snapshots": [
+      {
+        "minute": 7,
+        "available": true,
+        "actualTimestampMs": 420229,
+        "own": {
+          "totalGold": 2890,
+          "currentGold": 415,
+          "xp": 2331,
+          "level": 5,
+          "minionsKilled": 64,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 235,
+          "xp": -194,
+          "level": -1,
+          "minionsKilled": 13,
+          "jungleMinionsKilled": 0,
+          "totalCs": 13
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 10,
+        "available": true,
+        "actualTimestampMs": 600279,
+        "own": {
+          "totalGold": 4682,
+          "currentGold": 307,
+          "xp": 3667,
+          "level": 7,
+          "minionsKilled": 91,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 1273,
+          "xp": 97,
+          "level": 0,
+          "minionsKilled": 19,
+          "jungleMinionsKilled": 0,
+          "totalCs": 19
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 14,
+        "available": true,
+        "actualTimestampMs": 840326,
+        "own": {
+          "totalGold": 6468,
+          "currentGold": 248,
+          "xp": 5028,
+          "level": 8,
+          "minionsKilled": 124,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 357,
+          "xp": -606,
+          "level": -1,
+          "minionsKilled": 16,
+          "jungleMinionsKilled": 0,
+          "totalCs": 16
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 15,
+        "available": true,
+        "actualTimestampMs": 900348,
+        "own": {
+          "totalGold": 6715,
+          "currentGold": 20,
+          "xp": 5369,
+          "level": 9,
+          "minionsKilled": 131,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": -33,
+          "xp": -834,
+          "level": -1,
+          "minionsKilled": 15,
+          "jungleMinionsKilled": 0,
+          "totalCs": 15
+        },
+        "goldXp20PercentHypothesis": false
+      }
+    ],
+    "sampledMaxLaneCsDiff": 26,
+    "sampledMaxTotalCsDiff": 28
+  },
+  {
+    "player": "Gumayusi",
+    "matchId": "KR_8422675615",
+    "role": "BOTTOM",
+    "champion": "Tristana",
+    "durationSeconds": 1326,
+    "frameInterval": 60000,
+    "counterpartMethod": "opposite team same teamPosition (estimated role, not path tracking)",
+    "reported": {
+      "earlyLaningPhaseGoldExpAdvantage": 0,
+      "laningPhaseGoldExpAdvantage": 0,
+      "maxCsAdvantageOnLaneOpponent": 39
+    },
+    "snapshots": [
+      {
+        "minute": 7,
+        "available": true,
+        "actualTimestampMs": 420169,
+        "own": {
+          "totalGold": 2689,
+          "currentGold": 929,
+          "xp": 2598,
+          "level": 6,
+          "minionsKilled": 52,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 31,
+          "xp": 251,
+          "level": 1,
+          "minionsKilled": 15,
+          "jungleMinionsKilled": 0,
+          "totalCs": 15
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 10,
+        "available": true,
+        "actualTimestampMs": 600246,
+        "own": {
+          "totalGold": 3995,
+          "currentGold": 35,
+          "xp": 3801,
+          "level": 7,
+          "minionsKilled": 81,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 456,
+          "xp": 497,
+          "level": 0,
+          "minionsKilled": 21,
+          "jungleMinionsKilled": 0,
+          "totalCs": 21
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 14,
+        "available": true,
+        "actualTimestampMs": 840314,
+        "own": {
+          "totalGold": 5572,
+          "currentGold": 52,
+          "xp": 5372,
+          "level": 9,
+          "minionsKilled": 115,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 16,
+          "xp": -118,
+          "level": 0,
+          "minionsKilled": 25,
+          "jungleMinionsKilled": 0,
+          "totalCs": 25
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 15,
+        "available": true,
+        "actualTimestampMs": 900346,
+        "own": {
+          "totalGold": 5877,
+          "currentGold": 352,
+          "xp": 5970,
+          "level": 9,
+          "minionsKilled": 125,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 40,
+          "xp": 2,
+          "level": 0,
+          "minionsKilled": 27,
+          "jungleMinionsKilled": 0,
+          "totalCs": 27
+        },
+        "goldXp20PercentHypothesis": false
+      }
+    ],
+    "sampledMaxLaneCsDiff": 29,
+    "sampledMaxTotalCsDiff": 29
+  },
+  {
+    "player": "Zeus",
+    "matchId": "KR_8422343743",
+    "role": "TOP",
+    "champion": "Nidalee",
+    "durationSeconds": 1580,
+    "frameInterval": 60000,
+    "counterpartMethod": "opposite team same teamPosition (estimated role, not path tracking)",
+    "reported": {
+      "earlyLaningPhaseGoldExpAdvantage": 0,
+      "laningPhaseGoldExpAdvantage": 1,
+      "maxCsAdvantageOnLaneOpponent": 20
+    },
+    "snapshots": [
+      {
+        "minute": 7,
+        "available": true,
+        "actualTimestampMs": 420151,
+        "own": {
+          "totalGold": 2206,
+          "currentGold": 206,
+          "xp": 2532,
+          "level": 6,
+          "minionsKilled": 37,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": -288,
+          "xp": 167,
+          "level": 1,
+          "minionsKilled": -1,
+          "jungleMinionsKilled": 0,
+          "totalCs": -1
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 10,
+        "available": true,
+        "actualTimestampMs": 600187,
+        "own": {
+          "totalGold": 3892,
+          "currentGold": 292,
+          "xp": 4443,
+          "level": 8,
+          "minionsKilled": 60,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 355,
+          "xp": 728,
+          "level": 1,
+          "minionsKilled": 0,
+          "jungleMinionsKilled": 0,
+          "totalCs": 0
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 14,
+        "available": true,
+        "actualTimestampMs": 840256,
+        "own": {
+          "totalGold": 5708,
+          "currentGold": 2108,
+          "xp": 8212,
+          "level": 11,
+          "minionsKilled": 102,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 1038,
+          "xp": 2241,
+          "level": 2,
+          "minionsKilled": 11,
+          "jungleMinionsKilled": 0,
+          "totalCs": 11
+        },
+        "goldXp20PercentHypothesis": true
+      },
+      {
+        "minute": 15,
+        "available": true,
+        "actualTimestampMs": 900266,
+        "own": {
+          "totalGold": 6425,
+          "currentGold": 437,
+          "xp": 8723,
+          "level": 12,
+          "minionsKilled": 109,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 1512,
+          "xp": 2408,
+          "level": 2,
+          "minionsKilled": 11,
+          "jungleMinionsKilled": 0,
+          "totalCs": 11
+        },
+        "goldXp20PercentHypothesis": true
+      }
+    ],
+    "sampledMaxLaneCsDiff": 22,
+    "sampledMaxTotalCsDiff": 22
+  },
+  {
+    "player": "Zeus",
+    "matchId": "KR_8421674902",
+    "role": "TOP",
+    "champion": "Corki",
+    "durationSeconds": 1633,
+    "frameInterval": 60000,
+    "counterpartMethod": "opposite team same teamPosition (estimated role, not path tracking)",
+    "reported": {
+      "earlyLaningPhaseGoldExpAdvantage": 0,
+      "laningPhaseGoldExpAdvantage": 0,
+      "maxCsAdvantageOnLaneOpponent": 50.00000002980232
+    },
+    "snapshots": [
+      {
+        "minute": 7,
+        "available": true,
+        "actualTimestampMs": 420167,
+        "own": {
+          "totalGold": 2797,
+          "currentGold": 242,
+          "xp": 2954,
+          "level": 6,
+          "minionsKilled": 53,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": -634,
+          "xp": -380,
+          "level": -1,
+          "minionsKilled": 9,
+          "jungleMinionsKilled": 0,
+          "totalCs": 9
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 10,
+        "available": true,
+        "actualTimestampMs": 600247,
+        "own": {
+          "totalGold": 3864,
+          "currentGold": 959,
+          "xp": 4523,
+          "level": 8,
+          "minionsKilled": 75,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": -798,
+          "xp": -713,
+          "level": -1,
+          "minionsKilled": 6,
+          "jungleMinionsKilled": 0,
+          "totalCs": 6
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 14,
+        "available": true,
+        "actualTimestampMs": 840319,
+        "own": {
+          "totalGold": 6878,
+          "currentGold": 865,
+          "xp": 8804,
+          "level": 12,
+          "minionsKilled": 104,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 644,
+          "xp": 1196,
+          "level": 1,
+          "minionsKilled": 21,
+          "jungleMinionsKilled": 0,
+          "totalCs": 21
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 15,
+        "available": true,
+        "actualTimestampMs": 900335,
+        "own": {
+          "totalGold": 7464,
+          "currentGold": 1451,
+          "xp": 9762,
+          "level": 12,
+          "minionsKilled": 122,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 925,
+          "xp": 1333,
+          "level": 1,
+          "minionsKilled": 28,
+          "jungleMinionsKilled": 0,
+          "totalCs": 28
+        },
+        "goldXp20PercentHypothesis": false
+      }
+    ],
+    "sampledMaxLaneCsDiff": 42,
+    "sampledMaxTotalCsDiff": 48
+  },
+  {
+    "player": "Zeus",
+    "matchId": "KR_8421327840",
+    "role": "TOP",
+    "champion": "Aatrox",
+    "durationSeconds": 1517,
+    "frameInterval": 60000,
+    "counterpartMethod": "opposite team same teamPosition (estimated role, not path tracking)",
+    "reported": {
+      "earlyLaningPhaseGoldExpAdvantage": 0,
+      "laningPhaseGoldExpAdvantage": 0,
+      "maxCsAdvantageOnLaneOpponent": 0
+    },
+    "snapshots": [
+      {
+        "minute": 7,
+        "available": true,
+        "actualTimestampMs": 420221,
+        "own": {
+          "totalGold": 1905,
+          "currentGold": 755,
+          "xp": 2966,
+          "level": 6,
+          "minionsKilled": 35,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": -909,
+          "xp": -732,
+          "level": -1,
+          "minionsKilled": -25,
+          "jungleMinionsKilled": 0,
+          "totalCs": -25
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 10,
+        "available": true,
+        "actualTimestampMs": 600264,
+        "own": {
+          "totalGold": 2946,
+          "currentGold": 46,
+          "xp": 4828,
+          "level": 8,
+          "minionsKilled": 56,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": -623,
+          "xp": 1,
+          "level": 0,
+          "minionsKilled": -25,
+          "jungleMinionsKilled": 0,
+          "totalCs": -25
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 14,
+        "available": true,
+        "actualTimestampMs": 840321,
+        "own": {
+          "totalGold": 4636,
+          "currentGold": 236,
+          "xp": 7861,
+          "level": 11,
+          "minionsKilled": 86,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": -81,
+          "xp": 1182,
+          "level": 1,
+          "minionsKilled": -21,
+          "jungleMinionsKilled": 0,
+          "totalCs": -21
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 15,
+        "available": true,
+        "actualTimestampMs": 900343,
+        "own": {
+          "totalGold": 5130,
+          "currentGold": 730,
+          "xp": 8632,
+          "level": 12,
+          "minionsKilled": 100,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": -1,
+          "xp": 1250,
+          "level": 1,
+          "minionsKilled": -19,
+          "jungleMinionsKilled": 0,
+          "totalCs": -19
+        },
+        "goldXp20PercentHypothesis": false
+      }
+    ],
+    "sampledMaxLaneCsDiff": 0,
+    "sampledMaxTotalCsDiff": 0
+  },
+  {
+    "player": "Kiin",
+    "matchId": "KR_8421327840",
+    "role": "UTILITY",
+    "champion": "Karma",
+    "durationSeconds": 1517,
+    "frameInterval": 60000,
+    "counterpartMethod": "opposite team same teamPosition (estimated role, not path tracking)",
+    "reported": {
+      "earlyLaningPhaseGoldExpAdvantage": 0,
+      "laningPhaseGoldExpAdvantage": 0,
+      "maxCsAdvantageOnLaneOpponent": 0
+    },
+    "snapshots": [
+      {
+        "minute": 7,
+        "available": true,
+        "actualTimestampMs": 420221,
+        "own": {
+          "totalGold": 2205,
+          "currentGold": 275,
+          "xp": 1954,
+          "level": 5,
+          "minionsKilled": 7,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": -12,
+          "xp": -375,
+          "level": 0,
+          "minionsKilled": -13,
+          "jungleMinionsKilled": 0,
+          "totalCs": -13
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 10,
+        "available": true,
+        "actualTimestampMs": 600264,
+        "own": {
+          "totalGold": 3180,
+          "currentGold": 200,
+          "xp": 3033,
+          "level": 6,
+          "minionsKilled": 13,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 99,
+          "xp": -261,
+          "level": -1,
+          "minionsKilled": -13,
+          "jungleMinionsKilled": 0,
+          "totalCs": -13
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 14,
+        "available": true,
+        "actualTimestampMs": 840321,
+        "own": {
+          "totalGold": 4739,
+          "currentGold": 174,
+          "xp": 4951,
+          "level": 8,
+          "minionsKilled": 17,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 823,
+          "xp": 636,
+          "level": 0,
+          "minionsKilled": -15,
+          "jungleMinionsKilled": 0,
+          "totalCs": -15
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 15,
+        "available": true,
+        "actualTimestampMs": 900343,
+        "own": {
+          "totalGold": 5035,
+          "currentGold": 460,
+          "xp": 5233,
+          "level": 9,
+          "minionsKilled": 19,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 756,
+          "xp": 684,
+          "level": 1,
+          "minionsKilled": -15,
+          "jungleMinionsKilled": 0,
+          "totalCs": -15
+        },
+        "goldXp20PercentHypothesis": false
+      }
+    ],
+    "sampledMaxLaneCsDiff": 0,
+    "sampledMaxTotalCsDiff": 0
+  },
+  {
+    "player": "Kiin",
+    "matchId": "KR_8420474016",
+    "role": "UTILITY",
+    "champion": "Blitzcrank",
+    "durationSeconds": 1695,
+    "frameInterval": 60000,
+    "counterpartMethod": "opposite team same teamPosition (estimated role, not path tracking)",
+    "reported": {
+      "earlyLaningPhaseGoldExpAdvantage": 0,
+      "laningPhaseGoldExpAdvantage": 0,
+      "maxCsAdvantageOnLaneOpponent": 0
+    },
+    "snapshots": [
+      {
+        "minute": 7,
+        "available": true,
+        "actualTimestampMs": 420191,
+        "own": {
+          "totalGold": 2010,
+          "currentGold": 185,
+          "xp": 1461,
+          "level": 4,
+          "minionsKilled": 5,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": -55,
+          "xp": -373,
+          "level": -1,
+          "minionsKilled": -5,
+          "jungleMinionsKilled": 0,
+          "totalCs": -5
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 10,
+        "available": true,
+        "actualTimestampMs": 600220,
+        "own": {
+          "totalGold": 3161,
+          "currentGold": 161,
+          "xp": 2310,
+          "level": 5,
+          "minionsKilled": 5,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 227,
+          "xp": -431,
+          "level": -1,
+          "minionsKilled": -8,
+          "jungleMinionsKilled": 0,
+          "totalCs": -8
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 14,
+        "available": true,
+        "actualTimestampMs": 840289,
+        "own": {
+          "totalGold": 4093,
+          "currentGold": 598,
+          "xp": 3302,
+          "level": 7,
+          "minionsKilled": 14,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 195,
+          "xp": -490,
+          "level": 0,
+          "minionsKilled": -9,
+          "jungleMinionsKilled": 0,
+          "totalCs": -9
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 15,
+        "available": true,
+        "actualTimestampMs": 900297,
+        "own": {
+          "totalGold": 4510,
+          "currentGold": 535,
+          "xp": 3489,
+          "level": 7,
+          "minionsKilled": 14,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 341,
+          "xp": -464,
+          "level": 0,
+          "minionsKilled": -12,
+          "jungleMinionsKilled": 0,
+          "totalCs": -12
+        },
+        "goldXp20PercentHypothesis": false
+      }
+    ],
+    "sampledMaxLaneCsDiff": 0,
+    "sampledMaxTotalCsDiff": 0
+  },
+  {
+    "player": "Kiin",
+    "matchId": "KR_8419523152",
+    "role": "TOP",
+    "champion": "Lissandra",
+    "durationSeconds": 1929,
+    "frameInterval": 60000,
+    "counterpartMethod": "opposite team same teamPosition (estimated role, not path tracking)",
+    "reported": {
+      "earlyLaningPhaseGoldExpAdvantage": 0,
+      "laningPhaseGoldExpAdvantage": 0,
+      "maxCsAdvantageOnLaneOpponent": 10
+    },
+    "snapshots": [
+      {
+        "minute": 7,
+        "available": true,
+        "actualTimestampMs": 420210,
+        "own": {
+          "totalGold": 2242,
+          "currentGold": 242,
+          "xp": 2640,
+          "level": 6,
+          "minionsKilled": 44,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": -712,
+          "xp": -917,
+          "level": -1,
+          "minionsKilled": -13,
+          "jungleMinionsKilled": 0,
+          "totalCs": -13
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 10,
+        "available": true,
+        "actualTimestampMs": 600236,
+        "own": {
+          "totalGold": 3119,
+          "currentGold": 609,
+          "xp": 4077,
+          "level": 8,
+          "minionsKilled": 64,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": -1099,
+          "xp": -1085,
+          "level": -1,
+          "minionsKilled": -20,
+          "jungleMinionsKilled": 0,
+          "totalCs": -20
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 14,
+        "available": true,
+        "actualTimestampMs": 840298,
+        "own": {
+          "totalGold": 4614,
+          "currentGold": 904,
+          "xp": 7358,
+          "level": 11,
+          "minionsKilled": 98,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": -1374,
+          "xp": -905,
+          "level": 0,
+          "minionsKilled": -30,
+          "jungleMinionsKilled": 0,
+          "totalCs": -30
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 15,
+        "available": true,
+        "actualTimestampMs": 900308,
+        "own": {
+          "totalGold": 4953,
+          "currentGold": 188,
+          "xp": 8061,
+          "level": 11,
+          "minionsKilled": 109,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": -1280,
+          "xp": -581,
+          "level": -1,
+          "minionsKilled": -26,
+          "jungleMinionsKilled": 0,
+          "totalCs": -26
+        },
+        "goldXp20PercentHypothesis": false
+      }
+    ],
+    "sampledMaxLaneCsDiff": 4,
+    "sampledMaxTotalCsDiff": 4
+  },
+  {
+    "player": "ShowMaker",
+    "matchId": "KR_8419501041",
+    "role": "TOP",
+    "champion": "Yorick",
+    "durationSeconds": 1323,
+    "frameInterval": 60000,
+    "counterpartMethod": "opposite team same teamPosition (estimated role, not path tracking)",
+    "reported": {
+      "earlyLaningPhaseGoldExpAdvantage": 0,
+      "laningPhaseGoldExpAdvantage": 1,
+      "maxCsAdvantageOnLaneOpponent": 59
+    },
+    "snapshots": [
+      {
+        "minute": 7,
+        "available": true,
+        "actualTimestampMs": 420204,
+        "own": {
+          "totalGold": 2181,
+          "currentGold": 256,
+          "xp": 3012,
+          "level": 6,
+          "minionsKilled": 41,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": -475,
+          "xp": -155,
+          "level": 0,
+          "minionsKilled": -11,
+          "jungleMinionsKilled": 0,
+          "totalCs": -11
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 10,
+        "available": true,
+        "actualTimestampMs": 600277,
+        "own": {
+          "totalGold": 3967,
+          "currentGold": 587,
+          "xp": 5464,
+          "level": 9,
+          "minionsKilled": 74,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 475,
+          "xp": 933,
+          "level": 1,
+          "minionsKilled": -4,
+          "jungleMinionsKilled": 0,
+          "totalCs": -4
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 14,
+        "available": true,
+        "actualTimestampMs": 840342,
+        "own": {
+          "totalGold": 6012,
+          "currentGold": 929,
+          "xp": 9476,
+          "level": 12,
+          "minionsKilled": 100,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 1573,
+          "xp": 2952,
+          "level": 2,
+          "minionsKilled": 3,
+          "jungleMinionsKilled": 0,
+          "totalCs": 3
+        },
+        "goldXp20PercentHypothesis": true
+      },
+      {
+        "minute": 15,
+        "available": true,
+        "actualTimestampMs": 900364,
+        "own": {
+          "totalGold": 6691,
+          "currentGold": 858,
+          "xp": 10655,
+          "level": 13,
+          "minionsKilled": 123,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 1740,
+          "xp": 3705,
+          "level": 3,
+          "minionsKilled": 17,
+          "jungleMinionsKilled": 0,
+          "totalCs": 17
+        },
+        "goldXp20PercentHypothesis": true
+      }
+    ],
+    "sampledMaxLaneCsDiff": 59,
+    "sampledMaxTotalCsDiff": 59
+  },
+  {
+    "player": "ShowMaker",
+    "matchId": "KR_8419173644",
+    "role": "MIDDLE",
+    "champion": "Sylas",
+    "durationSeconds": 1283,
+    "frameInterval": 60000,
+    "counterpartMethod": "opposite team same teamPosition (estimated role, not path tracking)",
+    "reported": {
+      "earlyLaningPhaseGoldExpAdvantage": 0,
+      "laningPhaseGoldExpAdvantage": 0,
+      "maxCsAdvantageOnLaneOpponent": 29
+    },
+    "snapshots": [
+      {
+        "minute": 7,
+        "available": true,
+        "actualTimestampMs": 420234,
+        "own": {
+          "totalGold": 2527,
+          "currentGold": 302,
+          "xp": 3234,
+          "level": 7,
+          "minionsKilled": 58,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": -269,
+          "xp": -99,
+          "level": 0,
+          "minionsKilled": 4,
+          "jungleMinionsKilled": 0,
+          "totalCs": 4
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 10,
+        "available": true,
+        "actualTimestampMs": 600289,
+        "own": {
+          "totalGold": 4443,
+          "currentGold": 718,
+          "xp": 4818,
+          "level": 8,
+          "minionsKilled": 81,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 418,
+          "xp": 563,
+          "level": 0,
+          "minionsKilled": 13,
+          "jungleMinionsKilled": -2,
+          "totalCs": 11
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 14,
+        "available": true,
+        "actualTimestampMs": 840346,
+        "own": {
+          "totalGold": 6384,
+          "currentGold": 1834,
+          "xp": 7159,
+          "level": 10,
+          "minionsKilled": 123,
+          "jungleMinionsKilled": 4
+        },
+        "diff": {
+          "totalGold": 405,
+          "xp": 611,
+          "level": 0,
+          "minionsKilled": 19,
+          "jungleMinionsKilled": 2,
+          "totalCs": 21
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 15,
+        "available": true,
+        "actualTimestampMs": 900377,
+        "own": {
+          "totalGold": 6748,
+          "currentGold": 493,
+          "xp": 7606,
+          "level": 11,
+          "minionsKilled": 134,
+          "jungleMinionsKilled": 4
+        },
+        "diff": {
+          "totalGold": 314,
+          "xp": 443,
+          "level": 1,
+          "minionsKilled": 15,
+          "jungleMinionsKilled": 2,
+          "totalCs": 17
+        },
+        "goldXp20PercentHypothesis": false
+      }
+    ],
+    "sampledMaxLaneCsDiff": 26,
+    "sampledMaxTotalCsDiff": 28
+  },
+  {
+    "player": "Oner",
+    "matchId": "KR_8421752997",
+    "role": "JUNGLE",
+    "champion": "Khazix",
+    "durationSeconds": 1011,
+    "frameInterval": 60000,
+    "counterpartMethod": "opposite team same teamPosition (estimated role, not path tracking)",
+    "reported": {
+      "earlyLaningPhaseGoldExpAdvantage": 0,
+      "laningPhaseGoldExpAdvantage": 0,
+      "maxCsAdvantageOnLaneOpponent": 14.000000029802322
+    },
+    "snapshots": [
+      {
+        "minute": 7,
+        "available": true,
+        "actualTimestampMs": 420159,
+        "own": {
+          "totalGold": 3309,
+          "currentGold": 734,
+          "xp": 2652,
+          "level": 6,
+          "minionsKilled": 0,
+          "jungleMinionsKilled": 48
+        },
+        "diff": {
+          "totalGold": 384,
+          "xp": -17,
+          "level": 0,
+          "minionsKilled": -1,
+          "jungleMinionsKilled": 0,
+          "totalCs": -1
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 10,
+        "available": true,
+        "actualTimestampMs": 600225,
+        "own": {
+          "totalGold": 5325,
+          "currentGold": 570,
+          "xp": 4153,
+          "level": 8,
+          "minionsKilled": 1,
+          "jungleMinionsKilled": 68
+        },
+        "diff": {
+          "totalGold": 836,
+          "xp": 144,
+          "level": 1,
+          "minionsKilled": -9,
+          "jungleMinionsKilled": 8,
+          "totalCs": -1
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 14,
+        "available": true,
+        "actualTimestampMs": 840295,
+        "own": {
+          "totalGold": 8230,
+          "currentGold": 325,
+          "xp": 6416,
+          "level": 10,
+          "minionsKilled": 1,
+          "jungleMinionsKilled": 92
+        },
+        "diff": {
+          "totalGold": 1290,
+          "xp": 491,
+          "level": 1,
+          "minionsKilled": -11,
+          "jungleMinionsKilled": 14,
+          "totalCs": 3
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 15,
+        "available": true,
+        "actualTimestampMs": 900327,
+        "own": {
+          "totalGold": 8719,
+          "currentGold": 814,
+          "xp": 7278,
+          "level": 10,
+          "minionsKilled": 2,
+          "jungleMinionsKilled": 106
+        },
+        "diff": {
+          "totalGold": 1289,
+          "xp": 768,
+          "level": 0,
+          "minionsKilled": -10,
+          "jungleMinionsKilled": 24,
+          "totalCs": 14
+        },
+        "goldXp20PercentHypothesis": false
+      }
+    ],
+    "sampledMaxLaneCsDiff": 0,
+    "sampledMaxTotalCsDiff": 14
+  },
+  {
+    "player": "Oner",
+    "matchId": "KR_8421611354",
+    "role": "BOTTOM",
+    "champion": "Ezreal",
+    "durationSeconds": 2460,
+    "frameInterval": 60000,
+    "counterpartMethod": "opposite team same teamPosition (estimated role, not path tracking)",
+    "reported": {
+      "earlyLaningPhaseGoldExpAdvantage": 1,
+      "laningPhaseGoldExpAdvantage": 0,
+      "maxCsAdvantageOnLaneOpponent": 53.20000001788139
+    },
+    "snapshots": [
+      {
+        "minute": 7,
+        "available": true,
+        "actualTimestampMs": 420159,
+        "own": {
+          "totalGold": 2983,
+          "currentGold": 673,
+          "xp": 2429,
+          "level": 6,
+          "minionsKilled": 68,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 546,
+          "xp": 410,
+          "level": 1,
+          "minionsKilled": 24,
+          "jungleMinionsKilled": 0,
+          "totalCs": 24
+        },
+        "goldXp20PercentHypothesis": true
+      },
+      {
+        "minute": 10,
+        "available": true,
+        "actualTimestampMs": 600187,
+        "own": {
+          "totalGold": 4057,
+          "currentGold": 647,
+          "xp": 3522,
+          "level": 7,
+          "minionsKilled": 93,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": -316,
+          "xp": 222,
+          "level": 0,
+          "minionsKilled": 22,
+          "jungleMinionsKilled": -2,
+          "totalCs": 20
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 14,
+        "available": true,
+        "actualTimestampMs": 840255,
+        "own": {
+          "totalGold": 5511,
+          "currentGold": 68,
+          "xp": 4835,
+          "level": 8,
+          "minionsKilled": 125,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": -1192,
+          "xp": -570,
+          "level": -1,
+          "minionsKilled": 5,
+          "jungleMinionsKilled": -2,
+          "totalCs": 3
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 15,
+        "available": true,
+        "actualTimestampMs": 900285,
+        "own": {
+          "totalGold": 6006,
+          "currentGold": 558,
+          "xp": 5527,
+          "level": 9,
+          "minionsKilled": 142,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": -1108,
+          "xp": -524,
+          "level": 0,
+          "minionsKilled": 11,
+          "jungleMinionsKilled": -2,
+          "totalCs": 9
+        },
+        "goldXp20PercentHypothesis": false
+      }
+    ],
+    "sampledMaxLaneCsDiff": 52,
+    "sampledMaxTotalCsDiff": 53
+  },
+  {
+    "player": "Oner",
+    "matchId": "KR_8420534543",
+    "role": "BOTTOM",
+    "champion": "Ezreal",
+    "durationSeconds": 1259,
+    "frameInterval": 60000,
+    "counterpartMethod": "opposite team same teamPosition (estimated role, not path tracking)",
+    "reported": {
+      "earlyLaningPhaseGoldExpAdvantage": 0,
+      "laningPhaseGoldExpAdvantage": 0,
+      "maxCsAdvantageOnLaneOpponent": 5
+    },
+    "snapshots": [
+      {
+        "minute": 7,
+        "available": true,
+        "actualTimestampMs": 420181,
+        "own": {
+          "totalGold": 2085,
+          "currentGold": 485,
+          "xp": 1778,
+          "level": 5,
+          "minionsKilled": 42,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": -769,
+          "xp": -673,
+          "level": -1,
+          "minionsKilled": -6,
+          "jungleMinionsKilled": 0,
+          "totalCs": -6
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 10,
+        "available": true,
+        "actualTimestampMs": 600275,
+        "own": {
+          "totalGold": 3404,
+          "currentGold": 404,
+          "xp": 3261,
+          "level": 7,
+          "minionsKilled": 64,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": -801,
+          "xp": -333,
+          "level": 0,
+          "minionsKilled": -10,
+          "jungleMinionsKilled": 0,
+          "totalCs": -10
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 14,
+        "available": true,
+        "actualTimestampMs": 840334,
+        "own": {
+          "totalGold": 5661,
+          "currentGold": 78,
+          "xp": 4975,
+          "level": 8,
+          "minionsKilled": 96,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": -364,
+          "xp": -251,
+          "level": -1,
+          "minionsKilled": -14,
+          "jungleMinionsKilled": 0,
+          "totalCs": -14
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 15,
+        "available": true,
+        "actualTimestampMs": 900353,
+        "own": {
+          "totalGold": 6105,
+          "currentGold": 517,
+          "xp": 5551,
+          "level": 9,
+          "minionsKilled": 110,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": -385,
+          "xp": -371,
+          "level": 0,
+          "minionsKilled": -11,
+          "jungleMinionsKilled": 0,
+          "totalCs": -11
+        },
+        "goldXp20PercentHypothesis": false
+      }
+    ],
+    "sampledMaxLaneCsDiff": 5,
+    "sampledMaxTotalCsDiff": 5
+  },
+  {
+    "player": "Doran",
+    "matchId": "KR_8422700463",
+    "role": "TOP",
+    "champion": "Ambessa",
+    "durationSeconds": 920,
+    "frameInterval": 60000,
+    "counterpartMethod": "opposite team same teamPosition (estimated role, not path tracking)",
+    "reported": {
+      "earlyLaningPhaseGoldExpAdvantage": 1,
+      "laningPhaseGoldExpAdvantage": 1,
+      "maxCsAdvantageOnLaneOpponent": 56.75
+    },
+    "snapshots": [
+      {
+        "minute": 7,
+        "available": true,
+        "actualTimestampMs": 420185,
+        "own": {
+          "totalGold": 3609,
+          "currentGold": 1234,
+          "xp": 4192,
+          "level": 8,
+          "minionsKilled": 61,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 1279,
+          "xp": 1653,
+          "level": 2,
+          "minionsKilled": 24,
+          "jungleMinionsKilled": 0,
+          "totalCs": 24
+        },
+        "goldXp20PercentHypothesis": true
+      },
+      {
+        "minute": 10,
+        "available": true,
+        "actualTimestampMs": 600247,
+        "own": {
+          "totalGold": 4853,
+          "currentGold": 1223,
+          "xp": 6173,
+          "level": 10,
+          "minionsKilled": 90,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 1714,
+          "xp": 2425,
+          "level": 3,
+          "minionsKilled": 33,
+          "jungleMinionsKilled": 0,
+          "totalCs": 33
+        },
+        "goldXp20PercentHypothesis": true
+      },
+      {
+        "minute": 14,
+        "available": true,
+        "actualTimestampMs": 840360,
+        "own": {
+          "totalGold": 7542,
+          "currentGold": 792,
+          "xp": 9752,
+          "level": 12,
+          "minionsKilled": 129,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 3398,
+          "xp": 4038,
+          "level": 3,
+          "minionsKilled": 52,
+          "jungleMinionsKilled": 0,
+          "totalCs": 52
+        },
+        "goldXp20PercentHypothesis": true
+      },
+      {
+        "minute": 15,
+        "available": true,
+        "actualTimestampMs": 900385,
+        "own": {
+          "totalGold": 8016,
+          "currentGold": 236,
+          "xp": 10434,
+          "level": 13,
+          "minionsKilled": 142,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 3457,
+          "xp": 4029,
+          "level": 3,
+          "minionsKilled": 51,
+          "jungleMinionsKilled": 0,
+          "totalCs": 51
+        },
+        "goldXp20PercentHypothesis": true
+      }
+    ],
+    "sampledMaxLaneCsDiff": 55,
+    "sampledMaxTotalCsDiff": 55
+  },
+  {
+    "player": "Doran",
+    "matchId": "KR_8422666206",
+    "role": "TOP",
+    "champion": "Varus",
+    "durationSeconds": 1127,
+    "frameInterval": 60000,
+    "counterpartMethod": "opposite team same teamPosition (estimated role, not path tracking)",
+    "reported": {
+      "earlyLaningPhaseGoldExpAdvantage": 0,
+      "laningPhaseGoldExpAdvantage": 0,
+      "maxCsAdvantageOnLaneOpponent": 27
+    },
+    "snapshots": [
+      {
+        "minute": 7,
+        "available": true,
+        "actualTimestampMs": 420173,
+        "own": {
+          "totalGold": 2816,
+          "currentGold": 841,
+          "xp": 3586,
+          "level": 7,
+          "minionsKilled": 70,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 581,
+          "xp": 93,
+          "level": 0,
+          "minionsKilled": 18,
+          "jungleMinionsKilled": 0,
+          "totalCs": 18
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 10,
+        "available": true,
+        "actualTimestampMs": 600215,
+        "own": {
+          "totalGold": 4060,
+          "currentGold": 10,
+          "xp": 4815,
+          "level": 8,
+          "minionsKilled": 92,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 492,
+          "xp": -620,
+          "level": -1,
+          "minionsKilled": 6,
+          "jungleMinionsKilled": 0,
+          "totalCs": 6
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 14,
+        "available": true,
+        "actualTimestampMs": 840305,
+        "own": {
+          "totalGold": 6997,
+          "currentGold": 1412,
+          "xp": 8983,
+          "level": 12,
+          "minionsKilled": 141,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 2020,
+          "xp": 868,
+          "level": 1,
+          "minionsKilled": 20,
+          "jungleMinionsKilled": 0,
+          "totalCs": 20
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 15,
+        "available": true,
+        "actualTimestampMs": 900333,
+        "own": {
+          "totalGold": 7502,
+          "currentGold": 492,
+          "xp": 9941,
+          "level": 12,
+          "minionsKilled": 159,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 2141,
+          "xp": 1124,
+          "level": 0,
+          "minionsKilled": 25,
+          "jungleMinionsKilled": 0,
+          "totalCs": 25
+        },
+        "goldXp20PercentHypothesis": false
+      }
+    ],
+    "sampledMaxLaneCsDiff": 25,
+    "sampledMaxTotalCsDiff": 25
+  },
+  {
+    "player": "Doran",
+    "matchId": "KR_8420262535",
+    "role": "TOP",
+    "champion": "Camille",
+    "durationSeconds": 1495,
+    "frameInterval": 60000,
+    "counterpartMethod": "opposite team same teamPosition (estimated role, not path tracking)",
+    "reported": {
+      "earlyLaningPhaseGoldExpAdvantage": 0,
+      "laningPhaseGoldExpAdvantage": 1,
+      "maxCsAdvantageOnLaneOpponent": 49
+    },
+    "snapshots": [
+      {
+        "minute": 7,
+        "available": true,
+        "actualTimestampMs": 420146,
+        "own": {
+          "totalGold": 2954,
+          "currentGold": 529,
+          "xp": 2900,
+          "level": 6,
+          "minionsKilled": 51,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 973,
+          "xp": 302,
+          "level": 0,
+          "minionsKilled": 23,
+          "jungleMinionsKilled": 0,
+          "totalCs": 23
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 10,
+        "available": true,
+        "actualTimestampMs": 600219,
+        "own": {
+          "totalGold": 3865,
+          "currentGold": 540,
+          "xp": 4507,
+          "level": 8,
+          "minionsKilled": 78,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 1066,
+          "xp": 426,
+          "level": 0,
+          "minionsKilled": 27,
+          "jungleMinionsKilled": 0,
+          "totalCs": 27
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 14,
+        "available": true,
+        "actualTimestampMs": 840270,
+        "own": {
+          "totalGold": 5945,
+          "currentGold": 362,
+          "xp": 7684,
+          "level": 11,
+          "minionsKilled": 120,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 2235,
+          "xp": 2257,
+          "level": 2,
+          "minionsKilled": 45,
+          "jungleMinionsKilled": 0,
+          "totalCs": 45
+        },
+        "goldXp20PercentHypothesis": true
+      },
+      {
+        "minute": 15,
+        "available": true,
+        "actualTimestampMs": 900281,
+        "own": {
+          "totalGold": 6218,
+          "currentGold": 635,
+          "xp": 8268,
+          "level": 11,
+          "minionsKilled": 126,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 2089,
+          "xp": 1577,
+          "level": 1,
+          "minionsKilled": 37,
+          "jungleMinionsKilled": 0,
+          "totalCs": 37
+        },
+        "goldXp20PercentHypothesis": true
+      }
+    ],
+    "sampledMaxLaneCsDiff": 48,
+    "sampledMaxTotalCsDiff": 48
+  },
+  {
+    "player": "Ruler",
+    "matchId": "KR_8420262535",
+    "role": "BOTTOM",
+    "champion": "Jhin",
+    "durationSeconds": 1495,
+    "frameInterval": 60000,
+    "counterpartMethod": "opposite team same teamPosition (estimated role, not path tracking)",
+    "reported": {
+      "earlyLaningPhaseGoldExpAdvantage": 1,
+      "laningPhaseGoldExpAdvantage": 0,
+      "maxCsAdvantageOnLaneOpponent": 22
+    },
+    "snapshots": [
+      {
+        "minute": 7,
+        "available": true,
+        "actualTimestampMs": 420146,
+        "own": {
+          "totalGold": 2786,
+          "currentGold": 936,
+          "xp": 2584,
+          "level": 6,
+          "minionsKilled": 58,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 604,
+          "xp": 539,
+          "level": 1,
+          "minionsKilled": 9,
+          "jungleMinionsKilled": 0,
+          "totalCs": 9
+        },
+        "goldXp20PercentHypothesis": true
+      },
+      {
+        "minute": 10,
+        "available": true,
+        "actualTimestampMs": 600219,
+        "own": {
+          "totalGold": 3956,
+          "currentGold": 6,
+          "xp": 4019,
+          "level": 7,
+          "minionsKilled": 93,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 289,
+          "xp": 475,
+          "level": 0,
+          "minionsKilled": 20,
+          "jungleMinionsKilled": 0,
+          "totalCs": 20
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 14,
+        "available": true,
+        "actualTimestampMs": 840270,
+        "own": {
+          "totalGold": 5923,
+          "currentGold": 598,
+          "xp": 5787,
+          "level": 9,
+          "minionsKilled": 127,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 359,
+          "xp": 616,
+          "level": 0,
+          "minionsKilled": 16,
+          "jungleMinionsKilled": 0,
+          "totalCs": 16
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 15,
+        "available": true,
+        "actualTimestampMs": 900281,
+        "own": {
+          "totalGold": 6290,
+          "currentGold": 365,
+          "xp": 6296,
+          "level": 10,
+          "minionsKilled": 138,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 212,
+          "xp": 497,
+          "level": 1,
+          "minionsKilled": 17,
+          "jungleMinionsKilled": 0,
+          "totalCs": 17
+        },
+        "goldXp20PercentHypothesis": false
+      }
+    ],
+    "sampledMaxLaneCsDiff": 23,
+    "sampledMaxTotalCsDiff": 23
+  },
+  {
+    "player": "Ruler",
+    "matchId": "KR_8420188756",
+    "role": "BOTTOM",
+    "champion": "Yunara",
+    "durationSeconds": 1624,
+    "frameInterval": 60000,
+    "counterpartMethod": "opposite team same teamPosition (estimated role, not path tracking)",
+    "reported": {
+      "earlyLaningPhaseGoldExpAdvantage": 0,
+      "laningPhaseGoldExpAdvantage": 0,
+      "maxCsAdvantageOnLaneOpponent": 68.60000002384186
+    },
+    "snapshots": [
+      {
+        "minute": 7,
+        "available": true,
+        "actualTimestampMs": 420115,
+        "own": {
+          "totalGold": 2632,
+          "currentGold": 547,
+          "xp": 2584,
+          "level": 6,
+          "minionsKilled": 58,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": -94,
+          "xp": 576,
+          "level": 1,
+          "minionsKilled": 17,
+          "jungleMinionsKilled": 0,
+          "totalCs": 17
+        },
+        "goldXp20PercentHypothesis": false
+      },
+      {
+        "minute": 10,
+        "available": true,
+        "actualTimestampMs": 600194,
+        "own": {
+          "totalGold": 4460,
+          "currentGold": 1095,
+          "xp": 4233,
+          "level": 8,
+          "minionsKilled": 89,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 944,
+          "xp": 1632,
+          "level": 2,
+          "minionsKilled": 28,
+          "jungleMinionsKilled": 0,
+          "totalCs": 28
+        },
+        "goldXp20PercentHypothesis": true
+      },
+      {
+        "minute": 14,
+        "available": true,
+        "actualTimestampMs": 840308,
+        "own": {
+          "totalGold": 6826,
+          "currentGold": 636,
+          "xp": 5846,
+          "level": 9,
+          "minionsKilled": 115,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 1167,
+          "xp": 1516,
+          "level": 1,
+          "minionsKilled": 34,
+          "jungleMinionsKilled": 0,
+          "totalCs": 34
+        },
+        "goldXp20PercentHypothesis": true
+      },
+      {
+        "minute": 15,
+        "available": true,
+        "actualTimestampMs": 900355,
+        "own": {
+          "totalGold": 7466,
+          "currentGold": 246,
+          "xp": 6015,
+          "level": 9,
+          "minionsKilled": 119,
+          "jungleMinionsKilled": 0
+        },
+        "diff": {
+          "totalGold": 1240,
+          "xp": 1160,
+          "level": 1,
+          "minionsKilled": 32,
+          "jungleMinionsKilled": 0,
+          "totalCs": 32
+        },
+        "goldXp20PercentHypothesis": false
+      }
+    ],
+    "sampledMaxLaneCsDiff": 51,
+    "sampledMaxTotalCsDiff": 60
+  }
+]

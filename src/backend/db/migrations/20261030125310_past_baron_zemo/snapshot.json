@@ -1,0 +1,29 @@
+{
+  "type": "diff",
+  "version": "9",
+  "dialect": "postgres",
+  "id": "e0fb0287-d5dd-42a3-aa0f-b8724a2cbd0f",
+  "prevIds": ["36741329-badd-487b-92ea-b2a17f240282"],
+  "footprints": [
+    {
+      "statementType": "alter_column",
+      "statementTarget": ["column", "public", "player_matches", "position"],
+      "writes": ["s|colprop|public.player_matches.position.notNull"],
+      "reads": [
+        "n|tbl|public.player_matches",
+        "n|sch|public",
+        "n|col|public.player_matches.position"
+      ],
+      "sqlHash": "5befd8a8cb1e9da2"
+    }
+  ],
+  "deltas": [
+    {
+      "op": "alter",
+      "key": "columns\u0000[\"public\",\"player_matches\",\"position\"]",
+      "set": {
+        "notNull": false
+      }
+    }
+  ]
+}

@@ -1,0 +1,91 @@
+{
+  "type": "diff",
+  "version": "9",
+  "dialect": "postgres",
+  "id": "1e74d1e3-f691-4c4b-a7cb-12239bfca4df",
+  "prevIds": ["e0fb0287-d5dd-42a3-aa0f-b8724a2cbd0f"],
+  "footprints": [
+    {
+      "statementType": "add_column",
+      "statementTarget": ["column", "public", "player_matches", "field_states"],
+      "writes": [
+        "s|col|public.player_matches.field_states",
+        "n|col|public.player_matches.field_states",
+        "e|col|public.player_matches.field_states"
+      ],
+      "reads": ["n|tbl|public.player_matches", "n|sch|public"]
+    },
+    {
+      "statementType": "alter_column",
+      "statementTarget": ["column", "public", "player_matches", "started_at"],
+      "writes": ["s|colprop|public.player_matches.started_at.notNull"],
+      "reads": [
+        "n|tbl|public.player_matches",
+        "n|sch|public",
+        "n|col|public.player_matches.started_at"
+      ],
+      "sqlHash": "92550f42b204313c"
+    },
+    {
+      "statementType": "alter_column",
+      "statementTarget": ["column", "public", "player_matches", "champion"],
+      "writes": ["s|colprop|public.player_matches.champion.notNull"],
+      "reads": [
+        "n|tbl|public.player_matches",
+        "n|sch|public",
+        "n|col|public.player_matches.champion"
+      ],
+      "sqlHash": "34dfd08c8c4ffd96"
+    },
+    {
+      "statementType": "alter_column",
+      "statementTarget": ["column", "public", "player_matches", "win"],
+      "writes": ["s|colprop|public.player_matches.win.notNull"],
+      "reads": [
+        "n|tbl|public.player_matches",
+        "n|sch|public",
+        "n|col|public.player_matches.win"
+      ],
+      "sqlHash": "926a0246ab27dac9"
+    }
+  ],
+  "deltas": [
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "player_matches",
+        "name": "field_states",
+        "type": "jsonb",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": "'{}'",
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "alter",
+      "key": "columns\u0000[\"public\",\"player_matches\",\"started_at\"]",
+      "set": {
+        "notNull": false
+      }
+    },
+    {
+      "op": "alter",
+      "key": "columns\u0000[\"public\",\"player_matches\",\"champion\"]",
+      "set": {
+        "notNull": false
+      }
+    },
+    {
+      "op": "alter",
+      "key": "columns\u0000[\"public\",\"player_matches\",\"win\"]",
+      "set": {
+        "notNull": false
+      }
+    }
+  ]
+}
