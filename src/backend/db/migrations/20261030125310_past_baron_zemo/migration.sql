@@ -1,0 +1,1 @@
+ALTER TABLE "player_matches" ALTER COLUMN "position" DROP NOT NULL;

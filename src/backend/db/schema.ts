@@ -1,2 +1,4 @@
-// 실제 도메인 테이블을 정의한 뒤 마이그레이션을 생성한다.
-export {};
+export {
+  matchSyncs,
+  playerMatches,
+} from "../match/infrastructure/persistence/match.schema";
