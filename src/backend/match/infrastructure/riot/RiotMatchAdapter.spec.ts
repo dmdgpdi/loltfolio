@@ -75,3 +75,22 @@ it("잘못된 목록 응답은 조회 실패로 변환한다", async () => {
     Result.fail(expect.any(MatchCollectionError)),
   );
 });
+
+it("상세 조회 뒤 취소되면 Timeline의 HTTP 요청을 보내지 않는다", async () => {
+  const controller = new AbortController();
+  const request = vi.fn<typeof fetch>().mockImplementation(async () => {
+    controller.abort();
+    return Response.json(matchResponse());
+  });
+  const adapter = new RiotMatchAdapter({
+    apiKey: "test-key",
+    region: "ASIA",
+    fetch: request,
+  });
+  expect(
+    Result.isFailure(
+      await adapter.findPlayerMatch("KR_1", "target", controller.signal),
+    ),
+  ).toBe(true);
+  expect(request).toHaveBeenCalledOnce();
+});

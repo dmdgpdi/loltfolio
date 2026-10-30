@@ -111,6 +111,16 @@ export class MatchSync {
     return Result.succeed(undefined);
   }
 
+  /** @description 일부 경기 조회가 실패한 최신화를 부분 성공으로 기록한다. 성공분은 확보되었으므로 20분 제한을 적용하고 완전 성공과 구분한다. */
+  partiallySucceed(
+    now: Date,
+  ): Result.Result<void, MatchSyncNotInProgressError> {
+    const completed = this.succeed(now);
+    if (Result.isFailure(completed)) return completed;
+    this.currentStatus = "PARTIALLY_SUCCEEDED";
+    return completed;
+  }
+
   /** @description 진행 중인 수집을 실패로 마친다. 과거 성공 시각은 보존하고, 전달된 API 재시도 가능 시각은 별도로 기록한다. */
   fail(
     retryAvailableAt?: Date,

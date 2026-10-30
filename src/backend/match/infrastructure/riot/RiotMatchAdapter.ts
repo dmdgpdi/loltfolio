@@ -71,25 +71,32 @@ export class RiotMatchAdapter implements RiotMatchClient {
     );
   }
 
-  async findPlayerMatch(matchId: string, puuid: string) {
+  /** @description 경기 상세와 Timeline을 조회하고, 전달된 취소 신호가 발생하면 후속 HTTP 요청까지 중단한다. */
+  async findPlayerMatch(matchId: string, puuid: string, signal?: AbortSignal) {
     return Result.pipe(
       this.client(),
       Result.andThen((client) =>
         Result.pipe(
           Result.try({
-            try: () =>
-              client
-                .get(`matches/${encodeURIComponent(matchId)}`)
-                .json<unknown>(),
+            try: () => {
+              signal?.throwIfAborted();
+              return client
+                .get(`matches/${encodeURIComponent(matchId)}`, { signal })
+                .json<unknown>();
+            },
             catch: toMatchCollectionError,
           }),
           Result.andThen((match) =>
             Result.pipe(
               Result.try({
-                try: () =>
-                  client
-                    .get(`matches/${encodeURIComponent(matchId)}/timeline`)
-                    .json<unknown>(),
+                try: () => {
+                  signal?.throwIfAborted();
+                  return client
+                    .get(`matches/${encodeURIComponent(matchId)}/timeline`, {
+                      signal,
+                    })
+                    .json<unknown>();
+                },
                 catch: toMatchCollectionError,
               }),
               Result.andThen((timeline) =>

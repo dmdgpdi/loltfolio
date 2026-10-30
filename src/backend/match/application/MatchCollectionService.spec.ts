@@ -1,5 +1,5 @@
 import { Result } from "@praha/byethrow";
-import { expect, it } from "vitest";
+import { expect, it, vi } from "vitest";
 import { MatchRepositoryError } from "../domain/errors/MatchRepositoryError";
 import { MatchSyncStartNotAllowedError } from "../domain/errors/MatchSyncStartNotAllowedError";
 import { MatchSync } from "../domain/MatchSync";
@@ -197,7 +197,7 @@ it("겹친 수집 요청 중 하나만 시작한다", async () => {
   expect(syncs.state.status).toBe("SUCCEEDED");
 });
 
-it("상세 조회가 실패하면 준비 중인 신규 경기를 저장하지 않고 기존 성공 시각을 유지한다", async () => {
+it("중단 오류가 나도 성공한 신규 경기는 저장하고 기존 성공 시각과 재시도 제한을 보존한다", async () => {
   const client = clientFor(["new", "broken"]);
   const error = new MatchCollectionError({ retryAvailableAt: at(30) });
   client.findPlayerMatch = async (id) =>
@@ -211,7 +211,10 @@ it("상세 조회가 실패하면 준비 중인 신규 경기를 저장하지 �
   expect(await service.collectRecentMatches("player", 420)).toEqual(
     Result.fail(error),
   );
-  expect(matches.records).toEqual([old]);
+  expect(matches.records.map((match) => match.matchId)).toEqual([
+    old.matchId,
+    "new",
+  ]);
   expect(syncs.state.status).toBe("FAILED");
   expect(syncs.state.lastSucceededAt).toEqual(at(0));
   expect(syncs.state.retryAvailableAt).toEqual(at(30));
@@ -370,56 +373,37 @@ it("요청한 큐와 다른 경기 상세는 저장하지 않는다", async () =
   expect(matches.records).toEqual([]);
 });
 
-it("제외 경기가 있으면 다음 페이지와 기존 DB 기록을 합쳐 유효 20경기를 채운다", async () => {
-  const firstPage = [
-    "remake",
-    ...Array.from({ length: 19 }, (_, i) => `valid-${i}`),
+it("제외 경기가 있어도 과거 페이지로 20개를 채우지 않고 제외 판정은 저장한다", async () => {
+  const ids = [
+    "excluded",
+    ...Array.from({ length: 19 }, (_, index) => `valid-${index}`),
   ];
-  const starts: number[] = [];
-  const client = clientFor(firstPage);
+  const client = clientFor(ids);
+  const requests: number[] = [];
   client.findRecentMatchIds = async (_puuid, _queueId, _count, start = 0) => {
-    starts.push(start);
-    return Result.succeed(start === 0 ? firstPage : ["last"]);
+    requests.push(start);
+    return Result.succeed(ids);
   };
   client.findPlayerMatch = async (id) =>
     Result.succeed(
-      id === "remake"
-        ? new PlayerMatch({
-            ...playerMatch(id),
-            startedAt: { status: "AVAILABLE", value: at(0) },
-            gameEndedInEarlySurrender: { status: "AVAILABLE", value: true },
-          })
-        : playerMatch(id),
+      new PlayerMatch(
+        createPlayerMatchData({
+          matchId: id,
+          gameEndedInEarlySurrender: {
+            status: "AVAILABLE",
+            value: id === "excluded",
+          },
+        }),
+      ),
     );
-  const { service, matches } = setup(client);
-  matches.records.push(playerMatch("valid-0"));
-  client.findPlayerMatch = async (id) => {
-    if (id === "valid-0") return Result.fail(new MatchCollectionError());
-    return Result.succeed(
-      id === "remake"
-        ? new PlayerMatch({
-            ...playerMatch(id),
-            startedAt: { status: "AVAILABLE", value: at(0) },
-            gameEndedInEarlySurrender: { status: "AVAILABLE", value: true },
-          })
-        : playerMatch(id),
-    );
-  };
-
+  const { service, matches, syncs } = setup(client);
   const result = Result.unwrap(
     await service.collectRecentMatches("player", 420),
   );
-
-  expect(result).toHaveLength(20);
-  expect(result[0].matchId).toBe("valid-0");
-  expect(result[19].matchId).toBe("last");
-  expect(starts).toEqual([0, 20]);
-  expect(matches.records).toHaveLength(21);
-  expect(
-    matches.records
-      .find((match) => match.matchId === "remake")
-      ?.isEligibleForAnalysis(),
-  ).toBe(false);
+  expect(result).toHaveLength(19);
+  expect(requests).toEqual([0]);
+  expect(matches.records).toHaveLength(20);
+  expect(syncs.state.status).toBe("SUCCEEDED");
 });
 
 it("수집할 기록이 더 없으면 확보한 유효 경기만 반환한다", async () => {
@@ -430,25 +414,222 @@ it("수집할 기록이 더 없으면 확보한 유효 경기만 반환한다", 
   ).toHaveLength(2);
 });
 
-it("추가 페이지 조회 실패 시 앞 페이지의 신규 기록을 성공으로 저장하지 않는다", async () => {
-  const client = clientFor([]);
-  client.findRecentMatchIds = async (_puuid, _queueId, _count, start = 0) =>
-    start === 0
-      ? Result.succeed(Array.from({ length: 20 }, (_, i) => `excluded-${i}`))
-      : Result.fail(new MatchCollectionError());
-  client.findPlayerMatch = async (id) =>
-    Result.succeed(
-      new PlayerMatch({
-        ...playerMatch(id),
-        startedAt: { status: "AVAILABLE", value: at(0) },
-        endOfGameResult: { status: "AVAILABLE", value: "AbortUnexpected" },
-      }),
-    );
-  const { service, syncs, matches } = setup(client);
+it("개별 타임아웃은 건너뛰고 다른 신규 기록을 저장한 뒤 부분 성공으로 남긴다", async () => {
+  const client = clientFor(["first", "timeout", "last"]);
+  const requested: string[] = [];
+  client.findPlayerMatch = async (id) => {
+    requested.push(id);
+    return id === "timeout"
+      ? Result.fail(new MatchCollectionError({ reason: "TIMEOUT" }))
+      : Result.succeed(playerMatch(id));
+  };
+  const { service, matches, syncs } = setup(client);
+  const result = Result.unwrap(
+    await service.collectRecentMatches("player", 420),
+  );
+  expect(result.map((match) => match.matchId)).toEqual(["first", "last"]);
+  expect(requested).toEqual(["first", "timeout", "last"]);
+  expect(matches.records.map((match) => match.matchId)).toEqual([
+    "first",
+    "last",
+  ]);
+  expect(syncs.state.status).toBe("PARTIALLY_SUCCEEDED");
+});
 
+it("DB에 없는 경기 상세는 한 번에 최대 두 개를 병렬 조회한다", async () => {
+  let release: () => void = () => {};
+  const gate = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  let active = 0;
+  let maximumActive = 0;
+  const started: string[] = [];
+  const client = clientFor(["a", "b", "c", "d", "cached"]);
+  client.findPlayerMatch = async (id) => {
+    started.push(id);
+    active += 1;
+    maximumActive = Math.max(maximumActive, active);
+    await gate;
+    active -= 1;
+    return Result.succeed(playerMatch(id));
+  };
+  const { service, matches } = setup(client);
+  matches.records.push(playerMatch("cached"));
+  const pending = service.collectRecentMatches("player", 420);
+  try {
+    await vi.waitFor(() => expect(started).toEqual(["a", "b"]), {
+      timeout: 100,
+    });
+  } finally {
+    release();
+    await pending;
+  }
+  expect(maximumActive).toBe(2);
+  expect(started).toEqual(["a", "b", "c", "d"]);
+  expect(Result.unwrap(await pending).map((match) => match.matchId)).toEqual([
+    "a",
+    "b",
+    "c",
+    "d",
+    "cached",
+  ]);
+});
+
+it("상세 응답 완료 순서가 달라도 Riot 목록의 최신 순서를 유지한다", async () => {
+  let release: () => void = () => {};
+  const first = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  let secondCompleted = false;
+  const client = clientFor(["first", "second"]);
+  client.findPlayerMatch = async (id) => {
+    if (id === "first") await first;
+    else secondCompleted = true;
+    return Result.succeed(playerMatch(id));
+  };
+  const { service } = setup(client);
+  const pending = service.collectRecentMatches("player", 420);
+  try {
+    await vi.waitFor(() => expect(secondCompleted).toBe(true), {
+      timeout: 100,
+    });
+  } finally {
+    release();
+    await pending;
+  }
+  expect(Result.unwrap(await pending).map((match) => match.matchId)).toEqual([
+    "first",
+    "second",
+  ]);
+});
+
+it("개별 경기 조회가 전부 실패하면 빈 목록 성공으로 표시하지 않는다", async () => {
+  const error = new MatchCollectionError({ reason: "TIMEOUT" });
+  const client = clientFor(["a", "b"]);
+  client.findPlayerMatch = async () => Result.fail(error);
+  const { service, matches, syncs } = setup(client);
   expect(await service.collectRecentMatches("player", 420)).toEqual(
-    Result.fail(expect.any(MatchCollectionError)),
+    Result.fail(error),
   );
   expect(matches.records).toEqual([]);
   expect(syncs.state.status).toBe("FAILED");
+});
+
+it.each([
+  404, 500, 503,
+])("개별 HTTP %i 오류는 성공한 경기 수집을 막지 않는다", async (status) => {
+  const client = clientFor(["missing", "valid"]);
+  client.findPlayerMatch = async (id) =>
+    id === "missing"
+      ? Result.fail(new MatchCollectionError({ reason: "HTTP", status }))
+      : Result.succeed(playerMatch(id));
+  const { service, syncs } = setup(client);
+  expect(
+    Result.unwrap(await service.collectRecentMatches("player", 420)).map(
+      (match) => match.matchId,
+    ),
+  ).toEqual(["valid"]);
+  expect(syncs.state.status).toBe("PARTIALLY_SUCCEEDED");
+});
+it("429를 받으면 다음 묶음을 시작하지 않고 성공분을 저장하며 재시도 시각을 기록한다", async () => {
+  const requested: string[] = [];
+  const error = new MatchCollectionError({
+    reason: "HTTP",
+    status: 429,
+    retryAvailableAt: at(5),
+  });
+  const client = clientFor(["valid", "limited", "never"]);
+  client.findPlayerMatch = async (id) => {
+    requested.push(id);
+    return id === "limited"
+      ? Result.fail(error)
+      : Result.succeed(playerMatch(id));
+  };
+  const { service, syncs, matches } = setup(client);
+  expect(await service.collectRecentMatches("player", 420)).toEqual(
+    Result.fail(error),
+  );
+  expect(requested).toEqual(["valid", "limited"]);
+  expect(matches.records.map((match) => match.matchId)).toEqual(["valid"]);
+  expect(syncs.state.status).toBe("FAILED");
+  expect(syncs.state.retryAvailableAt).toEqual(at(5));
+});
+it("일부 실패 후 재시도하면 저장된 성공분은 재조회하지 않고 빠진 경기만 요청한다", async () => {
+  const client = clientFor(["cached", "retry"]);
+  const requested: string[] = [];
+  let shouldFail = true;
+  client.findPlayerMatch = async (id) => {
+    requested.push(id);
+    return id === "retry" && shouldFail
+      ? Result.fail(new MatchCollectionError({ reason: "TIMEOUT" }))
+      : Result.succeed(playerMatch(id));
+  };
+  const syncs = new MemorySyncRepository();
+  const matches = new MemoryMatchRepository();
+  const service = new MatchCollectionService(syncs, matches, client, () =>
+    at(0),
+  );
+  await service.collectRecentMatches("player", 420);
+  shouldFail = false;
+  const later = new MatchCollectionService(syncs, matches, client, () =>
+    at(20),
+  );
+  expect(
+    Result.unwrap(await later.collectRecentMatches("player", 420)),
+  ).toHaveLength(2);
+  expect(requested).toEqual(["cached", "retry", "retry"]);
+});
+
+it("중단 오류가 나면 진행 중 요청에도 취소 신호를 전달하고 다음 묶음은 시작하지 않는다", async () => {
+  const requested: string[] = [];
+  let canceled = false;
+  const error = new MatchCollectionError({
+    reason: "HTTP",
+    status: 429,
+    retryAvailableAt: at(5),
+  });
+  const client = clientFor(["limited", "pending", "never"]);
+  client.findPlayerMatch = async (id, _puuid, signal) => {
+    requested.push(id);
+    if (id === "limited") return Result.fail(error);
+    return new Promise((resolve) => {
+      signal?.addEventListener(
+        "abort",
+        () => {
+          canceled = true;
+          resolve(
+            Result.fail(new MatchCollectionError({ reason: "REQUEST_FAILED" })),
+          );
+        },
+        { once: true },
+      );
+    });
+  };
+  const { service } = setup(client);
+  expect(await service.collectRecentMatches("player", 420)).toEqual(
+    Result.fail(error),
+  );
+  expect(requested).toEqual(["limited", "pending"]);
+  expect(canceled).toBe(true);
+});
+
+it("429와 성공분 저장 오류가 함께 나면 두 오류와 재시도 제한을 보존한다", async () => {
+  const cause = new MatchCollectionError({
+    reason: "HTTP",
+    status: 429,
+    retryAvailableAt: at(5),
+  });
+  const client = clientFor(["valid", "limited"]);
+  client.findPlayerMatch = async (id) =>
+    id === "limited" ? Result.fail(cause) : Result.succeed(playerMatch(id));
+  const { service, matches, syncs } = setup(client);
+  const saveError = new MatchRepositoryError();
+  matches.saveError = saveError;
+  const result = await service.collectRecentMatches("player", 420);
+  expect(result).toEqual(
+    Result.fail(expect.any(MatchCollectionFailureSaveError)),
+  );
+  expect(result).toMatchObject({ error: { cause, saveError } });
+  expect(syncs.state.status).toBe("FAILED");
+  expect(syncs.state.retryAvailableAt).toEqual(at(5));
 });
