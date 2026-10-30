@@ -20,8 +20,15 @@
 - Do not add features, abstractions, dependencies, or refactor unrelated code without being asked.
 - Prefer simple solutions over speculative extensibility.
 - Follow existing code conventions and structure.
+- Export only one declaration per file, including types. Keep filenames aligned with the exported declaration.
 - Keep changes minimal and focused.
 - Update relevant tests when behavior changes.
+
+## Code Documentation
+
+- When writing or modifying functions, classes, types, or non-obvious processing logic, add concise JSDoc with `@description` written in Korean.
+- Explain purpose, intent, reasons for design decisions, and meaningful behavior boundaries rather than restating syntax or names.
+- Keep straightforward descriptions to one or two sentences, avoid unnecessary comments for self-explanatory code, and update comments when behavior changes.
 
 ## PR Preparation
 
@@ -41,19 +48,21 @@
 
 ### Documentation Index
 
-Add links here as documents are created.
+- [경기 수집과 저장](docs/match-data.md)
 
 ## Completion Checklist
 
-After every task, run:
+After every task, run the following commands in order before reporting completion:
 
 1. `pnpm run fmt`
 2. `pnpm run lint`
 3. `pnpm run test -- --run`
 
 - Fix issues introduced by the changes.
+- Rerun validation after making further fixes.
 - Do not make unrelated changes to resolve pre-existing issues.
-- Report any remaining failures.
+- Never claim validation passed without actually running the commands.
+- Report any remaining failures or checks that could not run, including the reasons.
 - Do not consider a task complete without running these checks.
 
 <!-- BEGIN:nextjs-agent-rules -->
