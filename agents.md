@@ -25,8 +25,8 @@
 
 ## PR Preparation
 
-- Before requesting review, explain the change's intent and key behavior, then ask 3–5 comprehension questions.
-- Wait for the user's answers and resolve misunderstandings before requesting review.
+- Before creating any pull request, including a draft, explain the change's intent and key behavior, then ask 3–5 comprehension questions.
+- Wait for the user's answers and resolve misunderstandings before creating the pull request. Do not create a draft first or defer these questions until requesting review.
 - Use `.github/PULL_REQUEST_TEMPLATE.md` for the PR description.
 
 ## Documentation
