@@ -39,9 +39,9 @@ it("15분 전에 끝난 경기에서도 15분 표본 미제공 상태를 남긴�
 });
 it("허용 오차 밖의 프레임은 표본 미제공이며 가짜 수치를 만들지 않는다", () => {
   const timeline = timelineResponse();
-  timeline.info.frames.forEach((frame) => {
+  for (const frame of timeline.info.frames) {
     frame.timestamp += 10_000;
-  });
+  }
   const match = Result.unwrap(
     parsePlayerMatch(matchResponse(), timeline, "KR_1", "target"),
   );
@@ -132,5 +132,63 @@ it.each([
   expect(match.laningSnapshots[0].own.status).toBe("AVAILABLE");
   expect(match.laningSnapshots[0].opponentDifference).toEqual({
     status: "UNKNOWN",
+  });
+});
+
+it.each([
+  -5_001, -5_000, 5_000, 5_001,
+])("10분 프레임 오차 %i밀리초의 5초 경계를 유지한다", (offset) => {
+  const timeline = timelineResponse();
+  timeline.info.frames[0].timestamp = 600_000 + offset;
+  const match = Result.unwrap(
+    parsePlayerMatch(matchResponse(), timeline, "KR_1", "target"),
+  );
+  const snapshot = match.laningSnapshots[0];
+  if (Math.abs(offset) <= 5_000) {
+    expect(snapshot.actualTimestampMs).toEqual({
+      status: "AVAILABLE",
+      value: 600_000 + offset,
+    });
+    expect(snapshot.own.status).toBe("AVAILABLE");
+  } else {
+    expect(snapshot.actualTimestampMs).toEqual({ status: "NOT_PROVIDED" });
+    expect(snapshot.own.status).toBe("NOT_PROVIDED");
+  }
+});
+
+it("동일 거리의 프레임은 원본 순서에서 첫 프레임을 선택한다", () => {
+  const timeline = timelineResponse();
+  const first = timeline.info.frames[0];
+  first.timestamp = 595_000;
+  const second = structuredClone(first);
+  second.timestamp = 605_000;
+  second.participantFrames["1"].totalGold = 9999;
+  timeline.info.frames.unshift(second);
+  const match = Result.unwrap(
+    parsePlayerMatch(matchResponse(), timeline, "KR_1", "target"),
+  );
+  expect(match.laningSnapshots[0]).toMatchObject({
+    actualTimestampMs: { status: "AVAILABLE", value: 605_000 },
+    own: {
+      status: "AVAILABLE",
+      value: { gold: { status: "AVAILABLE", value: 9999 } },
+    },
+  });
+});
+
+it("본인 프레임이 없으면 시각만 유지하고 잘못된 상대 프레임은 읽지 않는다", () => {
+  const timeline = timelineResponse();
+  Reflect.set(timeline.info.frames[0].participantFrames, "1", null);
+  Reflect.set(timeline.info.frames[0].participantFrames, "6", {
+    totalGold: "invalid",
+  });
+  const match = Result.unwrap(
+    parsePlayerMatch(matchResponse(), timeline, "KR_1", "target"),
+  );
+  expect(match.laningSnapshots[0]).toEqual({
+    minute: 10,
+    actualTimestampMs: { status: "AVAILABLE", value: 600225 },
+    own: { status: "NOT_PROVIDED" },
+    opponentDifference: { status: "UNKNOWN" },
   });
 });
