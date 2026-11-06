@@ -8,7 +8,7 @@ Riot ID의 이름과 태그로 플레이어를 찾고, 최근 최대 20개 경�
 
 - `player`: Riot ID 검증과 PUUID 식별.
 - `match`: 플레이어·큐별 경기 수집, 저장, 수집 상태 관리.
-- `analysis`(미구현): 저장된 경기의 통계 집계와 검색·최신화 유스케이스 조율.
+- `analysis`: 의사소통·시야·철거 성향 도메인 구현. 나머지 콘텐츠 집계와 검색·최신화 유스케이스는 미구현.
 - `src/app`: 얇은 페이지와 HTTP 진입점. 화면 구현은 `src/frontend`에 둔다.
 
 분석 기능은 `player`, `match`의 공개 Application 기능을 사용한다. 두 모듈이 분석 구현을 역참조하지 않는다. Command/Query 구분을 위해 별도 저장소나 Handler를 미리 만들 필요는 없다.
@@ -24,7 +24,7 @@ Riot ID의 이름과 태그로 플레이어를 찾고, 최근 최대 20개 경�
 | 값의 상태 | `Stat<T>`로 실제 값, `NOT_PROVIDED`, `UNKNOWN` 구분 |
 | 영속화 | 경기·수집 상태 Repository 구현과 마이그레이션 존재. 실제 DB 적용 여부는 환경별 확인 필요 |
 | 수집 제어 | 원자적 시작, 전체·부분 성공 후 20분 제한, 실패 기록, 429 재시도 시각 보존 |
-| 분석 | 카드별 집계, 분석 결과 모델, 결과 저장·재사용 미구현 |
+| 분석 | `CommunicationStyle`의 핑 7종, `VisionStyle`의 와드 행동, `StructureStyle`의 구조물·첫 포탑 관여와 표본 상태 구현. 나머지 콘텐츠·포지션 분포·결과 저장 미구현 |
 | 사용자 기능 | 검색·최신화 전체 유스케이스, Controller, Route Handler 미구현 |
 | 화면 | `Home`이 `null`을 반환하는 초기 상태 |
 
@@ -38,6 +38,8 @@ Riot ID의 이름과 태그로 플레이어를 찾고, 최근 최대 20개 경�
 - `GetOrCreatePlayStyleCommand`, `RefreshPlayStyleCommand`는 기존 논의의 권장 메시지다. HTTP 경로·메서드·응답 계약은 미확정이다.
 
 ## 남은 작업과 권장 순서
+
+진행 순서는 도메인 모델 → 비즈니스 로직과 테스트 → Repository 인터페이스 → Application Service다. 현재 [CommunicationStyle](../src/backend/analysis/domain/CommunicationStyle.ts)의 핑 사용량과 [VisionStyle](../src/backend/analysis/domain/VisionStyle.ts)의 와드 행동·미구매 경기 수, [StructureStyle](../src/backend/analysis/domain/StructureStyle.ts)의 철거·첫 포탑 관여를 구현했다. 기존 `AnalysisSample`은 제거했으며, 분석 도메인은 `match` 내부에 직접 의존하지 않는다. 다음은 미정인 핑 비교 범위를 확정하고 나머지 스타일의 의미와 계산 규칙을 모델링하는 단계다. Repository와 Service는 아직 추가하지 않았다.
 
 ### 1. 분석 범위와 계산 규칙 확정
 
@@ -82,6 +84,23 @@ Riot ID의 이름과 태그로 플레이어를 찾고, 최근 최대 20개 경�
 - 기존 불완전 기록 보완이 필요하면 별도 배치로 설계한다. 현재 수집에 자동 보완을 추가하지 않는다.
 
 운영 보완의 적용 시점은 서비스 공개 범위에 맞춰 결정한다.
+
+## 추후 개선: match 린트 진단
+
+2026-11-07 기준 `pnpm run lint`는 종료 코드 0이지만, `complexity` 규칙에 따른 경고 2개와 정보 10개가 남아 있다. 아래는 현재 분석 도메인 구현과 별도로 개선할 항목이다. 규칙을 끄거나 한도를 올려 숨기기보다 기존 동작을 보존하며 책임을 분리한다.
+
+| 위치 | 진단 | 개선 방향 |
+| --- | --- | --- |
+| `match/domain/PlayerMatch.ts` 생성자 | 인지 복잡도 17/15, 함수 길이 66/50 | 값 복원·정규화와 Timeline 표본 처리의 책임 분리 |
+| `match/domain/emptyPlayerMatchStats.ts` | 함수 길이 96/50 | 통계 그룹별 기본값 생성 분리 검토 |
+| `match/infrastructure/classifiedStatSchema.ts` | 논리식 단순화 | 유한 정수 검증의 의미를 유지하며 조건식 정리 |
+| `match/infrastructure/persistence/repositories.integration.spec.ts` | 테스트 그룹 콜백 길이 175/50 | 공통 DB 준비와 테스트 구성의 분리 검토 |
+| `match/infrastructure/riot/parseLaningSnapshots.ts` | 인지 복잡도 26/15, 함수 길이 83/50, 매개변수 5/4 | 프레임 선택·본인 표본·상대 비교 분리와 입력 객체 검토 |
+| `match/infrastructure/riot/parsePlayerMatch.ts` | 함수 길이 86/50 | 검증·기본 정보 매핑·표본 조립 분리 검토 |
+| `match/infrastructure/riot/toPlayerMatchStats.ts` | 인지 복잡도 51/15, 함수 길이 203/50 | 통계 관심사별 매핑 분리 |
+| `match/infrastructure/riot/parseLaningSnapshots.spec.ts` | `noForEach` | 표본 시각 변경 반복문을 `for...of`로 변경 |
+
+경로는 `src/backend/` 기준이다. 리팩터링 시 누락·판별 불가·실제 0의 구분, 분석 제외 조건, 시간 표본 허용 오차와 상대 비교 규칙을 유지한다. DB 통합 테스트 관련 변경은 로컬 DB 검증도 수행하고, 환경 미지정으로 건너뛴 경우 그 범위를 보고한다. 진단을 해결하면 이 목록도 갱신한다.
 
 ## 작업 진행 지침
 
