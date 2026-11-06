@@ -9,8 +9,10 @@ export function storedStatSchema<T extends z.ZodType>(value: T) {
         input === null ||
         input === undefined ||
         (typeof input === "string" && input.trim() === "")
-      )
+      ) {
         return { status: "NOT_PROVIDED" };
+      }
+
       return typeof input === "object" && "status" in input
         ? input
         : toProvidedStat(input);

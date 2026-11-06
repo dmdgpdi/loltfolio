@@ -112,15 +112,25 @@ export class MatchCollectionService {
     >
   > {
     const ids = await this.findRecentMatchIds(puuid, queueId);
-    if (Result.isFailure(ids)) return ids;
-    if (ids.value.length === 0)
+
+    if (Result.isFailure(ids)) {
+      return ids;
+    }
+
+    if (ids.value.length === 0) {
       return Result.succeed({ matches: [], hadFailures: false });
+    }
+
     const existing = await this.matchRepository.findByMatchIds(
       puuid,
       queueId,
       ids.value,
     );
-    if (Result.isFailure(existing)) return existing;
+
+    if (Result.isFailure(existing)) {
+      return existing;
+    }
+
     const cached = new Map(
       existing.value
         .filter((match) => match.puuid === puuid && match.queueId === queueId)
@@ -128,11 +138,11 @@ export class MatchCollectionService {
     );
     const missingIds = ids.value.filter((id) => !cached.has(id));
     const fetched = await this.findMissingMatches(missingIds, puuid, queueId);
-    const fatal =
-      fetched.errors.find((error) => error.status === 429) ??
-      fetched.errors.find((error) => this.isFatalError(error));
+    const fatal = this.findFatalError(fetched.errors);
+
     if (fetched.matches.length > 0) {
       const saved = await this.matchRepository.saveAll(fetched.matches);
+
       if (Result.isFailure(saved)) {
         // 실패 상태를 기록할 때도 API 재시도 제한은 유지해야 한다.
         return fatal
@@ -145,15 +155,42 @@ export class MatchCollectionService {
           : saved;
       }
     }
-    if (fatal) return Result.fail(fatal);
-    for (const match of fetched.matches) cached.set(match.matchId, match);
-    if (!ids.value.some((id) => cached.has(id)) && fetched.errors.length > 0)
+
+    if (fatal) {
+      return Result.fail(fatal);
+    }
+
+    for (const match of fetched.matches) {
+      cached.set(match.matchId, match);
+    }
+
+    if (!ids.value.some((id) => cached.has(id)) && fetched.errors.length > 0) {
       return Result.fail(fetched.errors[0]);
-    const matches = ids.value.flatMap((id) => {
+    }
+
+    const matches = this.selectEligibleMatches(ids.value, cached);
+    return Result.succeed({ matches, hadFailures: fetched.errors.length > 0 });
+  }
+
+  /** @description 확보된 기록 중 분석 대상만 최근 ID 순서로 선택한다. 누락된 자리를 과거 기록으로 채우지 않는다. */
+  private selectEligibleMatches(
+    ids: readonly string[],
+    cached: ReadonlyMap<string, PlayerMatch>,
+  ): readonly PlayerMatch[] {
+    return ids.flatMap((id) => {
       const match = cached.get(id);
       return match?.isEligibleForAnalysis() ? [match] : [];
     });
-    return Result.succeed({ matches, hadFailures: fetched.errors.length > 0 });
+  }
+
+  /** @description 다른 중단 오류가 섞여 있어도 429를 우선해 API 재시도 시각을 보존한다. */
+  private findFatalError(
+    errors: readonly MatchCollectionError[],
+  ): MatchCollectionError | undefined {
+    return (
+      errors.find((error) => error.status === 429) ??
+      errors.find((error) => this.isFatalError(error))
+    );
   }
 
   /** @description 누락 경기들을 두 개씩 병렬 조회한다. 응답 순서는 ID 순서로 보존하며 중단 오류 발생 시 진행 중 요청을 취소하고 다음 묶음을 시작하지 않는다. */
@@ -164,6 +201,7 @@ export class MatchCollectionService {
   ): Promise<FetchedMatches> {
     const matches: PlayerMatch[] = [];
     const errors: MatchCollectionError[] = [];
+
     for (let start = 0; start < ids.length; start += CONCURRENT_MATCH_LIMIT) {
       const controller = new AbortController();
       const results = await Promise.all(
@@ -173,11 +211,17 @@ export class MatchCollectionService {
             puuid,
             controller.signal,
           );
+
           if (Result.isFailure(result)) {
-            if (this.isFatalError(result.error)) controller.abort();
+            if (this.isFatalError(result.error)) {
+              controller.abort();
+            }
+
             return result;
           }
+
           const match = result.value;
+
           if (
             match.matchId !== id ||
             match.puuid !== puuid ||
@@ -188,15 +232,24 @@ export class MatchCollectionService {
               new MatchCollectionError({ reason: "INVALID_RESPONSE" }),
             );
           }
+
           return result;
         }),
       );
+
       for (const result of results) {
-        if (Result.isFailure(result)) errors.push(result.error);
-        else matches.push(result.value);
+        if (Result.isFailure(result)) {
+          errors.push(result.error);
+        } else {
+          matches.push(result.value);
+        }
       }
-      if (errors.some((error) => this.isFatalError(error))) break;
+
+      if (errors.some((error) => this.isFatalError(error))) {
+        break;
+      }
     }
+
     return { matches, errors };
   }
 
@@ -206,10 +259,14 @@ export class MatchCollectionService {
       error.retryAvailableAt ||
       error.reason === "CONFIGURATION" ||
       error.reason === "INVALID_RESPONSE"
-    )
+    ) {
       return true;
-    if (error.reason === "TIMEOUT" || error.reason === "REQUEST_FAILED")
+    }
+
+    if (error.reason === "TIMEOUT" || error.reason === "REQUEST_FAILED") {
       return false;
+    }
+
     return (
       error.reason !== "HTTP" ||
       (error.status !== 404 &&
@@ -237,8 +294,13 @@ export class MatchCollectionService {
           ? error.cause
           : undefined;
     const failed = sync.fail(apiError?.retryAvailableAt);
-    if (Result.isFailure(failed)) return failed;
+
+    if (Result.isFailure(failed)) {
+      return failed;
+    }
+
     const saved = await this.syncRepository.update(sync);
+
     if (Result.isFailure(saved)) {
       return Result.fail(
         new MatchCollectionFailureSaveError({
@@ -247,6 +309,7 @@ export class MatchCollectionService {
         }),
       );
     }
+
     return Result.fail(error);
   }
 }

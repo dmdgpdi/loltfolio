@@ -26,9 +26,13 @@ export function toStoredPlayerMatch(match: PlayerMatch) {
     mapId: match.mapId,
   };
   const fieldStates: Record<string, "NOT_PROVIDED" | "UNKNOWN"> = {};
+
   for (const [key, value] of Object.entries(values)) {
-    if (value.status !== "AVAILABLE") fieldStates[key] = value.status;
+    if (value.status !== "AVAILABLE") {
+      fieldStates[key] = value.status;
+    }
   }
+
   return {
     matchId: match.matchId,
     puuid: match.puuid,

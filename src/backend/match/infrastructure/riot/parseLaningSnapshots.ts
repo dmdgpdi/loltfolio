@@ -67,16 +67,21 @@ function nearestFrame(
 function parseFrame(
   input: unknown,
 ): Result.Result<Stat<LaningValues>, MatchCollectionError> {
-  if (input === undefined || input === null)
+  if (input === undefined || input === null) {
     return Result.succeed({ status: "NOT_PROVIDED" });
+  }
+
   const parsed = frameSchema.safeParse(input);
-  if (!parsed.success)
+
+  if (!parsed.success) {
     return Result.fail(
       new MatchCollectionError({
         cause: parsed.error,
         reason: "INVALID_RESPONSE",
       }),
     );
+  }
+
   return Result.succeed({ status: "AVAILABLE", value: values(parsed.data) });
 }
 
@@ -85,7 +90,10 @@ function compareValues(
   own: LaningValues,
   other: Stat<LaningValues>,
 ): Stat<LaningValues> {
-  if (other.status !== "AVAILABLE") return { status: "UNKNOWN" };
+  if (other.status !== "AVAILABLE") {
+    return { status: "UNKNOWN" };
+  }
+
   return {
     status: "AVAILABLE",
     value: {
@@ -110,15 +118,21 @@ function parseSnapshot(
     own: { status: "NOT_PROVIDED" },
     opponentDifference: { status: "UNKNOWN" },
   };
+
   if (
     context.durationSeconds.status === "AVAILABLE" &&
     context.durationSeconds.value < minute * 60
-  )
+  ) {
     return Result.succeed(missing);
+  }
+
   const target = minute * 60_000;
   const frame = nearestFrame(frames, target);
-  if (!frame || Math.abs(frame.timestamp - target) > 5_000)
+
+  if (!frame || Math.abs(frame.timestamp - target) > 5_000) {
     return Result.succeed(missing);
+  }
+
   const actualTimestampMs = {
     status: "AVAILABLE" as const,
     value: frame.timestamp,
@@ -126,15 +140,25 @@ function parseSnapshot(
   const own = parseFrame(
     frame.participantFrames[String(context.participantId)],
   );
-  if (Result.isFailure(own)) return own;
-  if (own.value.status !== "AVAILABLE")
+
+  if (Result.isFailure(own)) {
+    return own;
+  }
+
+  if (own.value.status !== "AVAILABLE") {
     return Result.succeed({ ...missing, actualTimestampMs });
+  }
+
   const opponentInput =
     context.opponentId === null
       ? undefined
       : frame.participantFrames[String(context.opponentId)];
   const other = parseFrame(opponentInput);
-  if (Result.isFailure(other)) return other;
+
+  if (Result.isFailure(other)) {
+    return other;
+  }
+
   return Result.succeed({
     minute,
     actualTimestampMs,
@@ -149,22 +173,33 @@ export function parseLaningSnapshots(
   context: LaningSnapshotContext,
 ): Result.Result<readonly LaningSnapshot[], MatchCollectionError> {
   const parsed = timelineSchema.safeParse(body);
-  if (!parsed.success)
+
+  if (!parsed.success) {
     return Result.fail(
       new MatchCollectionError({
         cause: parsed.error,
         reason: "INVALID_RESPONSE",
       }),
     );
-  if (parsed.data.metadata.matchId !== context.matchId)
+  }
+
+  if (parsed.data.metadata.matchId !== context.matchId) {
     return Result.fail(
       new MatchCollectionError({ reason: "INVALID_RESPONSE" }),
     );
+  }
+
   const snapshots: LaningSnapshot[] = [];
+
   for (const minute of [10, 15] as const) {
     const snapshot = parseSnapshot(parsed.data.info.frames, minute, context);
-    if (Result.isFailure(snapshot)) return snapshot;
+
+    if (Result.isFailure(snapshot)) {
+      return snapshot;
+    }
+
     snapshots.push(snapshot.value);
   }
+
   return Result.succeed(snapshots);
 }

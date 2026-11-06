@@ -34,11 +34,15 @@ function createRepositoryContext() {
 
   beforeAll(async () => {
     const url = new URL(connectionString ?? "");
-    if (!["localhost", "127.0.0.1"].includes(url.hostname))
+
+    if (!["localhost", "127.0.0.1"].includes(url.hostname)) {
       throw new Error("로컬 DB만 테스트할 수 있습니다.");
+    }
+
     await admin.query(`CREATE SCHEMA "${schema}"`);
     schemaCreated = true;
     const directory = new URL("../../../db/migrations/", import.meta.url);
+
     for (const name of (await readdir(directory)).sort()) {
       const sql = await readFile(
         new URL(`${name}/migration.sql`, directory),
@@ -53,8 +57,11 @@ function createRepositoryContext() {
   });
   afterAll(async () => {
     await pool.end();
-    if (schemaCreated)
+
+    if (schemaCreated) {
       await admin.query(`DROP SCHEMA IF EXISTS "${schema}" CASCADE`);
+    }
+
     await admin.end();
   });
 
@@ -68,9 +75,14 @@ type RepositoryTestContext = ReturnType<typeof createRepositoryContext>;
 function registerConcurrentStartTest(context: RepositoryTestContext) {
   const { syncs } = context;
   it("같은 플레이어·큐의 동시 요청 중 하나만 시작한다", async () => {
+    // Arrange: 테스트 인자와 명시한 입력을 사용한다.
+
+    // Act
     const results = await Promise.all(
       Array.from({ length: 12 }, () => syncs.tryStart("player", 420, at(0))),
     );
+
+    // Assert
     expect(results.filter(Result.isSuccess)).toHaveLength(1);
     expect(results.filter(Result.isFailure)).toHaveLength(11);
     expect(
@@ -85,17 +97,31 @@ function registerConcurrentStartTest(context: RepositoryTestContext) {
 function registerQueueCooldownTest(context: RepositoryTestContext) {
   const { syncs } = context;
   it("큐별 제한과 20분 경계를 DB에서 보장한다", async () => {
+    // Arrange
     const started = Result.unwrap(await syncs.tryStart("player", 420, at(0)));
     Result.unwrap(started.succeed(at(1)));
     Result.unwrap(await syncs.update(started));
 
-    expect(await syncs.tryStart("player", 420, at(20))).toEqual(
+    // Act
+    const result = await syncs.tryStart("player", 420, at(20));
+
+    // Assert
+    expect(result).toEqual(
       Result.fail(expect.any(MatchSyncStartNotAllowedError)),
     );
-    expect(Result.isSuccess(await syncs.tryStart("player", 440, at(2)))).toBe(
-      true,
+
+    // Act
+    const result2 = Result.isSuccess(
+      await syncs.tryStart("player", 440, at(2)),
     );
+
+    // Assert
+    expect(result2).toBe(true);
+
+    // Act
     const next = Result.unwrap(await syncs.tryStart("player", 420, at(21)));
+
+    // Assert
     expect(next.lastSucceededAt).toEqual(at(1));
   });
 }
@@ -104,6 +130,7 @@ function registerQueueCooldownTest(context: RepositoryTestContext) {
 function registerFailureRetryTest(context: RepositoryTestContext) {
   const { syncs } = context;
   it("실패 시 성공 시각을 보존하고 재시도 제한을 적용한다", async () => {
+    // Arrange
     const first = Result.unwrap(await syncs.tryStart("player", 420, at(0)));
     Result.unwrap(first.succeed(at(0)));
     Result.unwrap(await syncs.update(first));
@@ -111,10 +138,18 @@ function registerFailureRetryTest(context: RepositoryTestContext) {
     Result.unwrap(retry.fail(at(30)));
     Result.unwrap(await syncs.update(retry));
 
-    expect(await syncs.tryStart("player", 420, at(29))).toEqual(
+    // Act
+    const result = await syncs.tryStart("player", 420, at(29));
+
+    // Assert
+    expect(result).toEqual(
       Result.fail(expect.any(MatchSyncStartNotAllowedError)),
     );
+
+    // Act
     const next = Result.unwrap(await syncs.tryStart("player", 420, at(30)));
+
+    // Assert
     expect(next.lastSucceededAt).toEqual(at(0));
   });
 }
@@ -123,13 +158,20 @@ function registerFailureRetryTest(context: RepositoryTestContext) {
 function registerStaleCompletionTest(context: RepositoryTestContext) {
   const { pool, syncs } = context;
   it("이전 시도의 완료 요청은 새 진행 상태를 덮어쓰지 않는다", async () => {
+    // Arrange
     const first = Result.unwrap(await syncs.tryStart("player", 420, at(0)));
     Result.unwrap(first.fail());
     Result.unwrap(await syncs.update(first));
     Result.unwrap(await syncs.tryStart("player", 420, at(1)));
 
-    expect(Result.isFailure(await syncs.update(first))).toBe(true);
+    // Act
+    const isRejected = Result.isFailure(await syncs.update(first));
+
+    // Assert
+    expect(isRejected).toBe(true);
     const stored = await pool.query("SELECT status FROM match_syncs");
+
+    // Assert
     expect(stored.rows[0].status).toBe("IN_PROGRESS");
   });
 }
@@ -138,6 +180,7 @@ function registerStaleCompletionTest(context: RepositoryTestContext) {
 function registerStatPersistenceTest(context: RepositoryTestContext) {
   const { pool, matches } = context;
   it("확보·미제공·판별 불가 상태를 SQL과 JSONB에 저장하고 복원한다", async () => {
+    // Arrange
     const data = createPlayerMatchData({
       gameId: { status: "NOT_PROVIDED" },
       gameMode: { status: "UNKNOWN" },
@@ -145,13 +188,19 @@ function registerStatPersistenceTest(context: RepositoryTestContext) {
     });
     const match = new PlayerMatch(data);
     Result.unwrap(await matches.saveAll([match]));
+
+    // Act
     const restored = Result.unwrap(
       await matches.findByMatchIds("player", 420, ["KR_1"]),
     )[0];
+
+    // Assert
     expect(restored).toEqual(match);
     const row = (
       await pool.query("SELECT game_id, field_states FROM player_matches")
     ).rows[0];
+
+    // Assert
     expect(row.game_id).toBeNull();
     expect(row.field_states.gameId).toBe("NOT_PROVIDED");
     expect(row.field_states.gameMode).toBe("UNKNOWN");
@@ -162,6 +211,7 @@ function registerStatPersistenceTest(context: RepositoryTestContext) {
 function registerDuplicateSaveTest(context: RepositoryTestContext) {
   const { matches } = context;
   it("중복 저장은 기존 기록을 덮어쓰지 않고 플레이어별로 구분한다", async () => {
+    // Arrange
     Result.unwrap(
       await matches.saveAll([new PlayerMatch(createPlayerMatchData())]),
     );
@@ -173,16 +223,30 @@ function registerDuplicateSaveTest(context: RepositoryTestContext) {
         new PlayerMatch(createPlayerMatchData({ puuid: "second" })),
       ]),
     );
-    expect(
-      Result.unwrap(await matches.findByMatchIds("player", 420, ["KR_1"]))[0]
-        .win,
-    ).toEqual({ status: "AVAILABLE", value: true });
-    expect(
-      Result.unwrap(await matches.findByMatchIds("second", 420, ["KR_1"])),
-    ).toHaveLength(1);
-    expect(
-      Result.unwrap(await matches.findByMatchIds("player", 440, ["KR_1"])),
-    ).toHaveLength(0);
+
+    // Act
+    const result = Result.unwrap(
+      await matches.findByMatchIds("player", 420, ["KR_1"]),
+    )[0].win;
+
+    // Assert
+    expect(result).toEqual({ status: "AVAILABLE", value: true });
+
+    // Act
+    const result2 = Result.unwrap(
+      await matches.findByMatchIds("second", 420, ["KR_1"]),
+    );
+
+    // Assert
+    expect(result2).toHaveLength(1);
+
+    // Act
+    const result3 = Result.unwrap(
+      await matches.findByMatchIds("player", 440, ["KR_1"]),
+    );
+
+    // Assert
+    expect(result3).toHaveLength(0);
   });
 }
 
@@ -190,6 +254,7 @@ function registerDuplicateSaveTest(context: RepositoryTestContext) {
 function registerCollectionPersistenceTest(context: RepositoryTestContext) {
   const { syncs, matches } = context;
   it("원본 응답부터 서비스와 DB까지 상태를 보존한다", async () => {
+    // Arrange
     const adapter = new RiotMatchAdapter({
       apiKey: "test-key",
       region: "ASIA",
@@ -210,10 +275,20 @@ function registerCollectionPersistenceTest(context: RepositoryTestContext) {
     const collected = Result.unwrap(
       await service.collectRecentMatches("target", 420),
     );
-    expect(
-      Result.unwrap(await matches.findByMatchIds("target", 420, ["KR_1"])),
-    ).toEqual(collected);
-    expect(await service.collectRecentMatches("target", 420)).toEqual(
+
+    // Act
+    const result = Result.unwrap(
+      await matches.findByMatchIds("target", 420, ["KR_1"]),
+    );
+
+    // Assert
+    expect(result).toEqual(collected);
+
+    // Act
+    const collectionResult = await service.collectRecentMatches("target", 420);
+
+    // Assert
+    expect(collectionResult).toEqual(
       Result.fail(expect.any(MatchSyncStartNotAllowedError)),
     );
   });
@@ -223,15 +298,20 @@ function registerCollectionPersistenceTest(context: RepositoryTestContext) {
 function registerLegacyRestoreTest(context: RepositoryTestContext) {
   const { pool, matches } = context;
   it("기존 원시 NULL과 미등록 분류는 명시적인 상태로 복원한다", async () => {
+    // Arrange
     Result.unwrap(
       await matches.saveAll([new PlayerMatch(createPlayerMatchData())]),
     );
     await pool.query(
       "UPDATE player_matches SET game_id = NULL, position = 'ROAMER', game_mode = 'FUTURE_MODE'",
     );
+
+    // Act
     const restored = Result.unwrap(
       await matches.findByMatchIds("player", 420, ["KR_1"]),
     )[0];
+
+    // Assert
     expect(restored.gameId).toEqual({ status: "NOT_PROVIDED" });
     expect(restored.position).toEqual({ status: "UNKNOWN" });
     expect(restored.gameMode).toEqual({ status: "UNKNOWN" });
@@ -242,18 +322,32 @@ function registerLegacyRestoreTest(context: RepositoryTestContext) {
 function registerPartialSuccessTest(context: RepositoryTestContext) {
   const { pool, syncs } = context;
   it("부분 성공을 DB에 저장하고 성공 시각 기준 20분 제한을 유지한다", async () => {
+    // Arrange
     const sync = Result.unwrap(await syncs.tryStart("partial", 420, at(0)));
     Result.unwrap(sync.partiallySucceed(at(1)));
+
+    // Act
     Result.unwrap(await syncs.update(sync));
     const stored = await pool.query(
       "SELECT status FROM match_syncs WHERE puuid = $1",
       ["partial"],
     );
+
+    // Assert
     expect(stored.rows[0].status).toBe("PARTIALLY_SUCCEEDED");
-    expect(await syncs.tryStart("partial", 420, at(20))).toEqual(
+
+    // Act
+    const result = await syncs.tryStart("partial", 420, at(20));
+
+    // Assert
+    expect(result).toEqual(
       Result.fail(expect.any(MatchSyncStartNotAllowedError)),
     );
+
+    // Act
     const next = Result.unwrap(await syncs.tryStart("partial", 420, at(21)));
+
+    // Assert
     expect(next.lastSucceededAt).toEqual(at(1));
   });
 }

@@ -56,13 +56,16 @@ export class DrizzleMatchSyncRepository implements MatchSyncRepository {
 
   async update(sync: MatchSync) {
     const lastAttemptAt = sync.lastAttemptAt;
+
     if (
       !lastAttemptAt ||
       (sync.status !== "SUCCEEDED" &&
         sync.status !== "PARTIALLY_SUCCEEDED" &&
         sync.status !== "FAILED")
-    )
+    ) {
       return Result.fail(new MatchRepositoryError());
+    }
+
     return Result.pipe(
       Result.try({
         try: () =>

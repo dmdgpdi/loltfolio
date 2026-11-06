@@ -1,6 +1,6 @@
 # 현재 진행 상황과 다음 작업
 
-기준일: 2026-11-06. 현재 코드와 기존 설계 논의를 대조한 작업 안내다. 아래의 예정 작업은 구현 완료나 정책 확정을 의미하지 않는다. 관련 기능이 변경되면 이 문서도 갱신한다.
+기준일: 2026-11-07. 현재 코드와 기존 설계 논의를 대조한 작업 안내다. 아래의 예정 작업은 구현 완료나 정책 확정을 의미하지 않는다. 관련 기능이 변경되면 이 문서도 갱신한다.
 
 ## 서비스 목표와 책임
 
@@ -8,7 +8,7 @@ Riot ID의 이름과 태그로 플레이어를 찾고, 최근 최대 20개 경�
 
 - `player`: Riot ID 검증과 PUUID 식별.
 - `match`: 플레이어·큐별 경기 수집, 저장, 수집 상태 관리.
-- `analysis`: 의사소통·시야·철거 성향 도메인 구현. 나머지 콘텐츠 집계와 검색·최신화 유스케이스는 미구현.
+- `analysis`: 의사소통·시야·철거·솔로킬 성향 도메인 구현. 나머지 콘텐츠 집계와 검색·최신화 유스케이스는 미구현.
 - `src/app`: 얇은 페이지와 HTTP 진입점. 화면 구현은 `src/frontend`에 둔다.
 
 분석 기능은 `player`, `match`의 공개 Application 기능을 사용한다. 두 모듈이 분석 구현을 역참조하지 않는다. Command/Query 구분을 위해 별도 저장소나 Handler를 미리 만들 필요는 없다.
@@ -24,7 +24,7 @@ Riot ID의 이름과 태그로 플레이어를 찾고, 최근 최대 20개 경�
 | 값의 상태 | `Stat<T>`로 실제 값, `NOT_PROVIDED`, `UNKNOWN` 구분 |
 | 영속화 | 경기·수집 상태 Repository 구현과 마이그레이션 존재. 실제 DB 적용 여부는 환경별 확인 필요 |
 | 수집 제어 | 원자적 시작, 전체·부분 성공 후 20분 제한, 실패 기록, 429 재시도 시각 보존 |
-| 분석 | `CommunicationStyle`의 핑 7종, `VisionStyle`의 와드 행동, `StructureStyle`의 구조물·첫 포탑 관여와 표본 상태 구현. 나머지 콘텐츠·포지션 분포·결과 저장 미구현 |
+| 분석 | `CommunicationStyle`의 핑 7종, `VisionStyle`의 와드 행동, `StructureStyle`의 구조물·첫 포탑 관여, `SoloKillStyle`의 솔로킬 통계·공통 표본 비중 구현. 나머지 콘텐츠·포지션 분포·결과 저장 미구현 |
 | 사용자 기능 | 검색·최신화 전체 유스케이스, Controller, Route Handler 미구현 |
 | 화면 | `Home`이 `null`을 반환하는 초기 상태 |
 
@@ -39,7 +39,7 @@ Riot ID의 이름과 태그로 플레이어를 찾고, 최근 최대 20개 경�
 
 ## 남은 작업과 권장 순서
 
-진행 순서는 도메인 모델 → 비즈니스 로직과 테스트 → Repository 인터페이스 → Application Service다. 현재 [CommunicationStyle](../src/backend/analysis/domain/CommunicationStyle.ts)의 핑 사용량과 [VisionStyle](../src/backend/analysis/domain/VisionStyle.ts)의 와드 행동·미구매 경기 수, [StructureStyle](../src/backend/analysis/domain/StructureStyle.ts)의 철거·첫 포탑 관여를 구현했다. 기존 `AnalysisSample`은 제거했으며, 분석 도메인은 `match` 내부에 직접 의존하지 않는다. 다음은 미정인 핑 비교 범위를 확정하고 나머지 스타일의 의미와 계산 규칙을 모델링하는 단계다. Repository와 Service는 아직 추가하지 않았다.
+진행 순서는 도메인 모델 → 비즈니스 로직과 테스트 → Repository 인터페이스 → Application Service다. 현재 [CommunicationStyle](../src/backend/analysis/domain/CommunicationStyle.ts)의 핑 사용량과 [VisionStyle](../src/backend/analysis/domain/VisionStyle.ts)의 와드 행동·미구매 경기 수, [StructureStyle](../src/backend/analysis/domain/StructureStyle.ts)의 철거·첫 포탑 관여, [SoloKillStyle](../src/backend/analysis/domain/SoloKillStyle.ts)의 솔로킬 통계·비중을 구현했다. 기존 `AnalysisSample`은 제거했으며, 분석 도메인은 `match` 내부에 직접 의존하지 않는다. 다음은 미정인 핑 비교 범위를 확정하고 나머지 스타일의 의미와 계산 규칙을 모델링하는 단계다. Repository와 Service는 아직 추가하지 않았다.
 
 ### 1. 분석 범위와 계산 규칙 확정
 
@@ -96,6 +96,14 @@ Riot ID의 이름과 태그로 플레이어를 찾고, 최근 최대 20개 경�
 - DB 통합 테스트는 준비 절차와 테스트 등록 함수를 분리했다. 임시 스키마의 생성·초기화·삭제 정책과 검증 내용은 유지했다.
 
 검증: fmt·lint·TypeScript 검사 통과, lint 진단 없음. 일반 테스트 413개와 별도 로컬 PostgreSQL 임시 스키마의 DB 통합 테스트 9개가 통과했다. Timeline 5초 허용 경계·동률 프레임 선택·본인 프레임 누락 시 처리의 회귀 테스트 6개를 추가했다. DB 스키마와 마이그레이션은 변경하지 않았다.
+
+## 테스트 AAA와 제어문 정리 완료
+
+2026-11-07에 백엔드 테스트를 AAA 주석과 단계별 빈 줄로 정리하고, if문과 반복문에 중괄호 및 주변 문장과 구분하는 빈 줄을 적용했다. 한 테스트에서 여러 시나리오를 검증하는 경우 실행·검증 단계를 반복해서 표시한다. 타입 계약만 확인하는 테스트는 Assert로 표시한다.
+
+기존 검증식 안의 도메인 실행은 결과 변수로 분리해 Act와 Assert를 구분했고, 입력·실행 순서·검증 내용은 유지했다. 중괄호 추가로 함수 길이 한도를 넘은 수집 서비스와 경기 파서는 기존 처리를 작은 함수로 분리했다. AGENTS.md와 린트 규칙은 변경하지 않았다.
+
+검증: 제어문 178개와 테스트 콜백 166개의 형식 확인, fmt·lint·타입 검사 통과, 린트 진단 없음. 일반 테스트 429개와 별도 로컬 PostgreSQL 임시 스키마의 DB 통합 테스트 9개가 통과했다.
 
 ## 작업 진행 지침
 

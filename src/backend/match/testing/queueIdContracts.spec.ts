@@ -18,6 +18,7 @@ import type {
 import type { RiotMatchAdapter } from "../infrastructure/riot/RiotMatchAdapter";
 
 it("저장소·클라이언트 계약은 큐를 임의의 number가 아닌 QueueId로 받는다", () => {
+  // Assert
   expectTypeOf<
     Parameters<PlayerMatchRepository["findByMatchIds"]>[1]
   >().toEqualTypeOf<QueueId>();
@@ -29,6 +30,7 @@ it("저장소·클라이언트 계약은 큐를 임의의 number가 아닌 Queue
   >().toEqualTypeOf<QueueId>();
 });
 it("도메인·서비스·구현체도 계약과 같은 QueueId를 유지한다", () => {
+  // Assert
   expectTypeOf<MatchSync["queueId"]>().toEqualTypeOf<QueueId>();
   expectTypeOf<MatchSyncData["queueId"]>().toEqualTypeOf<QueueId>();
   expectTypeOf<
@@ -48,6 +50,7 @@ it("도메인·서비스·구현체도 계약과 같은 QueueId를 유지한다"
   >().toEqualTypeOf<QueueId>();
 });
 it("DB 매핑의 분류 타입도 도메인 타입과 일치한다", () => {
+  // Assert
   expectTypeOf<
     (typeof matchSyncs.$inferSelect)["queueId"]
   >().toEqualTypeOf<QueueId>();

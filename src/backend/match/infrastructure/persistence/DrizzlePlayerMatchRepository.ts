@@ -41,14 +41,19 @@ export class DrizzlePlayerMatchRepository implements PlayerMatchRepository {
       }),
       Result.andThen((rows) => {
         const matches: PlayerMatch[] = [];
+
         for (const row of rows) {
           const classification = storedPlayerMatchSchema.safeParse(row);
-          if (!classification.success)
+
+          if (!classification.success) {
             return Result.fail(
               new MatchRepositoryError({ cause: classification.error }),
             );
+          }
+
           matches.push(new PlayerMatch({ ...row, ...classification.data }));
         }
+
         return Result.succeed(matches);
       }),
     );
@@ -56,7 +61,10 @@ export class DrizzlePlayerMatchRepository implements PlayerMatchRepository {
 
   /** @description 기록과 상태 맵을 함께 원자적으로 저장하며 기존 경기·플레이어 조합은 덮어쓰지 않는다. */
   async saveAll(matches: readonly PlayerMatch[]) {
-    if (matches.length === 0) return Result.succeed(undefined);
+    if (matches.length === 0) {
+      return Result.succeed(undefined);
+    }
+
     return Result.pipe(
       Result.try({
         try: () =>

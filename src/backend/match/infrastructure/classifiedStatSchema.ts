@@ -13,8 +13,10 @@ export function classifiedStatSchema<T extends string | number>(
         input === null ||
         input === undefined ||
         (typeof input === "string" && input.trim() === "")
-      )
+      ) {
         return { status: "NOT_PROVIDED" };
+      }
+
       if (typeof input !== typeof values[0]) {
         context.addIssue({
           code: "custom",
@@ -22,6 +24,7 @@ export function classifiedStatSchema<T extends string | number>(
         });
         return z.NEVER;
       }
+
       if (
         typeof input === "number" &&
         !(Number.isFinite(input) && Number.isInteger(input))
@@ -32,6 +35,7 @@ export function classifiedStatSchema<T extends string | number>(
         });
         return z.NEVER;
       }
+
       const value = values.find((candidate) => candidate === input);
       return value === undefined
         ? { status: "UNKNOWN" }
