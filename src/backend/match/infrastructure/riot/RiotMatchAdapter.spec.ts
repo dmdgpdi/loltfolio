@@ -6,6 +6,7 @@ import { createRiotTimelineResponse as timelineResponse } from "../../testing/cr
 import { RiotMatchAdapter } from "./RiotMatchAdapter";
 
 it("큐·시작 위치·개수를 전달하고 API 키는 헤더로 보낸다", async () => {
+  // Arrange
   const request = vi
     .fn<typeof fetch>()
     .mockResolvedValue(Response.json(["KR_1"]));
@@ -14,10 +15,15 @@ it("큐·시작 위치·개수를 전달하고 API 키는 헤더로 보낸다", 
     region: "ASIA",
     fetch: request,
   });
-  expect(await adapter.findRecentMatchIds("target/id", 420, 20, 40)).toEqual(
-    Result.succeed(["KR_1"]),
-  );
+
+  // Act
+  const result = await adapter.findRecentMatchIds("target/id", 420, 20, 40);
+
+  // Assert
+  expect(result).toEqual(Result.succeed(["KR_1"]));
   const sent = request.mock.calls[0][0] as Request;
+
+  // Assert
   expect(sent.url).toBe(
     "https://asia.api.riotgames.com/lol/match/v5/matches/by-puuid/target%2Fid/ids?queue=420&start=40&count=20",
   );
@@ -25,6 +31,7 @@ it("큐·시작 위치·개수를 전달하고 API 키는 헤더로 보낸다", 
 });
 
 it("경기 상세와 Timeline을 연결한다", async () => {
+  // Arrange
   const request: typeof fetch = async (input) =>
     Response.json(
       (input as Request).url.endsWith("/timeline")
@@ -36,12 +43,17 @@ it("경기 상세와 Timeline을 연결한다", async () => {
     region: "ASIA",
     fetch: request,
   });
+
+  // Act
   const match = Result.unwrap(await adapter.findPlayerMatch("KR_1", "target"));
+
+  // Assert
   expect(match.stats.combat.kills).toEqual({ status: "AVAILABLE", value: 3 });
   expect(match.laningSnapshots).toHaveLength(2);
 });
 
 it("429는 자동 재시도 없이 재시도 가능 시각을 전달한다", async () => {
+  // Arrange
   const request = vi
     .fn<typeof fetch>()
     .mockImplementation(
@@ -54,7 +66,11 @@ it("429는 자동 재시도 없이 재시도 가능 시각을 전달한다", asy
     fetch: request,
   });
   const before = Date.now();
+
+  // Act
   const result = await adapter.findRecentMatchIds("target", 420, 20);
+
+  // Assert
   expect(result).toEqual(Result.fail(expect.any(MatchCollectionError)));
   expect(result).toMatchObject({
     error: { status: 429, reason: "HTTP", retryAvailableAt: expect.any(Date) },
@@ -66,17 +82,22 @@ it("429는 자동 재시도 없이 재시도 가능 시각을 전달한다", asy
 });
 
 it("잘못된 목록 응답은 조회 실패로 변환한다", async () => {
+  // Arrange
   const adapter = new RiotMatchAdapter({
     apiKey: "test-key",
     region: "ASIA",
     fetch: async () => Response.json([123]),
   });
-  expect(await adapter.findRecentMatchIds("target", 420, 20)).toEqual(
-    Result.fail(expect.any(MatchCollectionError)),
-  );
+
+  // Act
+  const result = await adapter.findRecentMatchIds("target", 420, 20);
+
+  // Assert
+  expect(result).toEqual(Result.fail(expect.any(MatchCollectionError)));
 });
 
 it("상세 조회 뒤 취소되면 Timeline의 HTTP 요청을 보내지 않는다", async () => {
+  // Arrange
   const controller = new AbortController();
   const request = vi.fn<typeof fetch>().mockImplementation(async () => {
     controller.abort();
@@ -87,10 +108,13 @@ it("상세 조회 뒤 취소되면 Timeline의 HTTP 요청을 보내지 않는�
     region: "ASIA",
     fetch: request,
   });
-  expect(
-    Result.isFailure(
-      await adapter.findPlayerMatch("KR_1", "target", controller.signal),
-    ),
-  ).toBe(true);
+
+  // Act
+  const isRejected = Result.isFailure(
+    await adapter.findPlayerMatch("KR_1", "target", controller.signal),
+  );
+
+  // Assert
+  expect(isRejected).toBe(true);
   expect(request).toHaveBeenCalledOnce();
 });

@@ -8,7 +8,11 @@ const databaseGlobal = globalThis as typeof globalThis & {
 
 export function getDatabase() {
   const connectionString = process.env.DATABASE_URL;
-  if (!connectionString) throw new Error("DATABASE_URL이 필요합니다.");
+
+  if (!connectionString) {
+    throw new Error("DATABASE_URL이 필요합니다.");
+  }
+
   databaseGlobal.databasePool ??= new Pool({ connectionString });
   return drizzle({ client: databaseGlobal.databasePool });
 }

@@ -116,7 +116,11 @@ export class MatchSync {
     now: Date,
   ): Result.Result<void, MatchSyncNotInProgressError> {
     const completed = this.succeed(now);
-    if (Result.isFailure(completed)) return completed;
+
+    if (Result.isFailure(completed)) {
+      return completed;
+    }
+
     this.currentStatus = "PARTIALLY_SUCCEEDED";
     return completed;
   }

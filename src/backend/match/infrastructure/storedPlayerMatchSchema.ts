@@ -28,7 +28,10 @@ const snapshot = z.object({
 /** @description DB의 원시 컬럼과 별도 상태 컬럼을 조합해 검증한다. 상태가 없는 과거 값도 원본 누락·미등록 분류를 구분해 복원한다. */
 export const storedPlayerMatchSchema = z.preprocess(
   (input) => {
-    if (input === null || typeof input !== "object") return input;
+    if (input === null || typeof input !== "object") {
+      return input;
+    }
+
     const row = z
       .object({
         fieldStates: z
@@ -36,7 +39,11 @@ export const storedPlayerMatchSchema = z.preprocess(
           .default({}),
       })
       .safeParse(input);
-    if (!row.success) return input;
+
+    if (!row.success) {
+      return input;
+    }
+
     return {
       ...input,
       ...Object.fromEntries(

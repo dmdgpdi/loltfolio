@@ -47,41 +47,41 @@ export function parsePlayerMatch(
   puuid: string,
 ): Result.Result<PlayerMatch, MatchCollectionError> {
   const parsed = matchSchema.safeParse(body);
-  if (!parsed.success)
+
+  if (!parsed.success) {
     return Result.fail(
       new MatchCollectionError({
         cause: parsed.error,
         reason: "INVALID_RESPONSE",
       }),
     );
-  if (parsed.data.metadata.matchId !== matchId)
+  }
+
+  if (parsed.data.metadata.matchId !== matchId) {
     return Result.fail(
       new MatchCollectionError({ reason: "INVALID_RESPONSE" }),
     );
+  }
+
   const info = parsed.data.info;
   const participant = selectParticipant(info.participants, puuid);
-  if (Result.isFailure(participant)) return participant;
+
+  if (Result.isFailure(participant)) {
+    return participant;
+  }
+
   const own = participant.value;
   const position = resolveMatchPosition({
     ...info,
     position: own.teamPosition,
   });
-  const opponents = info.participants.flatMap((value) => {
-    const role = roleSchema.safeParse(value);
-    return role.success &&
-      role.data.teamId !== own.teamId &&
-      position.status === "AVAILABLE" &&
-      role.data.teamPosition === position.value &&
-      position.value !== Position.NONE
-      ? [role.data]
-      : [];
-  });
+  const opponentId = selectOpponentId(info.participants, own, position);
   const durationSeconds = resolveDurationSeconds(info);
   return Result.pipe(
     parseLaningSnapshots(timeline, {
       matchId,
       participantId: own.participantId,
-      opponentId: opponents.length === 1 ? opponents[0].participantId : null,
+      opponentId,
       durationSeconds,
     }),
     Result.map((laningSnapshots) =>
@@ -96,6 +96,25 @@ export function parsePlayerMatch(
       }),
     ),
   );
+}
+
+/** @description 확보된 같은 포지션의 유일한 상대만 선택하며 포지션 없음·미확보는 비교하지 않는다. */
+function selectOpponentId(
+  participants: readonly unknown[],
+  own: SelectedParticipant,
+  position: PlayerMatchData["position"],
+): number | null {
+  const opponents = participants.flatMap((value) => {
+    const role = roleSchema.safeParse(value);
+    return role.success &&
+      role.data.teamId !== own.teamId &&
+      position.status === "AVAILABLE" &&
+      role.data.teamPosition === position.value &&
+      position.value !== Position.NONE
+      ? [role.data]
+      : [];
+  });
+  return opponents.length === 1 ? opponents[0].participantId : null;
 }
 
 /** @description 검증된 경기·참가자 정보와 시간 표본을 조립하는 입력이다. */
@@ -158,18 +177,24 @@ function selectParticipant(
     const id = identitySchema.safeParse(value);
     return id.success && id.data.puuid === puuid;
   });
-  if (targets.length !== 1)
+
+  if (targets.length !== 1) {
     return Result.fail(
       new MatchCollectionError({ reason: "INVALID_RESPONSE" }),
     );
+  }
+
   const participant = participantSchema.safeParse(targets[0]);
-  if (!participant.success)
+
+  if (!participant.success) {
     return Result.fail(
       new MatchCollectionError({
         cause: participant.error,
         reason: "INVALID_RESPONSE",
       }),
     );
+  }
+
   return Result.succeed(participant.data);
 }
 
