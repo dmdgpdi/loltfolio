@@ -45,6 +45,8 @@
 - Add relative Markdown links to relevant `docs/` files under the Documentation Index below.
 - Update or remove navigation links when documents change or are deleted.
 - Do not duplicate detailed documentation in AGENTS.md.
+- Before starting work, briefly record its scope and approach in the relevant `docs/` document.
+- After completing work, update the relevant documents and remove completed items from their remaining-work lists.
 
 ### Documentation Index
 
