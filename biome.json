@@ -23,6 +23,14 @@
     "enabled": true,
     "rules": {
       "recommended": true,
+      "complexity": "on",
+      "security": {
+        "noBlankTarget": "on",
+        "noDangerouslySetInnerHtml": "on",
+        "noDangerouslySetInnerHtmlWithChildren": "on",
+        "noGlobalEval": "on",
+        "noSecrets": "off"
+      },
       "nursery": {
         "useSortedClasses": {
           "level": "warn",
@@ -36,9 +44,11 @@
     }
   },
   "assist": {
+    "enabled": true,
     "actions": {
       "source": {
-        "organizeImports": "on"
+        "organizeImports": "on",
+        "useSortedAttributes": "on"
       }
     }
   }
