@@ -24,7 +24,7 @@ export function classifiedStatSchema<T extends string | number>(
       }
       if (
         typeof input === "number" &&
-        (!Number.isFinite(input) || !Number.isInteger(input))
+        !(Number.isFinite(input) && Number.isInteger(input))
       ) {
         context.addIssue({
           code: "custom",

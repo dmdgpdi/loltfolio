@@ -15,7 +15,11 @@ import { DrizzlePlayerMatchRepository } from "./DrizzlePlayerMatchRepository";
 
 const connectionString = process.env.MATCH_DB_TEST_URL;
 
-describe.skipIf(!connectionString)("로컬 PostgreSQL 경기 저장소", () => {
+/** @description 수집 상태 테스트의 기준 시각을 분 단위로 만든다. */
+const at = (minute: number) => new Date(Date.UTC(2026, 9, 30, 0, minute));
+
+/** @description 테스트 그룹마다 로컬 임시 스키마와 저장소를 준비하고 기존 생명주기 훅을 등록한다. */
+function createRepositoryContext() {
   const schema = `match_test_${crypto.randomUUID().replaceAll("-", "")}`;
   const admin = new Pool({ connectionString });
   const pool = new Pool({
@@ -25,7 +29,6 @@ describe.skipIf(!connectionString)("로컬 PostgreSQL 경기 저장소", () => {
   const db = drizzle({ client: pool });
   const syncs = new DrizzleMatchSyncRepository(db);
   const matches = new DrizzlePlayerMatchRepository(db);
-  const at = (minute: number) => new Date(Date.UTC(2026, 9, 30, 0, minute));
 
   let schemaCreated = false;
 
@@ -55,6 +58,15 @@ describe.skipIf(!connectionString)("로컬 PostgreSQL 경기 저장소", () => {
     await admin.end();
   });
 
+  return { pool, syncs, matches };
+}
+
+/** @description 동일 임시 스키마를 사용하는 저장소 검증의 실행 문맥이다. */
+type RepositoryTestContext = ReturnType<typeof createRepositoryContext>;
+
+/** @description 동시 요청 중 단 하나의 시작만 DB가 허용하는지 검증한다. */
+function registerConcurrentStartTest(context: RepositoryTestContext) {
+  const { syncs } = context;
   it("같은 플레이어·큐의 동시 요청 중 하나만 시작한다", async () => {
     const results = await Promise.all(
       Array.from({ length: 12 }, () => syncs.tryStart("player", 420, at(0))),
@@ -67,7 +79,11 @@ describe.skipIf(!connectionString)("로컬 PostgreSQL 경기 저장소", () => {
       ),
     ).toBeInstanceOf(MatchSyncStartNotAllowedError);
   });
+}
 
+/** @description 큐별 대기와 성공 시각 기준 경계의 독립성을 검증한다. */
+function registerQueueCooldownTest(context: RepositoryTestContext) {
+  const { syncs } = context;
   it("큐별 제한과 20분 경계를 DB에서 보장한다", async () => {
     const started = Result.unwrap(await syncs.tryStart("player", 420, at(0)));
     Result.unwrap(started.succeed(at(1)));
@@ -82,7 +98,11 @@ describe.skipIf(!connectionString)("로컬 PostgreSQL 경기 저장소", () => {
     const next = Result.unwrap(await syncs.tryStart("player", 420, at(21)));
     expect(next.lastSucceededAt).toEqual(at(1));
   });
+}
 
+/** @description 실패 후에도 이전 성공 시각과 API 재시도 제한을 보존하는지 검증한다. */
+function registerFailureRetryTest(context: RepositoryTestContext) {
+  const { syncs } = context;
   it("실패 시 성공 시각을 보존하고 재시도 제한을 적용한다", async () => {
     const first = Result.unwrap(await syncs.tryStart("player", 420, at(0)));
     Result.unwrap(first.succeed(at(0)));
@@ -97,7 +117,11 @@ describe.skipIf(!connectionString)("로컬 PostgreSQL 경기 저장소", () => {
     const next = Result.unwrap(await syncs.tryStart("player", 420, at(30)));
     expect(next.lastSucceededAt).toEqual(at(0));
   });
+}
 
+/** @description 과거 작업의 완료 요청이 새 작업 상태를 덮어쓰지 않는지 검증한다. */
+function registerStaleCompletionTest(context: RepositoryTestContext) {
+  const { pool, syncs } = context;
   it("이전 시도의 완료 요청은 새 진행 상태를 덮어쓰지 않는다", async () => {
     const first = Result.unwrap(await syncs.tryStart("player", 420, at(0)));
     Result.unwrap(first.fail());
@@ -108,7 +132,11 @@ describe.skipIf(!connectionString)("로컬 PostgreSQL 경기 저장소", () => {
     const stored = await pool.query("SELECT status FROM match_syncs");
     expect(stored.rows[0].status).toBe("IN_PROGRESS");
   });
+}
 
+/** @description 값의 제공 상태가 SQL·JSONB 왕복 후에도 보존되는지 검증한다. */
+function registerStatPersistenceTest(context: RepositoryTestContext) {
+  const { pool, matches } = context;
   it("확보·미제공·판별 불가 상태를 SQL과 JSONB에 저장하고 복원한다", async () => {
     const data = createPlayerMatchData({
       gameId: { status: "NOT_PROVIDED" },
@@ -128,6 +156,11 @@ describe.skipIf(!connectionString)("로컬 PostgreSQL 경기 저장소", () => {
     expect(row.field_states.gameId).toBe("NOT_PROVIDED");
     expect(row.field_states.gameMode).toBe("UNKNOWN");
   });
+}
+
+/** @description 중복 저장이 기존 성공 데이터를 바꾸지 않는지 검증한다. */
+function registerDuplicateSaveTest(context: RepositoryTestContext) {
+  const { matches } = context;
   it("중복 저장은 기존 기록을 덮어쓰지 않고 플레이어별로 구분한다", async () => {
     Result.unwrap(
       await matches.saveAll([new PlayerMatch(createPlayerMatchData())]),
@@ -151,6 +184,11 @@ describe.skipIf(!connectionString)("로컬 PostgreSQL 경기 저장소", () => {
       Result.unwrap(await matches.findByMatchIds("player", 440, ["KR_1"])),
     ).toHaveLength(0);
   });
+}
+
+/** @description 원본 응답에서 수집과 저장까지 연결한 동작을 검증한다. */
+function registerCollectionPersistenceTest(context: RepositoryTestContext) {
+  const { syncs, matches } = context;
   it("원본 응답부터 서비스와 DB까지 상태를 보존한다", async () => {
     const adapter = new RiotMatchAdapter({
       apiKey: "test-key",
@@ -179,6 +217,11 @@ describe.skipIf(!connectionString)("로컬 PostgreSQL 경기 저장소", () => {
       Result.fail(expect.any(MatchSyncStartNotAllowedError)),
     );
   });
+}
+
+/** @description 기존 원시 값과 미등록 분류의 상태 복원을 검증한다. */
+function registerLegacyRestoreTest(context: RepositoryTestContext) {
+  const { pool, matches } = context;
   it("기존 원시 NULL과 미등록 분류는 명시적인 상태로 복원한다", async () => {
     Result.unwrap(
       await matches.saveAll([new PlayerMatch(createPlayerMatchData())]),
@@ -193,6 +236,11 @@ describe.skipIf(!connectionString)("로컬 PostgreSQL 경기 저장소", () => {
     expect(restored.position).toEqual({ status: "UNKNOWN" });
     expect(restored.gameMode).toEqual({ status: "UNKNOWN" });
   });
+}
+
+/** @description 부분 성공 저장 이후에도 성공 기준 대기가 유지되는지 검증한다. */
+function registerPartialSuccessTest(context: RepositoryTestContext) {
+  const { pool, syncs } = context;
   it("부분 성공을 DB에 저장하고 성공 시각 기준 20분 제한을 유지한다", async () => {
     const sync = Result.unwrap(await syncs.tryStart("partial", 420, at(0)));
     Result.unwrap(sync.partiallySucceed(at(1)));
@@ -208,4 +256,17 @@ describe.skipIf(!connectionString)("로컬 PostgreSQL 경기 저장소", () => {
     const next = Result.unwrap(await syncs.tryStart("partial", 420, at(21)));
     expect(next.lastSucceededAt).toEqual(at(1));
   });
+}
+
+describe.skipIf(!connectionString)("로컬 PostgreSQL 경기 저장소", () => {
+  const context = createRepositoryContext();
+  registerConcurrentStartTest(context);
+  registerQueueCooldownTest(context);
+  registerFailureRetryTest(context);
+  registerStaleCompletionTest(context);
+  registerStatPersistenceTest(context);
+  registerDuplicateSaveTest(context);
+  registerCollectionPersistenceTest(context);
+  registerLegacyRestoreTest(context);
+  registerPartialSuccessTest(context);
 });

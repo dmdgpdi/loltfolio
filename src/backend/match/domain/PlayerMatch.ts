@@ -1,5 +1,6 @@
 import { emptyPlayerMatchStats } from "./emptyPlayerMatchStats";
 import { freezeMatchValue } from "./freezeMatchValue";
+import { freezeProvidedMatchValue } from "./freezeProvidedMatchValue";
 import { Position as PositionValues } from "./Position";
 import { resolveMatchPosition } from "./resolveMatchPosition";
 import type { GameMode } from "./types/GameMode.type";
@@ -65,45 +66,37 @@ export class PlayerMatch {
         ? { status: "AVAILABLE", value: startedAt.value.getTime() }
         : startedAt,
     );
-    this.champion = freezeMatchValue(
-      data.champion ?? { status: "NOT_PROVIDED" },
-    );
+    this.champion = freezeProvidedMatchValue(data.champion);
     this.position = freezeMatchValue(resolveMatchPosition(data));
-    this.win = freezeMatchValue(data.win ?? { status: "NOT_PROVIDED" });
-    this.gameId = freezeMatchValue(data.gameId ?? { status: "NOT_PROVIDED" });
-    this.gameMode = freezeMatchValue(
-      data.gameMode ?? { status: "NOT_PROVIDED" },
+    this.win = freezeProvidedMatchValue(data.win);
+    this.gameId = freezeProvidedMatchValue(data.gameId);
+    this.gameMode = freezeProvidedMatchValue(data.gameMode);
+    this.mapId = freezeProvidedMatchValue(data.mapId);
+    this.gameVersion = freezeProvidedMatchValue(data.gameVersion);
+    this.durationSeconds = freezeProvidedMatchValue(data.durationSeconds);
+    this.endOfGameResult = freezeProvidedMatchValue(data.endOfGameResult);
+    this.gameEndedInEarlySurrender = freezeProvidedMatchValue(
+      data.gameEndedInEarlySurrender,
     );
-    this.mapId = freezeMatchValue(data.mapId ?? { status: "NOT_PROVIDED" });
-    this.gameVersion = freezeMatchValue(
-      data.gameVersion ?? { status: "NOT_PROVIDED" },
+    this.gameEndedInSurrender = freezeProvidedMatchValue(
+      data.gameEndedInSurrender,
     );
-    this.durationSeconds = freezeMatchValue(
-      data.durationSeconds ?? { status: "NOT_PROVIDED" },
-    );
-    this.endOfGameResult = freezeMatchValue(
-      data.endOfGameResult ?? { status: "NOT_PROVIDED" },
-    );
-    this.gameEndedInEarlySurrender = freezeMatchValue(
-      data.gameEndedInEarlySurrender ?? { status: "NOT_PROVIDED" },
-    );
-    this.gameEndedInSurrender = freezeMatchValue(
-      data.gameEndedInSurrender ?? { status: "NOT_PROVIDED" },
-    );
-    this.championId = freezeMatchValue(
-      data.championId ?? { status: "NOT_PROVIDED" },
-    );
-    this.summoner1Id = freezeMatchValue(
-      data.summoner1Id ?? { status: "NOT_PROVIDED" },
-    );
-    this.summoner2Id = freezeMatchValue(
-      data.summoner2Id ?? { status: "NOT_PROVIDED" },
-    );
+    this.championId = freezeProvidedMatchValue(data.championId);
+    this.summoner1Id = freezeProvidedMatchValue(data.summoner1Id);
+    this.summoner2Id = freezeProvidedMatchValue(data.summoner2Id);
     this.stats = freezeMatchValue(data.stats ?? emptyPlayerMatchStats());
+    this.laningSnapshots = this.normalizeLaningSnapshots(data);
+    Object.freeze(this);
+  }
+
+  /** @description 누락 시점과 포지션 비교 불가 상태를 보존하며 입력 표본을 동결한다. */
+  private normalizeLaningSnapshots(
+    data: PlayerMatchData,
+  ): readonly LaningSnapshot[] {
     const canCompare =
       this.position.status === "AVAILABLE" &&
       this.position.value !== PositionValues.NONE;
-    this.laningSnapshots = freezeMatchValue(
+    return freezeMatchValue(
       ([10, 15] as const)
         .map(
           (minute) =>
@@ -123,7 +116,6 @@ export class PlayerMatch {
             : { status: "UNKNOWN" },
         })),
     );
-    Object.freeze(this);
   }
 
   /** @description 종료 결과와 초반 항복 여부가 모두 확보되고 정상 완료·초반 항복 아님이 확인된 경기만 분석한다. */
