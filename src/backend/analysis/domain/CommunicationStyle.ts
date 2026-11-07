@@ -28,11 +28,17 @@ export class CommunicationStyle {
       "assistMe",
     ] as const satisfies readonly CommunicationPing[];
     const entries: [CommunicationPing, PingUsage][] = [];
+
     for (const kind of kinds) {
       const usage = CommunicationStyle.analyzePing(records, kind);
-      if (Result.isFailure(usage)) return usage;
+
+      if (Result.isFailure(usage)) {
+        return usage;
+      }
+
       entries.push([kind, usage.value]);
     }
+
     // 위의 고정 목록에서 모든 종류를 한 번씩 구성한다.
     const pings = Object.fromEntries(entries) as Record<
       CommunicationPing,
@@ -53,6 +59,7 @@ export class CommunicationStyle {
     let unknownCount = 0;
     let total = 0;
     let maximum = 0;
+
     for (const record of records) {
       const count = record[kind];
 
@@ -68,11 +75,13 @@ export class CommunicationStyle {
         ) {
           return Result.fail(new InvalidPingCountError());
         }
+
         sampleCount += 1;
         total += count.value;
         maximum = Math.max(maximum, count.value);
       }
     }
+
     const coverage = { sampleCount, notProvidedCount, unknownCount };
     const usage: PingUsage =
       sampleCount === 0

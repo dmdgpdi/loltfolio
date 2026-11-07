@@ -18,7 +18,8 @@ function record(overrides: Partial<StructureRecord> = {}): StructureRecord {
 }
 
 it("포탑·방패·억제기를 각자의 표본에서 계산한다", () => {
-  const result = StructureStyle.analyze([
+  // Arrange
+  const records = [
     record({
       towerTakedowns: { status: "AVAILABLE", value: 0 },
       towerPlates: { status: "AVAILABLE", value: 5 },
@@ -32,8 +33,16 @@ it("포탑·방패·억제기를 각자의 표본에서 계산한다", () => {
     record({ towerTakedowns: { status: "AVAILABLE", value: 2 } }),
     record({ towerTakedowns: { status: "UNKNOWN" } }),
     record(),
-  ]);
-  if (Result.isFailure(result)) throw result.error;
+  ] satisfies Parameters<typeof StructureStyle.analyze>[0];
+
+  // Act
+  const result = StructureStyle.analyze(records);
+
+  if (Result.isFailure(result)) {
+    throw result.error;
+  }
+
+  // Assert
   expect(result.value.matchCount).toBe(5);
   expect(result.value.activities.towerTakedowns).toEqual({
     status: "AVAILABLE",
@@ -80,10 +89,19 @@ it.each(
     })),
   ),
 )("첫 포탑 OR 판정: %j", ({ kill, assist, participated, known }) => {
-  const result = StructureStyle.analyze([
+  // Arrange
+  const records = [
     record({ firstTowerKill: kill, firstTowerAssist: assist }),
-  ]);
-  if (Result.isFailure(result)) throw result.error;
+  ] satisfies Parameters<typeof StructureStyle.analyze>[0];
+
+  // Act
+  const result = StructureStyle.analyze(records);
+
+  if (Result.isFailure(result)) {
+    throw result.error;
+  }
+
+  // Assert
   expect(result.value.firstTowerParticipation).toEqual(
     known
       ? {
@@ -97,13 +115,22 @@ it.each(
 });
 
 it("직접 파괴와 도움을 중복 합산하지 않고 판정 불가를 분모에서 뺀다", () => {
-  const result = StructureStyle.analyze([
+  // Arrange
+  const records = [
     record({ firstTowerKill: flags[0], firstTowerAssist: flags[0] }),
     record({ firstTowerKill: flags[1], firstTowerAssist: flags[1] }),
     record({ firstTowerKill: flags[1], firstTowerAssist: flags[2] }),
     record({ firstTowerKill: flags[0], firstTowerAssist: flags[3] }),
-  ]);
-  if (Result.isFailure(result)) throw result.error;
+  ] satisfies Parameters<typeof StructureStyle.analyze>[0];
+
+  // Act
+  const result = StructureStyle.analyze(records);
+
+  if (Result.isFailure(result)) {
+    throw result.error;
+  }
+
+  // Assert
   expect(result.value.firstTowerParticipation).toEqual({
     status: "AVAILABLE",
     sampleCount: 3,
@@ -113,10 +140,21 @@ it("직접 파괴와 도움을 중복 합산하지 않고 판정 불가를 분�
 });
 
 it("빈 입력은 모든 행동과 관여를 계산 불가로 반환한다", () => {
-  const result = StructureStyle.analyze([]);
-  if (Result.isFailure(result)) throw result.error;
+  // Arrange
+  const records = [] satisfies Parameters<typeof StructureStyle.analyze>[0];
+
+  // Act
+  const result = StructureStyle.analyze(records);
+
+  if (Result.isFailure(result)) {
+    throw result.error;
+  }
+
+  // Assert
   expect(result.value.matchCount).toBe(0);
+
   for (const activity of Object.values(result.value.activities)) {
+    // Assert
     expect(activity).toEqual({
       status: "UNAVAILABLE",
       sampleCount: 0,
@@ -124,6 +162,7 @@ it("빈 입력은 모든 행동과 관여를 계산 불가로 반환한다", () 
       unknownCount: 0,
     });
   }
+
   expect(result.value.firstTowerParticipation).toEqual({
     status: "UNAVAILABLE",
     sampleCount: 0,
@@ -132,11 +171,20 @@ it("빈 입력은 모든 행동과 관여를 계산 불가로 반환한다", () 
 });
 
 it("모든 유효 관측이 0이어도 계산 가능하다", () => {
-  const result = StructureStyle.analyze([
+  // Arrange
+  const records = [
     record({ towerTakedowns: { status: "AVAILABLE", value: 0 } }),
     record(),
-  ]);
-  if (Result.isFailure(result)) throw result.error;
+  ] satisfies Parameters<typeof StructureStyle.analyze>[0];
+
+  // Act
+  const result = StructureStyle.analyze(records);
+
+  if (Result.isFailure(result)) {
+    throw result.error;
+  }
+
+  // Assert
   expect(result.value.activities.towerTakedowns).toEqual({
     status: "AVAILABLE",
     sampleCount: 1,
@@ -155,39 +203,66 @@ it.each([
   Number.POSITIVE_INFINITY,
   Number.MAX_SAFE_INTEGER + 1,
 ])("잘못된 구조물 횟수를 거부한다: %s", (value) => {
+  // Arrange: 각 경우의 입력을 순회한다.
   for (const kind of [
     "towerTakedowns",
     "towerPlates",
     "inhibitorTakedowns",
   ] as const) {
-    const result = StructureStyle.analyze([
+    // Arrange
+    const records = [
       record({ [kind]: { status: "AVAILABLE", value } }),
-    ]);
+    ] satisfies Parameters<typeof StructureStyle.analyze>[0];
+
+    // Act
+    const result = StructureStyle.analyze(records);
+
+    // Assert
     expect(Result.isFailure(result)).toBe(true);
-    if (Result.isSuccess(result)) throw new Error("expected failure");
+
+    if (Result.isSuccess(result)) {
+      throw new Error("expected failure");
+    }
+
+    // Assert
     expect(result.error).toBeInstanceOf(InvalidStructureCountError);
   }
 });
 
 it("합계를 안전하게 표현할 수 없으면 실패한다", () => {
-  const result = StructureStyle.analyze([
+  // Arrange
+  const records = [
     record({
       towerPlates: { status: "AVAILABLE", value: Number.MAX_SAFE_INTEGER },
     }),
     record({ towerPlates: { status: "AVAILABLE", value: 1 } }),
-  ]);
+  ] satisfies Parameters<typeof StructureStyle.analyze>[0];
+
+  // Act
+  const result = StructureStyle.analyze(records);
+
+  // Assert
   expect(Result.isFailure(result)).toBe(true);
 });
 
 it("결과는 원본 변경과 분리된 불변 값이다", () => {
+  // Arrange
   const count = { status: "AVAILABLE" as const, value: 3 };
   const flag = { status: "AVAILABLE" as const, value: true };
   const records = [record({ towerTakedowns: count, firstTowerKill: flag })];
+
+  // Act
   const result = StructureStyle.analyze(records);
-  if (Result.isFailure(result)) throw result.error;
+
+  if (Result.isFailure(result)) {
+    throw result.error;
+  }
+
   count.value = 99;
   flag.value = false;
   records.length = 0;
+
+  // Assert
   expect(result.value.matchCount).toBe(1);
   expect(result.value.activities.towerTakedowns).toMatchObject({ total: 3 });
   expect(result.value.firstTowerParticipation).toMatchObject({

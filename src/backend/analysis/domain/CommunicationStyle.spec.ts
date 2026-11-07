@@ -21,7 +21,8 @@ function record(
 }
 
 it("종류별 평균·최다·합계는 해당 관측만 사용하고 실제 0을 포함한다", () => {
-  const result = CommunicationStyle.analyze([
+  // Arrange
+  const records = [
     record({
       enemyMissing: { status: "AVAILABLE", value: 0 },
       danger: { status: "AVAILABLE", value: 7 },
@@ -30,11 +31,16 @@ it("종류별 평균·최다·합계는 해당 관측만 사용하고 실제 0�
     record({ enemyMissing: { status: "AVAILABLE", value: 2 } }),
     record({ enemyMissing: { status: "UNKNOWN" } }),
     record(),
-  ]);
+  ] satisfies Parameters<typeof CommunicationStyle.analyze>[0];
+
+  // Act
+  const result = CommunicationStyle.analyze(records);
+
   if (Result.isFailure(result)) {
     throw result.error;
   }
 
+  // Assert
   expect(result.value.matchCount).toBe(5);
   expect(result.value.pings.enemyMissing).toEqual({
     status: "AVAILABLE",
@@ -57,13 +63,22 @@ it("종류별 평균·최다·합계는 해당 관측만 사용하고 실제 0�
 });
 
 it("유효 관측 0개와 사용 횟수가 0인 관측을 구분한다", () => {
-  const result = CommunicationStyle.analyze([
+  // Arrange
+  const records = [
     record({
       enemyMissing: { status: "AVAILABLE", value: 0 },
       danger: { status: "UNKNOWN" },
     }),
-  ]);
-  if (Result.isFailure(result)) throw result.error;
+  ] satisfies Parameters<typeof CommunicationStyle.analyze>[0];
+
+  // Act
+  const result = CommunicationStyle.analyze(records);
+
+  if (Result.isFailure(result)) {
+    throw result.error;
+  }
+
+  // Assert
   expect(result.value.pings.enemyMissing).toEqual({
     status: "AVAILABLE",
     sampleCount: 1,
@@ -88,11 +103,22 @@ it("유효 관측 0개와 사용 횟수가 0인 관측을 구분한다", () => {
 });
 
 it("빈 경기 목록은 모든 종류에서 계산 불가다", () => {
-  const result = CommunicationStyle.analyze([]);
-  if (Result.isFailure(result)) throw result.error;
+  // Arrange
+  const records = [] satisfies Parameters<typeof CommunicationStyle.analyze>[0];
+
+  // Act
+  const result = CommunicationStyle.analyze(records);
+
+  if (Result.isFailure(result)) {
+    throw result.error;
+  }
+
+  // Assert
   expect(result.value.matchCount).toBe(0);
   expect(Object.keys(result.value.pings)).toHaveLength(7);
+
   for (const usage of Object.values(result.value.pings)) {
+    // Assert
     expect(usage).toEqual({
       status: "UNAVAILABLE",
       sampleCount: 0,
@@ -103,7 +129,8 @@ it("빈 경기 목록은 모든 종류에서 계산 불가다", () => {
 });
 
 it("후퇴·getBack과 이동·총공격은 개별 사용량을 유지한다", () => {
-  const result = CommunicationStyle.analyze([
+  // Arrange
+  const records = [
     record({
       retreat: { status: "AVAILABLE", value: 2 },
       getBack: { status: "AVAILABLE", value: 3 },
@@ -111,8 +138,15 @@ it("후퇴·getBack과 이동·총공격은 개별 사용량을 유지한다", (
       allIn: { status: "AVAILABLE", value: 6 },
       assistMe: { status: "AVAILABLE", value: 8 },
     }),
-  ]);
-  if (Result.isFailure(result)) throw result.error;
+  ] satisfies Parameters<typeof CommunicationStyle.analyze>[0];
+
+  // Act
+  const result = CommunicationStyle.analyze(records);
+
+  if (Result.isFailure(result)) {
+    throw result.error;
+  }
+
   for (const [kind, total] of [
     ["retreat", 2],
     ["getBack", 3],
@@ -120,6 +154,7 @@ it("후퇴·getBack과 이동·총공격은 개별 사용량을 유지한다", (
     ["allIn", 6],
     ["assistMe", 8],
   ] as const) {
+    // Assert
     expect(result.value.pings[kind]).toMatchObject({
       status: "AVAILABLE",
       total,
@@ -136,29 +171,55 @@ it.each([
   Number.POSITIVE_INFINITY,
   Number.MAX_SAFE_INTEGER + 1,
 ])("잘못된 횟수를 미제공으로 숨기지 않는다: %s", (value) => {
-  const result = CommunicationStyle.analyze([
+  // Arrange
+  const records = [
     record({ enemyMissing: { status: "AVAILABLE", value } }),
-  ]);
+  ] satisfies Parameters<typeof CommunicationStyle.analyze>[0];
+
+  // Act
+  const result = CommunicationStyle.analyze(records);
+
+  // Assert
   expect(Result.isFailure(result)).toBe(true);
-  if (Result.isSuccess(result)) throw new Error("expected failure");
+
+  if (Result.isSuccess(result)) {
+    throw new Error("expected failure");
+  }
+
+  // Assert
   expect(result.error).toBeInstanceOf(InvalidPingCountError);
 });
 
 it("합계의 정밀도를 잃는 입력을 거부한다", () => {
-  const result = CommunicationStyle.analyze([
+  // Arrange
+  const records = [
     record({ danger: { status: "AVAILABLE", value: Number.MAX_SAFE_INTEGER } }),
     record({ danger: { status: "AVAILABLE", value: 1 } }),
-  ]);
+  ] satisfies Parameters<typeof CommunicationStyle.analyze>[0];
+
+  // Act
+  const result = CommunicationStyle.analyze(records);
+
+  // Assert
   expect(Result.isFailure(result)).toBe(true);
 });
 
 it("원본이 변경되어도 분석 결과는 바뀌지 않는다", () => {
+  // Arrange
   const count = { status: "AVAILABLE" as const, value: 4 };
   const records = [record({ enemyMissing: count })];
+
+  // Act
   const result = CommunicationStyle.analyze(records);
-  if (Result.isFailure(result)) throw result.error;
+
+  if (Result.isFailure(result)) {
+    throw result.error;
+  }
+
   count.value = 99;
   records.length = 0;
+
+  // Assert
   expect(result.value.matchCount).toBe(1);
   expect(result.value.pings.enemyMissing).toMatchObject({ total: 4 });
   expect(Object.isFrozen(result.value)).toBe(true);

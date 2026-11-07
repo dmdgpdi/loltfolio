@@ -16,7 +16,8 @@ function record(overrides: Partial<VisionRecord> = {}): VisionRecord {
 }
 
 it("구매와 설치를 구분하고 미구매는 실제 0에서만 센다", () => {
-  const result = VisionStyle.analyze([
+  // Arrange
+  const records = [
     record({
       controlWardsBought: { status: "AVAILABLE", value: 0 },
       wardsPlaced: { status: "AVAILABLE", value: 12 },
@@ -25,8 +26,16 @@ it("구매와 설치를 구분하고 미구매는 실제 0에서만 센다", () 
     record({ controlWardsBought: { status: "AVAILABLE", value: 2 } }),
     record({ controlWardsBought: { status: "UNKNOWN" } }),
     record(),
-  ]);
-  if (Result.isFailure(result)) throw result.error;
+  ] satisfies Parameters<typeof VisionStyle.analyze>[0];
+
+  // Act
+  const result = VisionStyle.analyze(records);
+
+  if (Result.isFailure(result)) {
+    throw result.error;
+  }
+
+  // Assert
   expect(result.value.matchCount).toBe(5);
   expect(result.value.activities.controlWardsBought).toEqual({
     status: "AVAILABLE",
@@ -49,7 +58,8 @@ it("구매와 설치를 구분하고 미구매는 실제 0에서만 센다", () 
 });
 
 it("와드 제거와 20분 전 제거 관여는 서로 다른 관측이다", () => {
-  const result = VisionStyle.analyze([
+  // Arrange
+  const records = [
     record({
       wardsRemoved: { status: "AVAILABLE", value: 8 },
       wardTakedownsBefore20Minutes: { status: "AVAILABLE", value: 2 },
@@ -58,8 +68,16 @@ it("와드 제거와 20분 전 제거 관여는 서로 다른 관측이다", () 
       wardsRemoved: { status: "AVAILABLE", value: 0 },
       wardTakedownsBefore20Minutes: { status: "UNKNOWN" },
     }),
-  ]);
-  if (Result.isFailure(result)) throw result.error;
+  ] satisfies Parameters<typeof VisionStyle.analyze>[0];
+
+  // Act
+  const result = VisionStyle.analyze(records);
+
+  if (Result.isFailure(result)) {
+    throw result.error;
+  }
+
+  // Assert
   expect(result.value.activities.wardsRemoved).toEqual({
     status: "AVAILABLE",
     sampleCount: 2,
@@ -81,11 +99,20 @@ it("와드 제거와 20분 전 제거 관여는 서로 다른 관측이다", () 
 });
 
 it("모두 0인 구매 기록도 유효한 관측이며 미제공을 미구매로 세지 않는다", () => {
-  const result = VisionStyle.analyze([
+  // Arrange
+  const records = [
     record({ controlWardsBought: { status: "AVAILABLE", value: 0 } }),
     record(),
-  ]);
-  if (Result.isFailure(result)) throw result.error;
+  ] satisfies Parameters<typeof VisionStyle.analyze>[0];
+
+  // Act
+  const result = VisionStyle.analyze(records);
+
+  if (Result.isFailure(result)) {
+    throw result.error;
+  }
+
+  // Assert
   expect(result.value.activities.controlWardsBought).toEqual({
     status: "AVAILABLE",
     sampleCount: 1,
@@ -98,11 +125,22 @@ it("모두 0인 구매 기록도 유효한 관측이며 미제공을 미구매�
 });
 
 it("빈 입력은 미구매 0회가 아니라 계산 불가다", () => {
-  const result = VisionStyle.analyze([]);
-  if (Result.isFailure(result)) throw result.error;
+  // Arrange
+  const records = [] satisfies Parameters<typeof VisionStyle.analyze>[0];
+
+  // Act
+  const result = VisionStyle.analyze(records);
+
+  if (Result.isFailure(result)) {
+    throw result.error;
+  }
+
+  // Assert
   expect(result.value.matchCount).toBe(0);
   expect(Object.keys(result.value.activities)).toHaveLength(4);
+
   for (const activity of Object.values(result.value.activities)) {
+    // Assert
     expect(activity).toEqual({
       status: "UNAVAILABLE",
       sampleCount: 0,
@@ -113,11 +151,20 @@ it("빈 입력은 미구매 0회가 아니라 계산 불가다", () => {
 });
 
 it("유효 관측이 없으면 상태별 표본 수만 반환한다", () => {
-  const result = VisionStyle.analyze([
+  // Arrange
+  const records = [
     record(),
     record({ controlWardsBought: { status: "UNKNOWN" } }),
-  ]);
-  if (Result.isFailure(result)) throw result.error;
+  ] satisfies Parameters<typeof VisionStyle.analyze>[0];
+
+  // Act
+  const result = VisionStyle.analyze(records);
+
+  if (Result.isFailure(result)) {
+    throw result.error;
+  }
+
+  // Assert
   expect(result.value.activities.controlWardsBought).toEqual({
     status: "UNAVAILABLE",
     sampleCount: 0,
@@ -133,38 +180,65 @@ it.each([
   Number.POSITIVE_INFINITY,
   Number.MAX_SAFE_INTEGER + 1,
 ])("잘못된 와드 횟수를 거부한다: %s", (value) => {
+  // Arrange: 각 경우의 입력을 순회한다.
   for (const kind of [
     "controlWardsBought",
     "wardsPlaced",
     "wardsRemoved",
     "wardTakedownsBefore20Minutes",
   ] as const) {
-    const result = VisionStyle.analyze([
+    // Arrange
+    const records = [
       record({ [kind]: { status: "AVAILABLE", value } }),
-    ]);
+    ] satisfies Parameters<typeof VisionStyle.analyze>[0];
+
+    // Act
+    const result = VisionStyle.analyze(records);
+
+    // Assert
     expect(Result.isFailure(result)).toBe(true);
-    if (Result.isSuccess(result)) throw new Error("expected failure");
+
+    if (Result.isSuccess(result)) {
+      throw new Error("expected failure");
+    }
+
+    // Assert
     expect(result.error).toBeInstanceOf(InvalidVisionCountError);
   }
 });
 
 it("합계의 정밀도를 잃으면 실패한다", () => {
-  const result = VisionStyle.analyze([
+  // Arrange
+  const records = [
     record({
       wardsRemoved: { status: "AVAILABLE", value: Number.MAX_SAFE_INTEGER },
     }),
     record({ wardsRemoved: { status: "AVAILABLE", value: 1 } }),
-  ]);
+  ] satisfies Parameters<typeof VisionStyle.analyze>[0];
+
+  // Act
+  const result = VisionStyle.analyze(records);
+
+  // Assert
   expect(Result.isFailure(result)).toBe(true);
 });
 
 it("결과는 원본 변경에 영향받지 않는 불변 값이다", () => {
+  // Arrange
   const count = { status: "AVAILABLE" as const, value: 3 };
   const records = [record({ wardsPlaced: count })];
+
+  // Act
   const result = VisionStyle.analyze(records);
-  if (Result.isFailure(result)) throw result.error;
+
+  if (Result.isFailure(result)) {
+    throw result.error;
+  }
+
   count.value = 99;
   records.length = 0;
+
+  // Assert
   expect(result.value.matchCount).toBe(1);
   expect(result.value.activities.wardsPlaced).toMatchObject({ total: 3 });
   expect(Object.isFrozen(result.value)).toBe(true);
