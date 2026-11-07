@@ -1,4 +1,5 @@
 import { Result } from "@praha/byethrow";
+import type { InvalidMatchSelectionError } from "../domain/errors/InvalidMatchSelectionError";
 import type { MatchRepositoryError } from "../domain/errors/MatchRepositoryError";
 import type { MatchSyncNotInProgressError } from "../domain/errors/MatchSyncNotInProgressError";
 import type { MatchSyncStartNotAllowedError } from "../domain/errors/MatchSyncStartNotAllowedError";
@@ -12,6 +13,7 @@ import { MatchCollectionFailureSaveError } from "./errors/MatchCollectionFailure
 import type { RiotMatchClient } from "./RiotMatchClient";
 
 type MatchCollectionFailure =
+  | InvalidMatchSelectionError
   | MatchCollectionError
   | MatchRepositoryError
   | MatchSyncStartNotAllowedError
@@ -29,6 +31,7 @@ type FetchedMatches = Readonly<{
 }>;
 /** @description 확보된 분석 대상과 일부 실패 여부를 함께 전달해 완전 성공과 부분 성공을 구분한다. */
 type CollectedMatches = Readonly<{
+  selectedMatchIds: readonly string[];
   matches: readonly PlayerMatch[];
   hadFailures: boolean;
 }>;
@@ -66,8 +69,8 @@ export class MatchCollectionService {
     // 성공 상태 저장에 실패해도 원래 IN_PROGRESS 객체로 실패를 기록할 수 있다.
     const completed = sync.copy();
     const succeeded = collected.value.hadFailures
-      ? completed.partiallySucceed(this.now())
-      : completed.succeed(this.now());
+      ? completed.partiallySucceed(this.now(), collected.value.selectedMatchIds)
+      : completed.succeed(this.now(), collected.value.selectedMatchIds);
 
     if (Result.isFailure(succeeded)) {
       return this.recordFailure(sync, succeeded.error);
@@ -118,7 +121,11 @@ export class MatchCollectionService {
     }
 
     if (ids.value.length === 0) {
-      return Result.succeed({ matches: [], hadFailures: false });
+      return Result.succeed({
+        selectedMatchIds: [],
+        matches: [],
+        hadFailures: false,
+      });
     }
 
     const existing = await this.matchRepository.findByMatchIds(
@@ -131,11 +138,7 @@ export class MatchCollectionService {
       return existing;
     }
 
-    const cached = new Map(
-      existing.value
-        .filter((match) => match.puuid === puuid && match.queueId === queueId)
-        .map((match) => [match.matchId, match]),
-    );
+    const cached = this.indexMatchingMatches(existing.value, puuid, queueId);
     const missingIds = ids.value.filter((id) => !cached.has(id));
     const fetched = await this.findMissingMatches(missingIds, puuid, queueId);
     const fatal = this.findFatalError(fetched.errors);
@@ -160,16 +163,47 @@ export class MatchCollectionService {
       return Result.fail(fatal);
     }
 
-    for (const match of fetched.matches) {
-      cached.set(match.matchId, match);
-    }
-
-    if (!ids.value.some((id) => cached.has(id)) && fetched.errors.length > 0) {
+    if (
+      fetched.matches.length === 0 &&
+      !ids.value.some((id) => cached.has(id)) &&
+      fetched.errors.length > 0
+    ) {
       return Result.fail(fetched.errors[0]);
     }
 
-    const matches = this.selectEligibleMatches(ids.value, cached);
-    return Result.succeed({ matches, hadFailures: fetched.errors.length > 0 });
+    return Result.succeed(this.completedSelection(ids.value, cached, fetched));
+  }
+
+  /** @description 다른 플레이어·큐의 기록을 재사용하지 않도록 요청 범위의 저장 경기만 인덱싱한다. */
+  private indexMatchingMatches(
+    matches: readonly PlayerMatch[],
+    puuid: string,
+    queueId: QueueId,
+  ): Map<string, PlayerMatch> {
+    return new Map(
+      matches
+        .filter((match) => match.puuid === puuid && match.queueId === queueId)
+        .map((match) => [match.matchId, match]),
+    );
+  }
+
+  /** @description 원래 ID 범위를 분석 제외·개별 실패와 무관하게 완료 기록에 전달한다. */
+  private completedSelection(
+    ids: readonly string[],
+    cached: ReadonlyMap<string, PlayerMatch>,
+    fetched: FetchedMatches,
+  ): CollectedMatches {
+    const available = new Map(cached);
+
+    for (const match of fetched.matches) {
+      available.set(match.matchId, match);
+    }
+
+    return {
+      selectedMatchIds: ids,
+      matches: this.selectEligibleMatches(ids, available),
+      hadFailures: fetched.errors.length > 0,
+    };
   }
 
   /** @description 확보된 기록 중 분석 대상만 최근 ID 순서로 선택한다. 누락된 자리를 과거 기록으로 채우지 않는다. */
@@ -284,6 +318,7 @@ export class MatchCollectionService {
     error:
       | MatchCollectionError
       | MatchRepositoryError
+      | InvalidMatchSelectionError
       | MatchSyncNotInProgressError
       | MatchCollectionFailureSaveError,
   ): Promise<Result.Result<never, MatchCollectionFailure>> {

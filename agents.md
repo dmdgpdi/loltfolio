@@ -52,6 +52,7 @@
 
 - [플레이 성향 분석 콘텐츠](docs/analysis-content.md): 카드별 표시 항목, 원천 필드, 계산 기준과 검토 사항.
 - [현재 진행 상황과 다음 작업](docs/project-status.md): 작업 시작 전에 구현 범위와 미결정 사항을 확인하고, 관련 작업을 마치면 갱신한다.
+- [분석 입력과 Query 조회 계약](docs/analysis-read-contracts.md): 읽기 인터페이스, DTO와 최신 표본 범위.
 - [경기 수집과 저장](docs/match-data.md)
 
 ## Completion Checklist
