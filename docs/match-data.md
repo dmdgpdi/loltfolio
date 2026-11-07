@@ -62,3 +62,13 @@ DB의 조건부 UPSERT로 같은 플레이어·큐의 중복 시작과 전체·�
 ## 검증
 
 일반 테스트 외 DB 통합 테스트는 `MATCH_DB_TEST_URL`을 지정해 `pnpm exec vitest run src/backend/match/infrastructure/persistence/repositories.integration.spec.ts`로 실행한다. 로컬 PostgreSQL 주소만 허용하며, 임시 스키마에 마이그레이션을 적용한 뒤 삭제한다. 환경 변수가 없으면 DB 테스트는 건너뛴다.
+
+## 최신 완료 표본의 조회 범위
+
+`MatchSync.lastCompletedMatchIds`는 최신 성공·부분 성공 수집의 원래 최대 20개 ID를 중복 없이 순서대로 보존한다. 분석 제외·개별 실패 ID도 이 범위에 남긴다. 완료 메서드는 목록을 명시적으로 받으며 잘못된 ID·중복·20개 초과는 `InvalidMatchSelectionError`로 반환한다. 목록과 성공 시각은 같은 완료 UPDATE로 저장하고 오래된 시도의 갱신은 거부한다.
+
+경기는 먼저 저장하므로 완료 상태 저장 실패 시에도 캐시는 남는다. 이때 원래 진행 객체로 실패를 기록해 이전 완료 목록·성공 시각을 유지한다. 새 진행 상태에서도 이전 목록을 보존한다. `MatchSync.restore`는 목록을 검증한 Result를 반환하고 목록을 복사·동결한다.
+
+match의 공개 Application 계약 `CompletedMatchReader`와 `DrizzleCompletedMatchReader`는 이 목록 안의 분석 가능 경기만 순서대로 읽는다. `selectedMatchIds`는 원래 범위, `matches`는 확보한 유효 부분집합이다. DB 정렬로 과거 경기를 보충하지 않으며 플레이어·큐 범위를 혼합하지 않는다.
+
+신규 컬럼은 nullable JSONB이고 과거 성공 기록의 목록은 null로 남긴다. 목록 없는 성공 기록을 임의 복원하지 않으며 다음 정상 수집부터 보존한다. 목록 부재는 null, 정상 빈 완료는 빈 집합이다. 마이그레이션 파일은 생성·검토했으며 앱 DB에는 적용하지 않았다. 로컬 임시 스키마에서 기존·신규 통합 테스트 14개를 검증했다.

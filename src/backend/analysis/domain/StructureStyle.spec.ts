@@ -1,5 +1,6 @@
 import { Result } from "@praha/byethrow";
 import { expect, it } from "vitest";
+import { InvalidFirstTowerObservationError } from "./errors/InvalidFirstTowerObservationError";
 import { InvalidStructureCountError } from "./errors/InvalidStructureCountError";
 import { StructureStyle } from "./StructureStyle";
 import type { StructureObservation } from "./types/StructureObservation.type";
@@ -109,6 +110,7 @@ it.each(
           sampleCount: 1,
           unresolvedMatchCount: 0,
           participatedMatchCount: participated ? 1 : 0,
+          percentage: participated ? 100 : 0,
         }
       : { status: "UNAVAILABLE", sampleCount: 0, unresolvedMatchCount: 1 },
   );
@@ -136,6 +138,7 @@ it("직접 파괴와 도움을 중복 합산하지 않고 판정 불가를 분�
     sampleCount: 3,
     unresolvedMatchCount: 1,
     participatedMatchCount: 2,
+    percentage: (2 / 3) * 100,
   });
 });
 
@@ -274,4 +277,236 @@ it("결과는 원본 변경과 분리된 불변 값이다", () => {
     true,
   );
   expect(Object.isFrozen(result.value.firstTowerParticipation)).toBe(true);
+});
+
+it("첫 포탑 개별 획득·어시스트와 전체 관여는 각각의 분모를 사용한다", () => {
+  // Arrange
+  const records = [
+    record({ firstTowerKill: flags[0], firstTowerAssist: flags[0] }),
+    record({ firstTowerKill: flags[1], firstTowerAssist: flags[0] }),
+    record({ firstTowerKill: flags[1], firstTowerAssist: flags[1] }),
+    record({ firstTowerKill: flags[2], firstTowerAssist: flags[1] }),
+    record({ firstTowerKill: flags[1], firstTowerAssist: flags[3] }),
+  ];
+
+  // Act
+  const result = StructureStyle.analyze(records);
+
+  if (Result.isFailure(result)) {
+    throw result.error;
+  }
+
+  // Assert
+  expect(result.value.firstTowerKills).toEqual({
+    status: "AVAILABLE",
+    sampleCount: 4,
+    notProvidedCount: 1,
+    unknownCount: 0,
+    occurredMatchCount: 1,
+    percentage: 25,
+  });
+  expect(result.value.firstTowerAssists).toEqual({
+    status: "AVAILABLE",
+    sampleCount: 4,
+    notProvidedCount: 0,
+    unknownCount: 1,
+    occurredMatchCount: 2,
+    percentage: 50,
+  });
+  expect(result.value.firstTowerParticipation).toEqual({
+    status: "AVAILABLE",
+    sampleCount: 3,
+    unresolvedMatchCount: 2,
+    participatedMatchCount: 2,
+    percentage: (2 / 3) * 100,
+  });
+});
+
+it("한쪽이 true면 다른 값이 미제공이어도 전체 관여 표본에 포함한다", () => {
+  // Arrange
+  const records = [
+    record({ firstTowerKill: flags[0], firstTowerAssist: flags[2] }),
+    record({ firstTowerKill: flags[2], firstTowerAssist: flags[0] }),
+    record(),
+  ];
+
+  // Act
+  const result = StructureStyle.analyze(records);
+
+  if (Result.isFailure(result)) {
+    throw result.error;
+  }
+
+  // Assert
+  expect(result.value.firstTowerKills).toMatchObject({
+    sampleCount: 1,
+    occurredMatchCount: 1,
+    percentage: 100,
+  });
+  expect(result.value.firstTowerAssists).toMatchObject({
+    sampleCount: 1,
+    occurredMatchCount: 1,
+    percentage: 100,
+  });
+  expect(result.value.firstTowerParticipation).toEqual({
+    status: "AVAILABLE",
+    sampleCount: 2,
+    unresolvedMatchCount: 1,
+    participatedMatchCount: 2,
+    percentage: 100,
+  });
+});
+
+it.each([
+  { records: [], missing: 0, unknown: 0 },
+  {
+    records: [
+      record(),
+      record({ firstTowerKill: flags[3], firstTowerAssist: flags[3] }),
+    ],
+    missing: 1,
+    unknown: 1,
+  },
+])("빈 입력·전부 미관측은 개별 집계에 수치를 만들지 않는다: %#", ({
+  records,
+  missing,
+  unknown,
+}) => {
+  // Arrange
+  const expected = {
+    status: "UNAVAILABLE",
+    sampleCount: 0,
+    notProvidedCount: missing,
+    unknownCount: unknown,
+  };
+
+  // Act
+  const result = StructureStyle.analyze(records);
+
+  if (Result.isFailure(result)) {
+    throw result.error;
+  }
+
+  // Assert
+  expect(result.value.firstTowerKills).toEqual(expected);
+  expect(result.value.firstTowerAssists).toEqual(expected);
+  expect(result.value.firstTowerParticipation.status).toBe("UNAVAILABLE");
+});
+
+it("실제 false는 유효 표본이며 0회·0%로 반환한다", () => {
+  // Arrange
+  const records = [
+    record({ firstTowerKill: flags[1], firstTowerAssist: flags[1] }),
+    record(),
+  ];
+
+  // Act
+  const result = StructureStyle.analyze(records);
+
+  if (Result.isFailure(result)) {
+    throw result.error;
+  }
+
+  // Assert
+  const expected = {
+    status: "AVAILABLE",
+    sampleCount: 1,
+    notProvidedCount: 1,
+    unknownCount: 0,
+    occurredMatchCount: 0,
+    percentage: 0,
+  };
+  expect(result.value.firstTowerKills).toEqual(expected);
+  expect(result.value.firstTowerAssists).toEqual(expected);
+  expect(result.value.firstTowerParticipation).toMatchObject({
+    sampleCount: 1,
+    participatedMatchCount: 0,
+    percentage: 0,
+  });
+});
+
+it("첫 포탑의 개별 백분율을 반올림하지 않는다", () => {
+  // Arrange
+  const records = [
+    record({ firstTowerKill: flags[0], firstTowerAssist: flags[1] }),
+    record({ firstTowerKill: flags[1], firstTowerAssist: flags[0] }),
+    record({ firstTowerKill: flags[1], firstTowerAssist: flags[1] }),
+  ];
+
+  // Act
+  const result = StructureStyle.analyze(records);
+
+  if (Result.isFailure(result)) {
+    throw result.error;
+  }
+
+  // Assert
+  expect(result.value.firstTowerKills).toMatchObject({
+    percentage: (1 / 3) * 100,
+  });
+  expect(result.value.firstTowerAssists).toMatchObject({
+    percentage: (1 / 3) * 100,
+  });
+  expect(result.value.firstTowerParticipation).toMatchObject({
+    percentage: (2 / 3) * 100,
+  });
+});
+
+it.each([
+  "true",
+  "많음",
+  1,
+  0,
+  null,
+  undefined,
+])("불리언이 아닌 확보 값은 다른 값이 true여도 입력 오류다: %j", (value) => {
+  // Arrange: 직접 파괴와 어시스트 입력을 각각 검증한다.
+  for (const kind of ["firstTowerKill", "firstTowerAssist"] as const) {
+    const records = [
+      record({ firstTowerKill: flags[0], firstTowerAssist: flags[0] }),
+    ];
+    Reflect.set(records[0], kind, { status: "AVAILABLE", value });
+
+    // Act
+    const result = StructureStyle.analyze(records);
+
+    // Assert
+    expect(Result.isFailure(result)).toBe(true);
+
+    if (Result.isSuccess(result)) {
+      throw new Error("expected input error");
+    }
+
+    expect(result.error).toBeInstanceOf(InvalidFirstTowerObservationError);
+  }
+});
+
+it("개별 집계도 원본 변경과 분리된 불변 값이다", () => {
+  // Arrange
+  const kill = { status: "AVAILABLE" as const, value: true };
+  const assist = { status: "AVAILABLE" as const, value: false };
+  const records = [record({ firstTowerKill: kill, firstTowerAssist: assist })];
+
+  // Act
+  const result = StructureStyle.analyze(records);
+
+  if (Result.isFailure(result)) {
+    throw result.error;
+  }
+
+  kill.value = false;
+  assist.value = true;
+  records.length = 0;
+
+  // Assert
+  expect(result.value.firstTowerKills).toMatchObject({
+    occurredMatchCount: 1,
+    percentage: 100,
+  });
+  expect(result.value.firstTowerAssists).toMatchObject({
+    occurredMatchCount: 0,
+    percentage: 0,
+  });
+  expect(Object.isFrozen(result.value.firstTowerKills)).toBe(true);
+  expect(Object.isFrozen(result.value.firstTowerAssists)).toBe(true);
 });

@@ -9,11 +9,12 @@ PostgreSQL (local Docker / Neon) via `pg`, Drizzle ORM, Drizzle Kit. Use the Nod
 Organize backend code into domain modules. Keep each domain's Controller, Service, entities, aggregates, Repository interface, and Repository implementation together.
 
 - **Route Handler (`app/**/route.ts`)**: Thin Next.js entry point that delegates HTTP methods to the domain Controller.
-- **Controller**: Parses and validates input, passes authentication context to the Service, and maps results and errors to HTTP responses.
+- **Presentation (`presentation/`)**: Contains Controllers that parse and validate HTTP input, call Application use cases, and map results and errors to HTTP responses. Keep HTTP handling out of Application services.
 - **Service**: Orchestrates use cases and transaction boundaries using domain objects and Repository interfaces. Keep HTTP types out of its interface.
 - **Entity / Aggregate**: Owns business rules, invariants, and state changes. Must not depend on Next.js or Drizzle.
 - **Repository interface**: Defines domain persistence contracts without Drizzle-specific types.
 - **Repository implementation**: Implements those contracts using Drizzle. Keep database table definitions distinct from domain entities.
+- **Composition (`composition/`)**: Creates concrete infrastructure and wires it into services/readers and Controllers through constructor injection. Controllers and Application services must not instantiate infrastructure implementations.
 
 Dependency direction: `Route Handler → Controller → Service → domain objects / Repository interfaces`. Drizzle implementations depend on Repository interfaces; Services must not depend directly on those implementations.
 

@@ -191,7 +191,7 @@ it("마지막 성공 후 제한 중에는 외부 API를 호출하지 않는다",
   };
   const { service, syncs } = setup(client, at(10));
   Result.unwrap(syncs.state.start(at(0)));
-  Result.unwrap(syncs.state.succeed(at(0)));
+  Result.unwrap(syncs.state.succeed(at(0), []));
 
   // Act
   const collectionResult = await service.collectRecentMatches("player", 420);
@@ -239,7 +239,7 @@ it("중단 오류가 나도 성공한 신규 경기는 저장하고 기존 성�
     id === "broken" ? Result.fail(error) : Result.succeed(playerMatch(id));
   const { service, syncs, matches } = setup(client, at(20));
   Result.unwrap(syncs.state.start(at(0)));
-  Result.unwrap(syncs.state.succeed(at(0)));
+  Result.unwrap(syncs.state.succeed(at(0), []));
   const old = playerMatch("old");
   matches.records.push(old);
 
@@ -411,7 +411,7 @@ it("솔로 랭크의 20분 제한은 자유 랭크 수집을 막지 않는다", 
   };
   const { service, syncs } = setup(client, at(5));
   Result.unwrap(syncs.state.start(at(0)));
-  Result.unwrap(syncs.state.succeed(at(0)));
+  Result.unwrap(syncs.state.succeed(at(0), []));
 
   const solo = await service.collectRecentMatches("player", 420);
 
@@ -433,7 +433,7 @@ it("다른 큐의 수집 실패가 기존 큐의 성공 기록을 변경하지 �
   client.findRecentMatchIds = async () => Result.fail(error);
   const { service, syncs } = setup(client, at(5));
   Result.unwrap(syncs.state.start(at(0)));
-  Result.unwrap(syncs.state.succeed(at(0)));
+  Result.unwrap(syncs.state.succeed(at(0), []));
 
   // Act
   const collectionResult = await service.collectRecentMatches("player", 440);
@@ -534,7 +534,13 @@ it("개별 타임아웃은 건너뛰고 다른 신규 기록을 저장한 뒤 �
     "first",
     "last",
   ]);
+  expect(syncs.state.lastCompletedMatchIds).toEqual([
+    "first",
+    "timeout",
+    "last",
+  ]);
   expect(syncs.state.status).toBe("PARTIALLY_SUCCEEDED");
+  expect(syncs.state.lastCompletedMatchIds).not.toBeNull();
 });
 
 it("DB에 없는 경기 상세는 한 번에 최대 두 개를 병렬 조회한다", async () => {
@@ -653,6 +659,7 @@ it.each([
   // Assert
   expect(collectionResult).toEqual(["valid"]);
   expect(syncs.state.status).toBe("PARTIALLY_SUCCEEDED");
+  expect(syncs.state.lastCompletedMatchIds).not.toBeNull();
 });
 it("429를 받으면 다음 묶음을 시작하지 않고 성공분을 저장하며 재시도 시각을 기록한다", async () => {
   // Arrange
@@ -778,4 +785,21 @@ it("429와 성공분 저장 오류가 함께 나면 두 오류와 재시도 제�
   expect(result).toMatchObject({ error: { cause, saveError } });
   expect(syncs.state.status).toBe("FAILED");
   expect(syncs.state.retryAvailableAt).toEqual(at(5));
+});
+
+it("완료 저장 실패는 이전 ID 목록을 보존하고 새로 확보한 경기만 캐시에 남긴다", async () => {
+  // Arrange
+  const { service, syncs, matches } = setup(clientFor(["new"]), at(30));
+  Result.unwrap(syncs.state.start(at(0)));
+  Result.unwrap(syncs.state.succeed(at(1), ["old"]));
+  syncs.successSaveError = new MatchRepositoryError();
+
+  // Act
+  const result = await service.collectRecentMatches("player", 420);
+
+  // Assert
+  expect(Result.isFailure(result)).toBe(true);
+  expect(syncs.state.status).toBe("FAILED");
+  expect(syncs.state.lastCompletedMatchIds).toEqual(["old"]);
+  expect(matches.records.map(({ matchId }) => matchId)).toEqual(["new"]);
 });

@@ -1,0 +1,43 @@
+import type { AllyProtectionRecord } from "../../domain/types/AllyProtectionRecord.type";
+import type { ChampionPreferenceRecord } from "../../domain/types/ChampionPreferenceRecord.type";
+import type { ComebackRecord } from "../../domain/types/ComebackRecord.type";
+import type { CommunicationRecord } from "../../domain/types/CommunicationRecord.type";
+import type { CrowdControlRecord } from "../../domain/types/CrowdControlRecord.type";
+import type { DamageTakenRecord } from "../../domain/types/DamageTakenRecord.type";
+import type { EnemyTowerKillRecord } from "../../domain/types/EnemyTowerKillRecord.type";
+import type { FirstBloodRecord } from "../../domain/types/FirstBloodRecord.type";
+import type { JungleRecord } from "../../domain/types/JungleRecord.type";
+import type { LaningRecord } from "../../domain/types/LaningRecord.type";
+import type { OutnumberedKillRecord } from "../../domain/types/OutnumberedKillRecord.type";
+import type { OwnTowerKillRecord } from "../../domain/types/OwnTowerKillRecord.type";
+import type { PositionRecord } from "../../domain/types/PositionRecord.type";
+import type { SkillshotDodgeRecord } from "../../domain/types/SkillshotDodgeRecord.type";
+import type { SoloKillRecord } from "../../domain/types/SoloKillRecord.type";
+import type { StructureRecord } from "../../domain/types/StructureRecord.type";
+import type { SurvivalRecord } from "../../domain/types/SurvivalRecord.type";
+import type { VisionRecord } from "../../domain/types/VisionRecord.type";
+import type { WinLossRecord } from "../../domain/types/WinLossRecord.type";
+
+/** @description 한 저장 경기를 각 분석 도메인 입력으로 변환한 Application 전달 값. 경기 자체를 새 도메인 모델로 정의하지 않는다. */
+export type AnalysisMatchInput = Readonly<{
+  matchId: string;
+  communication: CommunicationRecord;
+  vision: VisionRecord;
+  structure: StructureRecord;
+  soloKill: SoloKillRecord;
+  firstBlood: FirstBloodRecord;
+  jungle: JungleRecord;
+  laning: LaningRecord;
+  comeback: ComebackRecord;
+  outnumberedKill: OutnumberedKillRecord;
+  enemyTowerKill: EnemyTowerKillRecord;
+  ownTowerKill: OwnTowerKillRecord;
+  skillshotDodge: SkillshotDodgeRecord;
+  damageTaken: DamageTakenRecord;
+  survival: SurvivalRecord;
+  allyProtection: AllyProtectionRecord;
+  crowdControl: CrowdControlRecord;
+  championPreference: ChampionPreferenceRecord;
+  winLoss: WinLossRecord;
+  position: PositionRecord;
+}>;

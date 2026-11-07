@@ -10,6 +10,7 @@ import { createPlayerMatchData } from "../../testing/createPlayerMatchData";
 import { createRiotMatchResponse as matchResponse } from "../../testing/createRiotMatchResponse";
 import { createRiotTimelineResponse as timelineResponse } from "../../testing/createRiotTimelineResponse";
 import { RiotMatchAdapter } from "../riot/RiotMatchAdapter";
+import { DrizzleCompletedMatchReader } from "./DrizzleCompletedMatchReader";
 import { DrizzleMatchSyncRepository } from "./DrizzleMatchSyncRepository";
 import { DrizzlePlayerMatchRepository } from "./DrizzlePlayerMatchRepository";
 
@@ -65,7 +66,7 @@ function createRepositoryContext() {
     await admin.end();
   });
 
-  return { pool, syncs, matches };
+  return { pool, syncs, matches, reader: new DrizzleCompletedMatchReader(db) };
 }
 
 /** @description 동일 임시 스키마를 사용하는 저장소 검증의 실행 문맥이다. */
@@ -99,7 +100,7 @@ function registerQueueCooldownTest(context: RepositoryTestContext) {
   it("큐별 제한과 20분 경계를 DB에서 보장한다", async () => {
     // Arrange
     const started = Result.unwrap(await syncs.tryStart("player", 420, at(0)));
-    Result.unwrap(started.succeed(at(1)));
+    Result.unwrap(started.succeed(at(1), []));
     Result.unwrap(await syncs.update(started));
 
     // Act
@@ -132,7 +133,7 @@ function registerFailureRetryTest(context: RepositoryTestContext) {
   it("실패 시 성공 시각을 보존하고 재시도 제한을 적용한다", async () => {
     // Arrange
     const first = Result.unwrap(await syncs.tryStart("player", 420, at(0)));
-    Result.unwrap(first.succeed(at(0)));
+    Result.unwrap(first.succeed(at(0), []));
     Result.unwrap(await syncs.update(first));
     const retry = Result.unwrap(await syncs.tryStart("player", 420, at(20)));
     Result.unwrap(retry.fail(at(30)));
@@ -324,7 +325,7 @@ function registerPartialSuccessTest(context: RepositoryTestContext) {
   it("부분 성공을 DB에 저장하고 성공 시각 기준 20분 제한을 유지한다", async () => {
     // Arrange
     const sync = Result.unwrap(await syncs.tryStart("partial", 420, at(0)));
-    Result.unwrap(sync.partiallySucceed(at(1)));
+    Result.unwrap(sync.partiallySucceed(at(1), []));
 
     // Act
     Result.unwrap(await syncs.update(sync));
@@ -363,4 +364,159 @@ describe.skipIf(!connectionString)("로컬 PostgreSQL 경기 저장소", () => {
   registerCollectionPersistenceTest(context);
   registerLegacyRestoreTest(context);
   registerPartialSuccessTest(context);
+  registerCompletedEmptyTest(context);
+  registerCompletedOrderTest(context);
+  registerCompletedPreservationTest(context);
+  registerCompletedIsolationTest(context);
+  registerInvalidCompletedSelectionTest(context);
 });
+
+/** @description 완료 목록이 없는 기존 성공 기록을 추정하지 않으며 정상 빈 완료는 별도로 반환한다. */
+function registerCompletedEmptyTest({
+  pool,
+  syncs,
+  reader,
+}: RepositoryTestContext) {
+  it("완료 목록 미보유와 정상 빈 완료를 구분한다", async () => {
+    // Arrange
+    await pool.query(
+      "INSERT INTO match_syncs (puuid, queue_id, status, last_succeeded_at) VALUES ('legacy', 420, 'SUCCEEDED', now())",
+    );
+    const sync = Result.unwrap(await syncs.tryStart("empty", 420, at(0)));
+    Result.unwrap(sync.succeed(at(1), []));
+    Result.unwrap(await syncs.update(sync));
+
+    // Act
+    const absent = await reader.findLatest("missing", 420);
+    const legacy = await reader.findLatest("legacy", 420);
+    const empty = await reader.findLatest("empty", 420);
+
+    // Assert
+    expect(absent).toEqual(Result.succeed(null));
+    expect(legacy).toEqual(Result.succeed(null));
+    expect(empty).toEqual(
+      Result.succeed({ selectedMatchIds: [], matches: [] }),
+    );
+  });
+}
+
+/** @description 저장·실패·분석 제외가 섞여도 원래 목록과 순서를 유지하고 오래된 경기로 채우지 않는다. */
+function registerCompletedOrderTest({
+  matches,
+  syncs,
+  reader,
+}: RepositoryTestContext) {
+  it("부분 성공 목록의 범위와 순서를 보존하고 분석 가능한 저장 경기만 읽는다", async () => {
+    // Arrange
+    const ids = ["KR_2", "failed", "excluded", "KR_1"];
+    const data = (matchId: string) =>
+      new PlayerMatch(createPlayerMatchData({ matchId }));
+    Result.unwrap(
+      await matches.saveAll([
+        data("KR_1"),
+        data("old"),
+        data("KR_2"),
+        new PlayerMatch(
+          createPlayerMatchData({
+            matchId: "excluded",
+            gameEndedInEarlySurrender: { status: "AVAILABLE", value: true },
+          }),
+        ),
+      ]),
+    );
+    const sync = Result.unwrap(await syncs.tryStart("player", 420, at(0)));
+    Result.unwrap(sync.partiallySucceed(at(1), ids));
+    Result.unwrap(await syncs.update(sync));
+
+    // Act
+    const result = Result.unwrap(await reader.findLatest("player", 420));
+
+    // Assert
+    expect(result?.selectedMatchIds).toEqual(ids);
+    expect(result?.matches.map(({ matchId }) => matchId)).toEqual([
+      "KR_2",
+      "KR_1",
+    ]);
+    expect(Object.isFrozen(result?.selectedMatchIds)).toBe(true);
+  });
+}
+
+/** @description 새 경기 저장 뒤 수집이 실패해도 이전 완료 목록을 유지한다. */
+function registerCompletedPreservationTest({
+  matches,
+  syncs,
+  reader,
+}: RepositoryTestContext) {
+  it("진행 중과 실패 상태에서도 이전 완료 표본만 읽는다", async () => {
+    // Arrange
+    Result.unwrap(
+      await matches.saveAll([
+        new PlayerMatch(createPlayerMatchData({ matchId: "old" })),
+        new PlayerMatch(createPlayerMatchData({ matchId: "new" })),
+      ]),
+    );
+    const first = Result.unwrap(await syncs.tryStart("player", 420, at(0)));
+    Result.unwrap(first.succeed(at(1), ["old"]));
+    Result.unwrap(await syncs.update(first));
+    const next = Result.unwrap(await syncs.tryStart("player", 420, at(21)));
+
+    // Act
+    const during = Result.unwrap(await reader.findLatest("player", 420));
+    Result.unwrap(next.fail());
+    Result.unwrap(await syncs.update(next));
+    const failed = Result.unwrap(await reader.findLatest("player", 420));
+
+    // Assert
+    expect(during?.matches.map(({ matchId }) => matchId)).toEqual(["old"]);
+    expect(failed?.selectedMatchIds).toEqual(["old"]);
+  });
+}
+
+/** @description 동일 경기 ID가 있어도 플레이어와 큐 범위를 혼합하지 않는다. */
+function registerCompletedIsolationTest({
+  matches,
+  syncs,
+  reader,
+}: RepositoryTestContext) {
+  it("완료 조회를 플레이어와 큐로 분리한다", async () => {
+    // Arrange
+    Result.unwrap(
+      await matches.saveAll([
+        new PlayerMatch(
+          createPlayerMatchData({ puuid: "other", matchId: "same" }),
+        ),
+        new PlayerMatch(
+          createPlayerMatchData({ queueId: 440, matchId: "flex" }),
+        ),
+      ]),
+    );
+    const sync = Result.unwrap(await syncs.tryStart("player", 420, at(0)));
+    Result.unwrap(sync.succeed(at(1), ["same", "flex"]));
+    Result.unwrap(await syncs.update(sync));
+
+    // Act
+    const result = Result.unwrap(await reader.findLatest("player", 420));
+
+    // Assert
+    expect(result).toEqual({ selectedMatchIds: ["same", "flex"], matches: [] });
+  });
+}
+
+/** @description 잘못된 JSONB 목록을 조회 부재나 과거 경기 선택으로 숨기지 않는다. */
+function registerInvalidCompletedSelectionTest({
+  pool,
+  reader,
+}: RepositoryTestContext) {
+  it("저장된 완료 목록 오류를 조회 실패로 반환한다", async () => {
+    // Arrange
+    await pool.query(
+      "INSERT INTO match_syncs (puuid, queue_id, status, last_succeeded_at, last_completed_match_ids) VALUES ('broken', 420, 'SUCCEEDED', now(), '[1]'::jsonb)",
+    );
+
+    // Act
+    const result = await reader.findLatest("broken", 420);
+
+    // Assert
+    expect(Result.isFailure(result)).toBe(true);
+  });
+}

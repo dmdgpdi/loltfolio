@@ -48,7 +48,10 @@ export class DrizzleMatchSyncRepository implements MatchSyncRepository {
       }),
       Result.andThen((rows) =>
         rows[0]
-          ? Result.succeed(MatchSync.restore(rows[0]))
+          ? Result.pipe(
+              MatchSync.restore(rows[0]),
+              Result.mapError((cause) => new MatchRepositoryError({ cause })),
+            )
           : Result.fail(new MatchSyncStartNotAllowedError()),
       ),
     );
@@ -74,6 +77,7 @@ export class DrizzleMatchSyncRepository implements MatchSyncRepository {
             .set({
               status: sync.status,
               lastSucceededAt: sync.lastSucceededAt,
+              lastCompletedMatchIds: sync.lastCompletedMatchIds,
               retryAvailableAt: sync.retryAvailableAt,
             })
             .where(

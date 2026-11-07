@@ -1,4 +1,5 @@
 import { Result } from "@praha/byethrow";
+import { InvalidMatchSelectionError } from "./errors/InvalidMatchSelectionError";
 import { MatchSyncNotInProgressError } from "./errors/MatchSyncNotInProgressError";
 import { MatchSyncStartNotAllowedError } from "./errors/MatchSyncStartNotAllowedError";
 import { MATCH_SYNC_SUCCESS_COOLDOWN_MS } from "./MATCH_SYNC_SUCCESS_COOLDOWN_MS";
@@ -27,20 +28,37 @@ export class MatchSync {
    */
   private retryAt: number | null = null;
 
+  /** @description 마지막 성공·부분 성공의 원래 경기 ID 범위. 최초·과거 목록 미보유는 null이다. */
+  private completedIds: readonly string[] | null = null;
+
   /** @description puuid로 수집 대상 플레이어를, queueId로 수집할 매칭 종류를 구분한다. */
   constructor(
     readonly puuid: string,
     readonly queueId: QueueId,
   ) {}
 
-  /** @description 저장된 상태와 시각을 복원한다. Date는 밀리초 값으로 복사하여 저장 데이터와 참조를 공유하지 않는다. */
-  static restore(data: MatchSyncData): MatchSync {
+  /** @description 저장 상태와 완료 목록의 불변식을 확인해 복원한다. 시각과 목록을 복사하며 잘못된 목록은 입력 오류로 반환한다. */
+  static restore(
+    data: MatchSyncData,
+  ): Result.Result<MatchSync, InvalidMatchSelectionError> {
+    if (
+      data.lastCompletedMatchIds !== null &&
+      (!MatchSync.isValidSelection(data.lastCompletedMatchIds) ||
+        data.lastSucceededAt === null)
+    ) {
+      return Result.fail(new InvalidMatchSelectionError());
+    }
+
     const sync = new MatchSync(data.puuid, data.queueId);
     sync.currentStatus = data.status;
     sync.attemptedAt = data.lastAttemptAt?.getTime() ?? null;
     sync.succeededAt = data.lastSucceededAt?.getTime() ?? null;
     sync.retryAt = data.retryAvailableAt?.getTime() ?? null;
-    return sync;
+    sync.completedIds =
+      data.lastCompletedMatchIds === null
+        ? null
+        : Object.freeze([...data.lastCompletedMatchIds]);
+    return Result.succeed(sync);
   }
 
   /** @description 완료 상태 저장 실패 시 원래 진행 객체로 실패 처리할 수 있도록 독립적인 수집 상태 복사본을 만든다. */
@@ -50,6 +68,8 @@ export class MatchSync {
     copy.attemptedAt = this.attemptedAt;
     copy.succeededAt = this.succeededAt;
     copy.retryAt = this.retryAt;
+    copy.completedIds =
+      this.completedIds === null ? null : Object.freeze([...this.completedIds]);
     return copy;
   }
 
@@ -71,6 +91,11 @@ export class MatchSync {
   /** @description API 제한으로 재시도가 가능해지는 절대 시각. null은 별도 API 대기 제한이 없다는 뜻이다. 반환 Date는 복사본이다. */
   get retryAvailableAt(): Date | null {
     return this.retryAt === null ? null : new Date(this.retryAt);
+  }
+
+  /** @description 마지막 완료 표본의 변경 불가능한 ID 목록. 진행·실패 시에도 보존한다. */
+  get lastCompletedMatchIds(): readonly string[] | null {
+    return this.completedIds;
   }
 
   /** @description 진행 중이 아니고 성공 대기 시간과 API 재시도 제한이 모두 지난 경우 시작을 허용한다. 제한 시각과 같은 순간부터 가능하다. */
@@ -98,12 +123,23 @@ export class MatchSync {
     return Result.succeed(undefined);
   }
 
-  /** @description 진행 중인 경기 수집의 성공 시각을 기록하고 API 재시도 제한을 해제한다. 분석·리포트 저장 성공을 뜻하지 않는다. */
-  succeed(now: Date): Result.Result<void, MatchSyncNotInProgressError> {
+  /** @description 진행 중인 수집의 원래 ID 범위와 성공 시각을 기록하고 API 재시도 제한을 해제한다. 분석·리포트 저장 성공을 뜻하지 않는다. */
+  succeed(
+    now: Date,
+    matchIds: readonly string[],
+  ): Result.Result<
+    void,
+    MatchSyncNotInProgressError | InvalidMatchSelectionError
+  > {
     if (this.currentStatus !== "IN_PROGRESS") {
       return Result.fail(new MatchSyncNotInProgressError());
     }
 
+    if (!MatchSync.isValidSelection(matchIds)) {
+      return Result.fail(new InvalidMatchSelectionError());
+    }
+
+    this.completedIds = Object.freeze([...matchIds]);
     this.currentStatus = "SUCCEEDED";
     this.succeededAt = now.getTime();
     this.retryAt = null;
@@ -114,8 +150,12 @@ export class MatchSync {
   /** @description 일부 경기 조회가 실패한 최신화를 부분 성공으로 기록한다. 성공분은 확보되었으므로 20분 제한을 적용하고 완전 성공과 구분한다. */
   partiallySucceed(
     now: Date,
-  ): Result.Result<void, MatchSyncNotInProgressError> {
-    const completed = this.succeed(now);
+    matchIds: readonly string[],
+  ): Result.Result<
+    void,
+    MatchSyncNotInProgressError | InvalidMatchSelectionError
+  > {
+    const completed = this.succeed(now, matchIds);
 
     if (Result.isFailure(completed)) {
       return completed;
@@ -137,5 +177,15 @@ export class MatchSync {
     this.retryAt = retryAvailableAt?.getTime() ?? null;
 
     return Result.succeed(undefined);
+  }
+
+  /** @description 완료 시점과 저장 복원에 동일한 목록 불변식을 적용하며 입력 배열을 변경하지 않는다. */
+  private static isValidSelection(matchIds: readonly string[]): boolean {
+    return (
+      Array.isArray(matchIds) &&
+      matchIds.length <= 20 &&
+      new Set(matchIds).size === matchIds.length &&
+      matchIds.every((id) => typeof id === "string" && id.trim().length > 0)
+    );
   }
 }

@@ -1,11 +1,20 @@
 import { Result } from "@praha/byethrow";
+import { InvalidFirstTowerObservationError } from "./errors/InvalidFirstTowerObservationError";
 import { InvalidStructureCountError } from "./errors/InvalidStructureCountError";
+import type { FirstTowerOccurrence } from "./types/FirstTowerOccurrence.type";
 import type { FirstTowerParticipation } from "./types/FirstTowerParticipation.type";
 import type { StructureActivity } from "./types/StructureActivity.type";
 import type { StructureRecord } from "./types/StructureRecord.type";
 
 /** @description 포탑·방패·억제기 관여와 첫 포탑 관여를 설명하는 불변 철거 성향이다. 경기 선정이나 외부 조회를 수행하지 않는다. */
 export class StructureStyle {
+  /** @description 직접 파괴를 확인할 수 있는 경기의 발생 수와 비율이다. */
+  readonly firstTowerKills: FirstTowerOccurrence;
+  /** @description 어시스트를 확인할 수 있는 경기의 발생 수와 비율이다. */
+  readonly firstTowerAssists: FirstTowerOccurrence;
+  /** @description 직접 파괴·어시스트의 OR로 판정한 경기별 관여와 비율이다. */
+  readonly firstTowerParticipation: FirstTowerParticipation;
+
   /** @description 집계 결과만 동결해 원본의 변경으로 철거 성향이 바뀌지 않게 한다. */
   private constructor(
     readonly matchCount: number,
@@ -15,15 +24,33 @@ export class StructureStyle {
         StructureActivity
       >
     >,
-    readonly firstTowerParticipation: FirstTowerParticipation,
+    firstTower: Readonly<{
+      kills: FirstTowerOccurrence;
+      assists: FirstTowerOccurrence;
+      participation: FirstTowerParticipation;
+    }>,
   ) {
+    this.firstTowerKills = firstTower.kills;
+    this.firstTowerAssists = firstTower.assists;
+    this.firstTowerParticipation = firstTower.participation;
     Object.freeze(this);
   }
 
-  /** @description 행동별 유효 표본에서 집계하며 첫 포탑 관여는 직접 파괴 또는 어시스트로 판정한다. */
+  /** @description 행동별 유효 표본을 집계하고 첫 포탑의 개별 발생·전체 관여를 구분한다. 잘못된 확보 값은 입력 오류로 반환한다. */
   static analyze(
     records: readonly StructureRecord[],
-  ): Result.Result<StructureStyle, InvalidStructureCountError> {
+  ): Result.Result<
+    StructureStyle,
+    InvalidStructureCountError | InvalidFirstTowerObservationError
+  > {
+    if (
+      records.some((record) =>
+        StructureStyle.hasInvalidFirstTowerObservation(record),
+      )
+    ) {
+      return Result.fail(new InvalidFirstTowerObservationError());
+    }
+
     const kinds = [
       "towerTakedowns",
       "towerPlates",
@@ -47,12 +74,70 @@ export class StructureStyle {
       StructureActivity
     >;
     return Result.succeed(
-      new StructureStyle(
-        records.length,
-        Object.freeze(activities),
-        StructureStyle.analyzeFirstTower(records),
-      ),
+      new StructureStyle(records.length, Object.freeze(activities), {
+        kills: StructureStyle.analyzeFirstTowerOccurrence(
+          records,
+          "firstTowerKill",
+        ),
+        assists: StructureStyle.analyzeFirstTowerOccurrence(
+          records,
+          "firstTowerAssist",
+        ),
+        participation: StructureStyle.analyzeFirstTower(records),
+      }),
     );
+  }
+
+  /** @description 다른 관측만으로 OR 판정이 가능해도 잘못된 불리언 원값을 숨기지 않는다. */
+  private static hasInvalidFirstTowerObservation(
+    record: StructureRecord,
+  ): boolean {
+    return [record.firstTowerKill, record.firstTowerAssist].some(
+      (flag) => flag.status === "AVAILABLE" && typeof flag.value !== "boolean",
+    );
+  }
+
+  /** @description 직접 파괴와 어시스트 각각의 유효·미확보 표본을 보존하고 백분율을 반올림하지 않는다. */
+  private static analyzeFirstTowerOccurrence(
+    records: readonly StructureRecord[],
+    kind: "firstTowerKill" | "firstTowerAssist",
+  ): FirstTowerOccurrence {
+    let sampleCount = 0;
+    let notProvidedCount = 0;
+    let unknownCount = 0;
+    let occurredMatchCount = 0;
+
+    for (const record of records) {
+      const flag = record[kind];
+
+      if (flag.status === "NOT_PROVIDED") {
+        notProvidedCount += 1;
+        continue;
+      }
+
+      if (flag.status === "UNKNOWN") {
+        unknownCount += 1;
+        continue;
+      }
+
+      sampleCount += 1;
+
+      if (flag.value) {
+        occurredMatchCount += 1;
+      }
+    }
+
+    const coverage = { sampleCount, notProvidedCount, unknownCount };
+    const occurrence: FirstTowerOccurrence =
+      sampleCount === 0
+        ? { ...coverage, status: "UNAVAILABLE" }
+        : {
+            ...coverage,
+            status: "AVAILABLE",
+            occurredMatchCount,
+            percentage: (occurredMatchCount / sampleCount) * 100,
+          };
+    return Object.freeze(occurrence);
   }
 
   /** @description 한 구조물 행동의 표본과 사용량을 계산한다. 미관측은 0회 경기 수에 포함하지 않는다. */
@@ -134,7 +219,12 @@ export class StructureStyle {
     const participation: FirstTowerParticipation =
       sampleCount === 0
         ? { ...coverage, status: "UNAVAILABLE" }
-        : { ...coverage, status: "AVAILABLE", participatedMatchCount };
+        : {
+            ...coverage,
+            status: "AVAILABLE",
+            participatedMatchCount,
+            percentage: (participatedMatchCount / sampleCount) * 100,
+          };
     return Object.freeze(participation);
   }
 }

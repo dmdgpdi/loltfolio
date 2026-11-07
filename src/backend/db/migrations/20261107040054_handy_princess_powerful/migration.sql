@@ -1,0 +1,1 @@
+ALTER TABLE "match_syncs" ADD COLUMN "last_completed_match_ids" jsonb;

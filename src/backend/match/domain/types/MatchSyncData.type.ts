@@ -15,4 +15,6 @@ export type MatchSyncData = Readonly<{
   lastSucceededAt: Date | null;
   /** @description API 제한으로 재시도가 가능해지는 절대 시각. null은 별도 API 대기 제한이 없다는 뜻이다. */
   retryAvailableAt: Date | null;
+  /** @description 마지막 완료 수집의 최대 20개 ID. 과거 미보유는 null, 정상 0경기는 빈 배열이다. */
+  lastCompletedMatchIds: readonly string[] | null;
 }>;

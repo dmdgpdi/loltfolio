@@ -1,10 +1,17 @@
+import type { AnalysisPosition } from "./AnalysisPosition.type";
 import type { PositionDistribution } from "./PositionDistribution.type";
 import type { PreferenceDistribution } from "./PreferenceDistribution.type";
 
-/** @description 챔피언·역할·스펠 조합의 선택 빈도. 스펠 조합 동등성과 동률 정렬은 계산 구현 전에 정한다. */
+/** @description 챔피언·역할의 선택 빈도. 최다 동률을 모두 보존하며 스펠 취향은 포함하지 않는다. */
 export type ChampionPreference = Readonly<{
   matchCount: number;
   champions: PreferenceDistribution<number>;
+  mostPlayedChampions: readonly number[];
   positions: PositionDistribution;
-  spellCombinations: PreferenceDistribution<readonly [number, number]>;
+  /** @description 실제 플레이한 다섯 역할의 빈도 목록. NONE과 미확보는 positions에 별도로 보존한다. */
+  positionFrequencies: readonly Readonly<{
+    value: Exclude<AnalysisPosition, "NONE">;
+    matchCount: number;
+  }>[];
+  mostPlayedPositions: readonly Exclude<AnalysisPosition, "NONE">[];
 }>;
