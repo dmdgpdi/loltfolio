@@ -1,0 +1,42 @@
+{
+  "type": "diff",
+  "version": "9",
+  "dialect": "postgres",
+  "id": "1f443b37-8b92-4e19-afac-a3a643e2f97d",
+  "prevIds": ["1e74d1e3-f691-4c4b-a7cb-12239bfca4df"],
+  "footprints": [
+    {
+      "statementType": "add_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "match_syncs",
+        "last_completed_match_ids"
+      ],
+      "writes": [
+        "s|col|public.match_syncs.last_completed_match_ids",
+        "n|col|public.match_syncs.last_completed_match_ids",
+        "e|col|public.match_syncs.last_completed_match_ids"
+      ],
+      "reads": ["n|tbl|public.match_syncs", "n|sch|public"]
+    }
+  ],
+  "deltas": [
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "match_syncs",
+        "name": "last_completed_match_ids",
+        "type": "jsonb",
+        "typeSchema": null,
+        "notNull": false,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    }
+  ]
+}

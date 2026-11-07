@@ -25,6 +25,9 @@ export const matchSyncs = pgTable(
     status: text("status").$type<MatchSyncStatus>().notNull(),
     lastAttemptAt: timestamp("last_attempt_at", { withTimezone: true }),
     lastSucceededAt: timestamp("last_succeeded_at", { withTimezone: true }),
+    lastCompletedMatchIds: jsonb("last_completed_match_ids").$type<
+      readonly string[]
+    >(),
     retryAvailableAt: timestamp("retry_available_at", { withTimezone: true }),
   },
   (table) => [primaryKey({ columns: [table.puuid, table.queueId] })],

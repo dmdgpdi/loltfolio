@@ -68,7 +68,7 @@ it.each([
   // Arrange
   const sync = new MatchSync("player-puuid", 420);
   Result.unwrap(sync.start(at(0)));
-  Result.unwrap(sync.succeed(at(2)));
+  Result.unwrap(sync.succeed(at(2), []));
   const now = new Date(at(22).getTime() + offset);
 
   // Act
@@ -82,7 +82,7 @@ it("성공 제한 중 시작 실패는 성공 상태와 기록을 변경하지 �
   // Arrange
   const sync = new MatchSync("player-puuid", 420);
   Result.unwrap(sync.start(at(0)));
-  Result.unwrap(sync.succeed(at(2)));
+  Result.unwrap(sync.succeed(at(2), []));
 
   // Act
   const startResult = sync.start(at(21));
@@ -100,7 +100,7 @@ it("수집을 다시 시작하거나 실패해도 이전 성공 시각을 보존
   // Arrange
   const sync = new MatchSync("player-puuid", 420);
   Result.unwrap(sync.start(at(0)));
-  Result.unwrap(sync.succeed(at(2)));
+  Result.unwrap(sync.succeed(at(2), []));
 
   // Act
   Result.unwrap(sync.start(at(22)));
@@ -167,7 +167,7 @@ it("성공 기반 제한과 API 재시도 제한을 모두 만족해야 시작�
   // Arrange
   const sync = new MatchSync("player-puuid", 420);
   Result.unwrap(sync.start(at(0)));
-  Result.unwrap(sync.succeed(at(0)));
+  Result.unwrap(sync.succeed(at(0), []));
   Result.unwrap(sync.start(at(20)));
   Result.unwrap(sync.fail(at(30)));
 
@@ -195,7 +195,7 @@ it("재시도에 성공하면 성공 시각을 갱신하고 API 재시도 제한
   Result.unwrap(sync.start(at(5)));
 
   // Act
-  const successResult = sync.succeed(at(6));
+  const successResult = sync.succeed(at(6), []);
 
   // Assert
   expect(successResult).toEqual(Result.succeed(undefined));
@@ -222,7 +222,7 @@ it.each([
   if (status !== "NOT_STARTED") {
     Result.unwrap(sync.start(at(0)));
     Result.unwrap(
-      status === "SUCCEEDED" ? sync.succeed(at(1)) : sync.fail(at(5)),
+      status === "SUCCEEDED" ? sync.succeed(at(1), []) : sync.fail(at(5)),
     );
   }
 
@@ -230,7 +230,7 @@ it.each([
   const previousRetry = sync.retryAvailableAt;
 
   // Act
-  const successResult = sync.succeed(at(10));
+  const successResult = sync.succeed(at(10), []);
 
   // Assert
   expect(successResult).toEqual(
@@ -281,7 +281,7 @@ it("복사본의 완료 상태가 원본 진행 상태를 변경하지 않는다
   const completed = original.copy();
 
   // Act
-  Result.unwrap(completed.succeed(at(1)));
+  Result.unwrap(completed.succeed(at(1), []));
 
   // Assert
   expect(original.status).toBe("IN_PROGRESS");
@@ -309,7 +309,7 @@ it("부분 성공도 최신화 시각과 20분 제한을 기록하되 완전 성
   Result.unwrap(sync.start(at(0)));
 
   // Act
-  const result = sync.partiallySucceed(at(1));
+  const result = sync.partiallySucceed(at(1), []);
 
   // Assert
   expect(result).toEqual(Result.succeed(undefined));
@@ -334,7 +334,7 @@ it("진행 중이 아니면 부분 성공으로 완료할 수 없다", () => {
   // Arrange: 테스트 인자와 명시한 입력을 사용한다.
 
   // Act
-  const result = new MatchSync("player", 420).partiallySucceed(at(0));
+  const result = new MatchSync("player", 420).partiallySucceed(at(0), []);
 
   // Assert
   expect(result).toEqual(Result.fail(expect.any(MatchSyncNotInProgressError)));
@@ -344,16 +344,16 @@ it("부분 성공으로 완료된 작업을 다시 완료하거나 실패로 바
   // Arrange
   const sync = new MatchSync("player", 420);
   Result.unwrap(sync.start(at(0)));
-  Result.unwrap(sync.partiallySucceed(at(1)));
+  Result.unwrap(sync.partiallySucceed(at(1), []));
 
   // Act
-  const result = sync.partiallySucceed(at(2));
+  const result = sync.partiallySucceed(at(2), []);
 
   // Assert
   expect(result).toEqual(Result.fail(expect.any(MatchSyncNotInProgressError)));
 
   // Act
-  const successResult = sync.succeed(at(2));
+  const successResult = sync.succeed(at(2), []);
 
   // Assert
   expect(successResult).toEqual(
@@ -367,4 +367,98 @@ it("부분 성공으로 완료된 작업을 다시 완료하거나 실패로 바
   expect(failureResult).toEqual(
     Result.fail(expect.any(MatchSyncNotInProgressError)),
   );
+});
+
+it("완료 ID 목록을 복사·동결하고 새 시도 실패에도 이전 목록을 보존한다", () => {
+  // Arrange
+  const sync = new MatchSync("player", 420);
+  const ids = ["KR_2", "KR_1"];
+  Result.unwrap(sync.start(at(0)));
+
+  // Act
+  Result.unwrap(sync.succeed(at(1), ids));
+  ids.push("KR_3");
+  Result.unwrap(sync.start(at(21)));
+  Result.unwrap(sync.fail());
+
+  // Assert
+  expect(sync.lastCompletedMatchIds).toEqual(["KR_2", "KR_1"]);
+  expect(Object.isFrozen(sync.lastCompletedMatchIds)).toBe(true);
+  expect(sync.copy().lastCompletedMatchIds).toEqual(["KR_2", "KR_1"]);
+});
+
+it("부분 성공도 원래 목록을 교체하고 정상 빈 완료 목록은 null과 구분한다", () => {
+  // Arrange
+  const sync = new MatchSync("player", 420);
+  Result.unwrap(sync.start(at(0)));
+
+  // Act
+  Result.unwrap(sync.partiallySucceed(at(1), ["KR_failed", "KR_ok"]));
+  const partial = sync.lastCompletedMatchIds;
+  Result.unwrap(sync.start(at(21)));
+  Result.unwrap(sync.succeed(at(22), []));
+
+  // Assert
+  expect(partial).toEqual(["KR_failed", "KR_ok"]);
+  expect(sync.lastCompletedMatchIds).toEqual([]);
+});
+
+it.each([
+  ["KR_1", "KR_1"],
+  [""],
+  Array.from({ length: 21 }, (_, i) => `KR_${i}`),
+])("잘못된 완료 목록은 진행 상태와 이전 목록을 바꾸지 않는다", (...ids) => {
+  // Arrange
+  const sync = new MatchSync("player", 420);
+  Result.unwrap(sync.start(at(0)));
+
+  // Act
+  const result = sync.succeed(at(1), ids);
+
+  // Assert
+  expect(Result.isFailure(result)).toBe(true);
+  expect(sync.status).toBe("IN_PROGRESS");
+  expect(sync.lastCompletedMatchIds).toBeNull();
+});
+
+it("완료 목록과 성공 시각을 저장 상태에서 독립적으로 복원한다", () => {
+  // Arrange
+  const ids = ["KR_1"];
+  const data = {
+    puuid: "player",
+    queueId: 420,
+    status: "FAILED",
+    lastAttemptAt: at(21),
+    lastSucceededAt: at(1),
+    retryAvailableAt: null,
+    lastCompletedMatchIds: ids,
+  } as const;
+
+  // Act
+  const sync = Result.unwrap(MatchSync.restore(data));
+  ids.push("KR_2");
+
+  // Assert
+  expect(sync.status).toBe("FAILED");
+  expect(sync.lastCompletedMatchIds).toEqual(["KR_1"]);
+  expect(sync.lastSucceededAt).toEqual(at(1));
+});
+
+it("저장 상태의 잘못된 완료 목록을 입력 오류로 반환한다", () => {
+  // Arrange
+  const data = {
+    puuid: "player",
+    queueId: 420,
+    status: "SUCCEEDED",
+    lastAttemptAt: at(0),
+    lastSucceededAt: at(1),
+    retryAvailableAt: null,
+    lastCompletedMatchIds: ["KR_1", "KR_1"],
+  } as const;
+
+  // Act
+  const result = MatchSync.restore(data);
+
+  // Assert
+  expect(Result.isFailure(result)).toBe(true);
 });
