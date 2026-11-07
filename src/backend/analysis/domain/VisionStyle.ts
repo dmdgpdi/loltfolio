@@ -24,11 +24,17 @@ export class VisionStyle {
       "wardTakedownsBefore20Minutes",
     ] as const satisfies readonly (keyof VisionRecord)[];
     const entries: [keyof VisionRecord, VisionActivity][] = [];
+
     for (const kind of kinds) {
       const activity = VisionStyle.analyzeActivity(records, kind);
-      if (Result.isFailure(activity)) return activity;
+
+      if (Result.isFailure(activity)) {
+        return activity;
+      }
+
       entries.push([kind, activity.value]);
     }
+
     // 고정 목록에서 모든 시야 행동을 한 번씩 구성한다.
     const activities = Object.fromEntries(entries) as Record<
       keyof VisionRecord,
@@ -49,16 +55,20 @@ export class VisionStyle {
     let unknownCount = 0;
     let total = 0;
     let zeroMatchCount = 0;
+
     for (const record of records) {
       const count = record[kind];
+
       if (count.status === "NOT_PROVIDED") {
         notProvidedCount += 1;
         continue;
       }
+
       if (count.status === "UNKNOWN") {
         unknownCount += 1;
         continue;
       }
+
       if (
         !Number.isSafeInteger(count.value) ||
         count.value < 0 ||
@@ -66,10 +76,15 @@ export class VisionStyle {
       ) {
         return Result.fail(new InvalidVisionCountError());
       }
+
       sampleCount += 1;
       total += count.value;
-      if (count.value === 0) zeroMatchCount += 1;
+
+      if (count.value === 0) {
+        zeroMatchCount += 1;
+      }
     }
+
     const coverage = { sampleCount, notProvidedCount, unknownCount };
     const activity: VisionActivity =
       sampleCount === 0

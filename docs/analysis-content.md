@@ -4,7 +4,7 @@
 
 사용자에게 보여줄 분석 콘텐츠를 다듬기 위한 기획 목록이다. 기존 대화의 메인 콘텐츠, 탱킹·생존·지원·CC 테마, 추가 카드 후보를 모았다. 기존 ‘전투 성향’ 카드는 서로 다른 행동별로 분리했다. 이름과 출시 범위, 대표 수치, 노출 순서는 검토 중이며 아래 목록 전체를 구현하기로 확정한 것은 아니다.
 
-원천 필드는 현재 저장하는 `PlayerMatch`를 기준으로 한다. 데이터 수집·저장과 카드별 집계 구현은 별개이며, 현재 의사소통 스타일의 핑별 사용량, 시야 스타일의 와드 행동, 철거 성향의 구조물·첫 포탑 관여, 독고다이의 솔로킬 통계·비중을 구현했고 나머지 카드 집계는 구현 전이다. 모든 출력 수치는 **가상 예시**다. 표의 예시는 각각 독립적이며 하나의 공통 경기 데이터에서 계산한 값이 아니다.
+원천 필드는 현재 저장하는 `PlayerMatch`를 기준으로 한다. 데이터 수집·저장과 카드별 집계 구현은 별개이며, 현재 의사소통 스타일의 핑별 사용량, 시야 스타일의 와드 행동, 철거 성향의 구조물·첫 포탑 관여, 독고다이의 솔로킬 통계·비중, 퍼스트 블러드 관여를 구현했고 나머지 카드 집계는 구현 전이다. 모든 출력 수치는 **가상 예시**다. 표의 예시는 각각 독립적이며 하나의 공통 경기 데이터에서 계산한 값이 아니다.
 
 ## 공통 표시와 계산 기준
 
@@ -33,6 +33,58 @@
 - 유효 표본이 없거나 비율의 분모가 0이면 0으로 만들지 않는다. 표시 문구, 최소 표본 기준, 반올림 자릿수는 구현 전에 확정한다.
 - 아래 대표 수치는 카드 구성 제안이다. 기본 구성은 대표 수치 1개 + 보조 수치 2~3개 + 설명 1개로 하고, 나머지 항목의 상세 노출 여부를 정한다.
 - 타인·동일 티어 대비 순위나 성격을 단정하지 않는다. 승패별 기록 차이는 관찰 결과이며 승리 원인이라고 표현하지 않는다.
+
+## 남은 영역의 도메인 값모델
+
+아래는 **입력·결과 타입 정의 완료, 계산 로직 미구현** 상태다. 식별자나 갱신 생명주기가 없는 불변 값으로 시작하며 빈 클래스나 미구현 메서드는 만들지 않는다. 각 스타일의 규칙을 구현할 때 필요한 생성 함수·분석기를 추가한다. 타입 정의만으로 표본 합계·숫자 범위·원천 조합의 유효성이 런타임에 보장되는 것은 아니다.
+
+| 도메인 개념 | 한 경기 입력 | 결과 값모델 | 소유할 의미·규칙 |
+| --- | --- | --- | --- |
+| 정글 활동 | `JungleRecord` | [JungleStyle](../src/backend/analysis/domain/types/JungleStyle.type.ts) | 정글 역할이 확보된 경기만 집계. 두 적 정글 원천 지표는 구분 |
+| 라인전 성장 | `LaningRecord`, `LaningPoint` | [LaningStyle](../src/backend/analysis/domain/types/LaningStyle.type.ts) | 10·15분 본인 성장과 상대 차이, 최대 레벨 우위와 시점별 격차 구분 |
+| 개인 열세 이후 승리 | `ComebackRecord` | [ComebackStyle](../src/backend/analysis/domain/types/ComebackStyle.type.ts) | 같은 역할 상대보다 15분 골드가 적었던 경기의 최종 승리 |
+| 수적 열세 처치 | `OutnumberedKillRecord` | [OutnumberedKillStyle](../src/backend/analysis/domain/types/OutnumberedKillStyle.type.ts) | 해당 상황의 처치 합계·평균·최다·발생 경기 수 |
+| 적 포탑 근처 처치 | `EnemyTowerKillRecord` | [EnemyTowerKillStyle](../src/backend/analysis/domain/types/EnemyTowerKillStyle.type.ts) | 해당 상황의 처치와 공통 표본의 전체 킬 대비 비중 |
+| 아군 포탑 아래 처치 | `OwnTowerKillRecord` | [OwnTowerKillStyle](../src/backend/analysis/domain/types/OwnTowerKillStyle.type.ts) | 해당 상황의 처치 규모·빈도. 수비 성공 판정과 구분 |
+| 스킬샷 회피 | `SkillshotDodgeRecord` | [SkillshotDodgeStyle](../src/backend/analysis/domain/types/SkillshotDodgeStyle.type.ts) | 회피 횟수의 평균·최다·합계. 상대 시전 수가 없어 회피율은 계산하지 않음 |
+| 피해 부담 | `DamageTakenRecord` | [DamageTakenStyle](../src/backend/analysis/domain/types/DamageTakenStyle.type.ts) | 평균 받은 피해·경감량·팀 부담 비중. 서로 다른 값을 합산하지 않음 |
+| 생존 | `SurvivalRecord` | [SurvivalStyle](../src/backend/analysis/domain/types/SurvivalStyle.type.ts) | 무데스·사망·위험 상황별 생존·경기별 최장 생존 시간 |
+| 아군 보호 | `AllyProtectionRecord` | [AllyProtectionStyle](../src/backend/analysis/domain/types/AllyProtectionStyle.type.ts) | 아군 회복·보호막 흡수·구출. 서로 다른 단위를 점수로 합치지 않음 |
+| 군중 제어 | `CrowdControlRecord` | [CrowdControlStyle](../src/backend/analysis/domain/types/CrowdControlStyle.type.ts) | 이동 불가 횟수·CC 시간·아군 연계 처치를 독립 집계 |
+| 선택 취향 | `ChampionPreferenceRecord` | [ChampionPreference](../src/backend/analysis/domain/types/ChampionPreference.type.ts) | 챔피언·포지션·스펠 조합의 빈도. 표시명과 역할 분류는 외부 책임 |
+| 승패 비교 | `WinLossRecord` | [WinLossComparison](../src/backend/analysis/domain/types/WinLossComparison.type.ts) | 승패와 항목을 모두 확인할 수 있는 집단별 평균과 차이 |
+| 역할 분포 | `PositionRecord` | [PositionDistribution](../src/backend/analysis/domain/types/PositionDistribution.type.ts) | 역할별 수·NONE·미제공·판별 불가를 구분. 카드 노출 판단의 근거 |
+
+### 보조 타입과 결과의 의미
+
+- `AnalysisObservation<T>`는 새 모델들의 원천 관측 계약이다. AVAILABLE·NOT_PROVIDED·UNKNOWN을 구분하며 match의 타입을 가져오지 않는다.
+- `AnalysisMetric<T>`는 지표별 유효·미제공·판별 불가 표본 수와 AVAILABLE 결과 또는 UNAVAILABLE 상태다. 실제 0은 AVAILABLE의 값이고, 계산할 수 없으면 `value`가 없다. 기존 구현 모델의 계약을 이번 작업에서 바꾸지는 않는다.
+- `CountStatistics`는 동일 유효 표본의 합계·평균·최다·양수 관측 경기 수다. 0회 경기 수는 `sampleCount - occurredMatchCount`로 얻는다. 횟수 지표에만 사용하며 골드 차이·비율·시간에 동일 정수 규칙을 강제하지 않는다.
+- `MatchFrequency`는 조건을 판별할 수 있는 표본의 충족 경기 수와 백분율이다. `AnalysisShare`는 두 값의 공통 표본 합계 비율이며, 표본 없음과 분모 0을 구분한다. 경기별 비율의 평균과 서로 대체하지 않는다.
+- `PreferenceDistribution<T>`는 확보된 선택의 값별 경기 수 목록이다. 서로 다른 챔피언 수는 해당 목록 길이다. 동률일 때 임의의 단독 1위를 저장하지 않는다. 정렬·상위 노출 정책은 후속 작업이다.
+- 이 보조 타입은 콘텐츠의 의미를 대신하는 도메인 중심 모델이 아니다. 각 스타일이 자기 표본 범위·단위·조건·입력 검증과 계산 규칙을 소유한다.
+
+### 영역별 입력과 표본 경계
+
+- 정글 입력의 `enemyJungleMonsterKills`는 challenges 원값이고 `enemyJungleMinionsKilled`는 `totalEnemyJungleMinionsKilled`다. 원값 의미가 다른 두 지표를 합산·대체하지 않는다. 전자는 평균 지표로 남기고, 정글 역할 이외의 경기와 역할 미확보는 개별 통계의 미제공 수에 섞지 않는다. 지표별 표본 합은 `jungleMatchCount`다.
+- 라인전 입력의 우위 지표는 원천 숫자 그대로 보존한다. `LaningPoint`에는 10·15분 목표와 실제 프레임 시각, 본인 수치와 상대 차이 및 각 값의 확보 상태를 담는다. `LaningGrowth`의 `experience`는 경험치다. 결과의 본인·상대 평균은 항목별 유효 표본에서 계산하며 최대 레벨 우위를 특정 시점의 격차로 바꾸지 않는다.
+- 역전의 `deficitMatchCount`는 유효한 역할·15분 상대 골드 차이에서 음수로 확인된 경기 수다. `deficitWinRate`의 표본 합은 이 수와 같으며, 승패 미제공·판별 불가를 분리한다. 승리 경기 중 최대 열세는 크기인 양수, 평균 골드 차이는 음수로 표현한다. 이 둘은 열세 후 승리한 경기만 표본으로 사용한다. NONE·역할 미확보는 상대 비교에 넣지 않는다.
+- 피해 부담 입력의 팀 비중은 원천 비율이고 결과 `averageTeamDamageTakenPercentage`는 경기별 비율 평균에 100을 곱한 백분율이다. 여러 경기 전체 팀 피해 합계를 분모로 쓰는 비율이 아니다.
+- 생존 입력의 `longestLifeSeconds`와 CC 입력의 `crowdControlSeconds`는 초 단위다. 한 자릿수 HP·큰 피해·여러 CC 생존은 중복될 수 있으며 합산하지 않는다. 무데스 빈도는 사망 횟수 AVAILABLE 관측만 판정한다.
+- 보호 입력의 `healingToAllies`, `damageShieldedOnAllies`, `allySaves`는 각각 `totalHealsOnTeammates`, `totalDamageShieldedOnTeammates`, `saveAllyFromDeath`다. CC의 `immobilizations`는 `enemyChampionImmobilizations`다.
+- 선택 취향은 숫자 챔피언 ID와 각 주문 슬롯의 ID를 관측으로 받는다. 조합 결과의 튜플은 두 주문 ID를 담는 계약이며, 슬롯 순서를 무시할지는 아직 확정하지 않았다. 미확보 슬롯을 가짜 ID 0으로 채우지 않는다.
+- 승패 비교는 승리·패배·승패 미제공·판별 불가 경기 수의 합이 `matchCount`다. 각 지표 평균의 표본 합은 해당 승패 집단 수다. 위험·후퇴 핑은 분리하며, 평균 차이는 승리 평균에서 패배 평균을 뺀다. 한쪽 평균이 계산 불가면 차이도 계산 불가다. 양쪽 지표 표본을 합쳐 원래 승패 수와 같다고 가정하지 않는다.
+- 포지션 분포는 관측된 역할만 사용한다. NONE은 역할이 없는 실제 값이다. 정글·서포터 경기 수와 카드별 유효 표본 수는 서로 다른 정보다.
+
+### 계산 구현 전에 남은 결정
+
+1. 라인전 우위 조건의 원천 숫자 해석과 포지션·게임 규칙별 적용 범위.
+2. 각 도메인이 여러 관측을 조합할 때의 판별 불가 분류와 입력 검증·오류 계약. 타입의 readonly만으로 런타임 불변성이 보장되지는 않으므로 생성·계산 시 검증과 동결을 구현한다.
+3. 스펠 조합의 동등성, 챔피언·스펠 빈도 동률 정렬. 원천 ID별 빈도 자체와 화면 표시 정책을 구분한다.
+4. 탱커·힐러 분류, 팀 피해 30%·이동 불가 10회 같은 후보 임계값과 카드별 최소 표본·노출 기준. 미확정 기준의 결과 필드는 아직 추가하지 않았다.
+5. 첫 포탑 세부 획득·어시스트·관여율은 기존 철거 모델의 확장 범위를 먼저 정한다. 별도 모델을 중복 생성하지 않았다.
+
+다음 단계는 확정된 도메인부터 입력 검증·불변식·계산 동작 테스트를 작성하고 구현하는 것이다. 문서의 추가 후보 전체나 출시 범위가 이 타입 정의만으로 확정된 것은 아니다.
 
 ## 메인 콘텐츠
 
@@ -106,6 +158,17 @@
 | 첫 포탑 전체 관여율 | 30% | 위 두 필드의 OR로 관여 경기 비율 |
 
 직접 획득과 어시스트의 경기 수를 단순 합산하지 않고 경기별 OR로 중복을 방지한다. ‘시작이 반이다’의 관여 여부별 승률은 아래 추가 후보에서 다룬다.
+
+[FirstBloodStyle](../src/backend/analysis/domain/FirstBloodStyle.ts)은 분석 소유 입력 `FirstBloodRecord`로 퍼스트 블러드 항목을 구현한다. 원천의 `firstBloodKill`은 `kill`, `firstBloodAssist`는 `assist` 관측으로 받는다. match 직접 의존이나 조회·변환 연결은 아직 없다.
+
+- `kills`, `assists`는 각각 AVAILABLE인 표본에서 발생 경기 수(`occurredMatchCount`)와 반올림하지 않은 백분율을 제공한다. 미제공·판별 불가 표본 수를 각각 보존하고 실제 false는 유효 분모에 포함한다.
+- `participation`은 어느 하나가 true이면 관여, 모두 false이면 미관여다. 나머지 조합은 `unresolvedMatchCount`로 보존한다. 판별 가능한 `sampleCount`를 분모로 `participatedMatchCount / sampleCount × 100`을 계산하며, 두 항목이 모두 true여도 한 경기로 센다.
+- 항목별 유효 표본이 없으면 UNAVAILABLE이며 숫자를 만들지 않는다. 판별 가능하지만 모두 false이면 AVAILABLE의 0회·0%다. 빈 입력도 허용한다. 결과와 하위 집계는 불변 값이다.
+- 직접 획득·어시스트·전체 관여는 분모가 다를 수 있으므로 각각의 표본 수를 함께 제공한다. 경기 선정·노출 기준·승패별 비교는 후속 작업이다.
+- 입력은 이미 검증된 불리언 관측 계약이다. 미확보 상태도 정상 분석 입력이므로 이 계산은 예외나 실패 Result 대신 `FirstBloodStyle` 값을 직접 반환한다.
+
+첫 포탑 전체 관여는 기존 `StructureStyle`이 계산한다. 첫 포탑 직접 파괴·어시스트의 개별 집계와 전체 관여 백분율은 아직 추가하지 않았다. 따라서 이 콘텐츠 전체의 구현이 완료된 것은 아니다.
+
 
 ### 5. 라인전의 제왕
 

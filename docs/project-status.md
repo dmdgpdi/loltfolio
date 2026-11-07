@@ -8,7 +8,7 @@ Riot ID의 이름과 태그로 플레이어를 찾고, 최근 최대 20개 경�
 
 - `player`: Riot ID 검증과 PUUID 식별.
 - `match`: 플레이어·큐별 경기 수집, 저장, 수집 상태 관리.
-- `analysis`: 의사소통·시야·철거·솔로킬 성향 도메인 구현. 나머지 콘텐츠 집계와 검색·최신화 유스케이스는 미구현.
+- `analysis`: 의사소통·시야·철거·솔로킬·퍼스트 블러드 성향 도메인 구현. 나머지 14개 개념의 입력·결과 값타입 정의 완료. 해당 계산과 검색·최신화 유스케이스는 미구현.
 - `src/app`: 얇은 페이지와 HTTP 진입점. 화면 구현은 `src/frontend`에 둔다.
 
 분석 기능은 `player`, `match`의 공개 Application 기능을 사용한다. 두 모듈이 분석 구현을 역참조하지 않는다. Command/Query 구분을 위해 별도 저장소나 Handler를 미리 만들 필요는 없다.
@@ -24,7 +24,7 @@ Riot ID의 이름과 태그로 플레이어를 찾고, 최근 최대 20개 경�
 | 값의 상태 | `Stat<T>`로 실제 값, `NOT_PROVIDED`, `UNKNOWN` 구분 |
 | 영속화 | 경기·수집 상태 Repository 구현과 마이그레이션 존재. 실제 DB 적용 여부는 환경별 확인 필요 |
 | 수집 제어 | 원자적 시작, 전체·부분 성공 후 20분 제한, 실패 기록, 429 재시도 시각 보존 |
-| 분석 | `CommunicationStyle`의 핑 7종, `VisionStyle`의 와드 행동, `StructureStyle`의 구조물·첫 포탑 관여, `SoloKillStyle`의 솔로킬 통계·공통 표본 비중 구현. 나머지 콘텐츠·포지션 분포·결과 저장 미구현 |
+| 분석 | `CommunicationStyle`의 핑 7종, `VisionStyle`의 와드 행동, `StructureStyle`의 구조물·첫 포탑 관여, `SoloKillStyle`의 솔로킬 통계·공통 표본 비중, `FirstBloodStyle`의 획득·어시스트·관여 비율 구현. 나머지 콘텐츠·포지션 분포의 입력·결과 타입 정의 완료, 계산·결과 저장 미구현 |
 | 사용자 기능 | 검색·최신화 전체 유스케이스, Controller, Route Handler 미구현 |
 | 화면 | `Home`이 `null`을 반환하는 초기 상태 |
 
@@ -39,7 +39,7 @@ Riot ID의 이름과 태그로 플레이어를 찾고, 최근 최대 20개 경�
 
 ## 남은 작업과 권장 순서
 
-진행 순서는 도메인 모델 → 비즈니스 로직과 테스트 → Repository 인터페이스 → Application Service다. 현재 [CommunicationStyle](../src/backend/analysis/domain/CommunicationStyle.ts)의 핑 사용량과 [VisionStyle](../src/backend/analysis/domain/VisionStyle.ts)의 와드 행동·미구매 경기 수, [StructureStyle](../src/backend/analysis/domain/StructureStyle.ts)의 철거·첫 포탑 관여, [SoloKillStyle](../src/backend/analysis/domain/SoloKillStyle.ts)의 솔로킬 통계·비중을 구현했다. 기존 `AnalysisSample`은 제거했으며, 분석 도메인은 `match` 내부에 직접 의존하지 않는다. 다음은 미정인 핑 비교 범위를 확정하고 나머지 스타일의 의미와 계산 규칙을 모델링하는 단계다. Repository와 Service는 아직 추가하지 않았다.
+진행 순서는 도메인 모델 → 비즈니스 로직과 테스트 → Repository 인터페이스 → Application Service다. 현재 [CommunicationStyle](../src/backend/analysis/domain/CommunicationStyle.ts)의 핑 사용량과 [VisionStyle](../src/backend/analysis/domain/VisionStyle.ts)의 와드 행동·미구매 경기 수, [StructureStyle](../src/backend/analysis/domain/StructureStyle.ts)의 철거·첫 포탑 관여, [SoloKillStyle](../src/backend/analysis/domain/SoloKillStyle.ts)의 솔로킬 통계·비중, [FirstBloodStyle](../src/backend/analysis/domain/FirstBloodStyle.ts)의 첫 킬 획득·어시스트·관여를 구현했다. 기존 `AnalysisSample`은 제거했으며, 분석 도메인은 `match` 내부에 직접 의존하지 않는다. 나머지 14개 개념의 불변 값타입과 입력 계약도 정의했다. 상세 경계와 미결정 사항은 [분석 콘텐츠의 도메인 값모델](analysis-content.md#남은-영역의-도메인-값모델)을 참고한다. 다음은 확정된 도메인부터 입력 검증·불변식·계산 동작 테스트를 작성하고 구현하는 단계다. 미정인 우위 판정·스펠 조합·노출 기준은 합의 후 적용한다. Repository와 Service는 아직 추가하지 않았다.
 
 ### 1. 분석 범위와 계산 규칙 확정
 
