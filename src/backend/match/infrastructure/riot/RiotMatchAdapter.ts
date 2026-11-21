@@ -3,6 +3,7 @@ import ky from "ky";
 import { z } from "zod";
 import { MatchCollectionError } from "@/backend/match/application/errors/MatchCollectionError";
 import type { RiotMatchClient } from "@/backend/match/application/RiotMatchClient";
+import type { RiotMatchListOptions } from "@/backend/match/application/types/RiotMatchListOptions.type";
 import type { QueueId } from "@/backend/match/domain/types/QueueId.type";
 import { parsePlayerMatch } from "./parsePlayerMatch";
 import { toMatchCollectionError } from "./toMatchCollectionError";
@@ -39,23 +40,30 @@ export class RiotMatchAdapter implements RiotMatchClient {
     );
   }
 
-  /** @description 검증된 QueueId를 Riot 목록 조회의 queue 파라미터로 전달한다. */
+  /** @description 검증된 QueueId를 Riot 목록 조회에 전달하고 취소된 실행의 HTTP 요청을 중단한다. */
   async findRecentMatchIds(
     puuid: string,
     queueId: QueueId,
     count: number,
-    start = 0,
+    options: RiotMatchListOptions = {},
   ) {
     return Result.pipe(
       this.client(),
       Result.andThen((client) =>
         Result.try({
-          try: () =>
-            client
+          try: () => {
+            options.signal?.throwIfAborted();
+            return client
               .get(`matches/by-puuid/${encodeURIComponent(puuid)}/ids`, {
-                searchParams: { queue: queueId, start, count },
+                searchParams: {
+                  queue: queueId,
+                  start: options.start ?? 0,
+                  count,
+                },
+                signal: options.signal,
               })
-              .json<unknown>(),
+              .json<unknown>();
+          },
           catch: toMatchCollectionError,
         }),
       ),

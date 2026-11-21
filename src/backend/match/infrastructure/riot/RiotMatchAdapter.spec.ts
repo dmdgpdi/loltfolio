@@ -17,7 +17,9 @@ it("큐·시작 위치·개수를 전달하고 API 키는 헤더로 보낸다", 
   });
 
   // Act
-  const result = await adapter.findRecentMatchIds("target/id", 420, 20, 40);
+  const result = await adapter.findRecentMatchIds("target/id", 420, 20, {
+    start: 40,
+  });
 
   // Assert
   expect(result).toEqual(Result.succeed(["KR_1"]));
@@ -117,4 +119,59 @@ it("상세 조회 뒤 취소되면 Timeline의 HTTP 요청을 보내지 않는�
   // Assert
   expect(isRejected).toBe(true);
   expect(request).toHaveBeenCalledOnce();
+});
+
+it("이미 취소된 목록 조회는 HTTP 요청을 보내지 않는다", async () => {
+  // Arrange
+  const controller = new AbortController();
+  controller.abort();
+  let requests = 0;
+  const adapter = new RiotMatchAdapter({
+    apiKey: "test-key",
+    region: "ASIA",
+    fetch: async () => {
+      requests++;
+      return Response.json(["KR_1"]);
+    },
+  });
+
+  // Act
+  const result = await adapter.findRecentMatchIds("player", 420, 20, {
+    signal: controller.signal,
+  });
+
+  // Assert
+  expect(Result.isFailure(result)).toBe(true);
+  expect(requests).toBe(0);
+});
+
+it("진행 중인 목록 HTTP 요청에도 실행 취소를 전달한다", async () => {
+  // Arrange
+  const controller = new AbortController();
+  const started = Promise.withResolvers<AbortSignal>();
+  const adapter = new RiotMatchAdapter({
+    apiKey: "test-key",
+    region: "ASIA",
+    fetch: async (input) => {
+      const signal = (input as Request).signal;
+      started.resolve(signal);
+      return new Promise<Response>((_resolve, reject) => {
+        signal.addEventListener("abort", () => reject(signal.reason), {
+          once: true,
+        });
+      });
+    },
+  });
+
+  // Act
+  const pending = adapter.findRecentMatchIds("player", 420, 20, {
+    signal: controller.signal,
+  });
+  const signal = await started.promise;
+  controller.abort();
+  const result = await pending;
+
+  // Assert
+  expect(signal.aborted).toBe(true);
+  expect(Result.isFailure(result)).toBe(true);
 });

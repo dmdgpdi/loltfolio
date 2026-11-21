@@ -10,6 +10,7 @@ import type { PlayerMatchRepository } from "@/backend/match/domain/types/PlayerM
 import type { QueueId } from "@/backend/match/domain/types/QueueId.type";
 import { MatchCollectionError } from "./errors/MatchCollectionError";
 import { MatchCollectionFailureSaveError } from "./errors/MatchCollectionFailureSaveError";
+import { MatchCollectionFetcher } from "./MatchCollectionFetcher";
 import type { RiotMatchClient } from "./RiotMatchClient";
 
 type MatchCollectionFailure =
@@ -20,15 +21,6 @@ type MatchCollectionFailure =
   | MatchSyncNotInProgressError
   | MatchCollectionFailureSaveError;
 
-const RECENT_MATCH_LIMIT = 20;
-/** @description 두 경기씩 시작해 병렬 처리하면서 중단 시 진행 중인 요청 수를 작게 제한한다. Riot의 시간 구간별 호출 한도를 의미하지 않는다. */
-const CONCURRENT_MATCH_LIMIT = 2;
-
-/** @description 이번 목록에서 확보한 기록과 개별 조회 오류. 성공분은 중단 오류가 있어도 저장한다. */
-type FetchedMatches = Readonly<{
-  matches: readonly PlayerMatch[];
-  errors: readonly MatchCollectionError[];
-}>;
 /** @description 확보된 분석 대상과 일부 실패 여부를 함께 전달해 완전 성공과 부분 성공을 구분한다. */
 type CollectedMatches = Readonly<{
   selectedMatchIds: readonly string[];
@@ -36,13 +28,19 @@ type CollectedMatches = Readonly<{
   hadFailures: boolean;
 }>;
 
+/** @description 기존 동기 수집의 시작·저장·완료 계약을 유지하며 읽기 알고리즘은 작업 기반 수집과 공유한다. */
 export class MatchCollectionService {
+  private readonly fetcher: MatchCollectionFetcher;
+
+  /** @description 기존 의존성으로 공용 읽기 실행부를 구성하고 저장·완료 경계는 이 서비스에 유지한다. */
   constructor(
     private readonly syncRepository: MatchSyncRepository,
     private readonly matchRepository: PlayerMatchRepository,
-    private readonly riotMatchClient: RiotMatchClient,
+    riotMatchClient: RiotMatchClient,
     private readonly now: () => Date = () => new Date(),
-  ) {}
+  ) {
+    this.fetcher = new MatchCollectionFetcher(matchRepository, riotMatchClient);
+  }
 
   /** @description 지원하는 큐의 최근 최대 20개 ID에서 확보 가능한 유효 경기를 수집한다. 일부 조회 실패는 부분 성공으로 기록하며 큐별 중복 실행·최신화 제한을 적용한다. */
   async collectRecentMatches(
@@ -85,24 +83,7 @@ export class MatchCollectionService {
     return Result.succeed(collected.value.matches);
   }
 
-  /** @description 최근 ID 한 페이지의 중복을 제거한다. 유효 기록 수를 맞추기 위한 과거 페이지 조회는 하지 않는다. */
-  private async findRecentMatchIds(
-    puuid: string,
-    queueId: QueueId,
-  ): Promise<Result.Result<readonly string[], MatchCollectionError>> {
-    const page = await this.riotMatchClient.findRecentMatchIds(
-      puuid,
-      queueId,
-      RECENT_MATCH_LIMIT,
-      0,
-    );
-    return Result.pipe(
-      page,
-      Result.map((ids) => [...new Set(ids.slice(0, RECENT_MATCH_LIMIT))]),
-    );
-  }
-
-  /** @description 최근 목록의 DB 기록을 재사용하고 없는 경기만 조회한다. 조회 성공분은 저장하고 오류의 범위에 따라 부분 성공 또는 실패로 마친다. */
+  /** @description 공용 실행부의 확보 기록을 저장한 뒤 기존 오류·완료 표본 계약을 유지한다. */
   private async collect(
     puuid: string,
     queueId: QueueId,
@@ -114,202 +95,38 @@ export class MatchCollectionService {
       | MatchCollectionFailureSaveError
     >
   > {
-    const ids = await this.findRecentMatchIds(puuid, queueId);
-
-    if (Result.isFailure(ids)) {
-      return ids;
-    }
-
-    if (ids.value.length === 0) {
-      return Result.succeed({
-        selectedMatchIds: [],
-        matches: [],
-        hadFailures: false,
-      });
-    }
-
-    const existing = await this.matchRepository.findByMatchIds(
-      puuid,
-      queueId,
-      ids.value,
-    );
-
-    if (Result.isFailure(existing)) {
-      return existing;
-    }
-
-    const cached = this.indexMatchingMatches(existing.value, puuid, queueId);
-    const missingIds = ids.value.filter((id) => !cached.has(id));
-    const fetched = await this.findMissingMatches(missingIds, puuid, queueId);
-    const fatal = this.findFatalError(fetched.errors);
-
-    if (fetched.matches.length > 0) {
-      const saved = await this.matchRepository.saveAll(fetched.matches);
-
+    const target = { puuid, queueId };
+    const ids = await this.fetcher.findRecentMatchIds(target);
+    if (Result.isFailure(ids)) return ids;
+    const fetched = await this.fetcher.collectSelection(target, ids.value);
+    if (Result.isFailure(fetched)) return fetched;
+    const { matches, cachedMatches, failure, errors, selectedMatchIds } =
+      fetched.value;
+    if (matches.length > 0) {
+      const saved = await this.matchRepository.saveAll(matches);
       if (Result.isFailure(saved)) {
-        // 실패 상태를 기록할 때도 API 재시도 제한은 유지해야 한다.
-        return fatal
+        return failure
           ? Result.fail(
               new MatchCollectionFailureSaveError({
-                cause: fatal,
+                cause: failure,
                 saveError: saved.error,
               }),
             )
           : saved;
       }
     }
-
-    if (fatal) {
-      return Result.fail(fatal);
-    }
-
-    if (
-      fetched.matches.length === 0 &&
-      !ids.value.some((id) => cached.has(id)) &&
-      fetched.errors.length > 0
-    ) {
-      return Result.fail(fetched.errors[0]);
-    }
-
-    return Result.succeed(this.completedSelection(ids.value, cached, fetched));
-  }
-
-  /** @description 다른 플레이어·큐의 기록을 재사용하지 않도록 요청 범위의 저장 경기만 인덱싱한다. */
-  private indexMatchingMatches(
-    matches: readonly PlayerMatch[],
-    puuid: string,
-    queueId: QueueId,
-  ): Map<string, PlayerMatch> {
-    return new Map(
-      matches
-        .filter((match) => match.puuid === puuid && match.queueId === queueId)
-        .map((match) => [match.matchId, match]),
+    if (failure) return Result.fail(failure);
+    const available = new Map(
+      [...cachedMatches, ...matches].map((match) => [match.matchId, match]),
     );
-  }
-
-  /** @description 원래 ID 범위를 분석 제외·개별 실패와 무관하게 완료 기록에 전달한다. */
-  private completedSelection(
-    ids: readonly string[],
-    cached: ReadonlyMap<string, PlayerMatch>,
-    fetched: FetchedMatches,
-  ): CollectedMatches {
-    const available = new Map(cached);
-
-    for (const match of fetched.matches) {
-      available.set(match.matchId, match);
-    }
-
-    return {
-      selectedMatchIds: ids,
-      matches: this.selectEligibleMatches(ids, available),
-      hadFailures: fetched.errors.length > 0,
-    };
-  }
-
-  /** @description 확보된 기록 중 분석 대상만 최근 ID 순서로 선택한다. 누락된 자리를 과거 기록으로 채우지 않는다. */
-  private selectEligibleMatches(
-    ids: readonly string[],
-    cached: ReadonlyMap<string, PlayerMatch>,
-  ): readonly PlayerMatch[] {
-    return ids.flatMap((id) => {
-      const match = cached.get(id);
-      return match?.isEligibleForAnalysis() ? [match] : [];
+    return Result.succeed({
+      selectedMatchIds,
+      matches: selectedMatchIds.flatMap((id) => {
+        const match = available.get(id);
+        return match?.isEligibleForAnalysis() ? [match] : [];
+      }),
+      hadFailures: errors.length > 0,
     });
-  }
-
-  /** @description 다른 중단 오류가 섞여 있어도 429를 우선해 API 재시도 시각을 보존한다. */
-  private findFatalError(
-    errors: readonly MatchCollectionError[],
-  ): MatchCollectionError | undefined {
-    return (
-      errors.find((error) => error.status === 429) ??
-      errors.find((error) => this.isFatalError(error))
-    );
-  }
-
-  /** @description 누락 경기들을 두 개씩 병렬 조회한다. 응답 순서는 ID 순서로 보존하며 중단 오류 발생 시 진행 중 요청을 취소하고 다음 묶음을 시작하지 않는다. */
-  private async findMissingMatches(
-    ids: readonly string[],
-    puuid: string,
-    queueId: QueueId,
-  ): Promise<FetchedMatches> {
-    const matches: PlayerMatch[] = [];
-    const errors: MatchCollectionError[] = [];
-
-    for (let start = 0; start < ids.length; start += CONCURRENT_MATCH_LIMIT) {
-      const controller = new AbortController();
-      const results = await Promise.all(
-        ids.slice(start, start + CONCURRENT_MATCH_LIMIT).map(async (id) => {
-          const result = await this.riotMatchClient.findPlayerMatch(
-            id,
-            puuid,
-            controller.signal,
-          );
-
-          if (Result.isFailure(result)) {
-            if (this.isFatalError(result.error)) {
-              controller.abort();
-            }
-
-            return result;
-          }
-
-          const match = result.value;
-
-          if (
-            match.matchId !== id ||
-            match.puuid !== puuid ||
-            match.queueId !== queueId
-          ) {
-            controller.abort();
-            return Result.fail(
-              new MatchCollectionError({ reason: "INVALID_RESPONSE" }),
-            );
-          }
-
-          return result;
-        }),
-      );
-
-      for (const result of results) {
-        if (Result.isFailure(result)) {
-          errors.push(result.error);
-        } else {
-          matches.push(result.value);
-        }
-      }
-
-      if (errors.some((error) => this.isFatalError(error))) {
-        break;
-      }
-    }
-
-    return { matches, errors };
-  }
-
-  /** @description 개별 404·서버 오류·통신 실패는 건너뛰되 인증·설정·응답 검증·호출 제한 오류는 전체 수집을 중단한다. */
-  private isFatalError(error: MatchCollectionError): boolean {
-    if (
-      error.retryAvailableAt ||
-      error.reason === "CONFIGURATION" ||
-      error.reason === "INVALID_RESPONSE"
-    ) {
-      return true;
-    }
-
-    if (error.reason === "TIMEOUT" || error.reason === "REQUEST_FAILED") {
-      return false;
-    }
-
-    return (
-      error.reason !== "HTTP" ||
-      (error.status !== 404 &&
-        !(
-          error.status !== undefined &&
-          error.status >= 500 &&
-          error.status < 600
-        ))
-    );
   }
 
   /** @description 중단 오류와 DB 실패를 수집 상태에 기록하며 API 재시도 가능 시각을 보존한다. */
