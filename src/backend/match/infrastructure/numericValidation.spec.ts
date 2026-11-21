@@ -1,9 +1,9 @@
 import { Result } from "@praha/byethrow";
 import { expect, it } from "vitest";
-import { PlayerMatch } from "../domain/PlayerMatch";
-import { createPlayerMatchData } from "../testing/createPlayerMatchData";
-import { createRiotMatchResponse } from "../testing/createRiotMatchResponse";
-import { createRiotTimelineResponse } from "../testing/createRiotTimelineResponse";
+import { PlayerMatch } from "@/backend/match/domain/PlayerMatch";
+import { createPlayerMatchData } from "@/backend/match/testing/createPlayerMatchData";
+import { createRiotMatchResponse } from "@/backend/match/testing/createRiotMatchResponse";
+import { createRiotTimelineResponse } from "@/backend/match/testing/createRiotTimelineResponse";
 import { toStoredPlayerMatch } from "./persistence/toStoredPlayerMatch";
 import { parsePlayerMatch } from "./riot/parsePlayerMatch";
 import { storedPlayerMatchSchema } from "./storedPlayerMatchSchema";

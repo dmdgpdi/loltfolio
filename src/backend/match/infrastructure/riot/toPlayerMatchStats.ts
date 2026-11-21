@@ -1,5 +1,5 @@
-import { toProvidedStat } from "../../domain/toProvidedStat";
-import type { PlayerMatchStats } from "../../domain/types/PlayerMatchStats.type";
+import { toProvidedStat } from "@/backend/match/domain/toProvidedStat";
+import type { PlayerMatchStats } from "@/backend/match/domain/types/PlayerMatchStats.type";
 import type { SelectedParticipant } from "./SelectedParticipant.type";
 
 /** @description 선택한 원본 통계를 상태와 함께 보존하고 미제공 값을 실제 0과 구분한다. */

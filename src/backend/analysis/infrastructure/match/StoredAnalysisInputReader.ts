@@ -1,9 +1,9 @@
 import { Result } from "@praha/byethrow";
-import type { CompletedMatchReader } from "../../../match/application/CompletedMatchReader";
-import type { AnalysisInputReader } from "../../application/AnalysisInputReader";
-import { AnalysisReadError } from "../../application/errors/AnalysisReadError";
-import type { AnalysisInputSet } from "../../application/types/AnalysisInputSet.type";
-import type { AnalysisTarget } from "../../application/types/AnalysisTarget.type";
+import type { AnalysisInputReader } from "@/backend/analysis/application/AnalysisInputReader";
+import { AnalysisReadError } from "@/backend/analysis/application/errors/AnalysisReadError";
+import type { AnalysisInputSet } from "@/backend/analysis/application/types/AnalysisInputSet.type";
+import type { AnalysisTarget } from "@/backend/analysis/application/types/AnalysisTarget.type";
+import type { CompletedMatchReader } from "@/backend/match/application/CompletedMatchReader";
 import { toAnalysisMatchInput } from "./toAnalysisMatchInput";
 
 /** @description match의 공개 읽기 계약을 분석 소유 입력으로 변환하며 DB와 Riot 구현에 직접 의존하지 않는다. */

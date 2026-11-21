@@ -1,5 +1,5 @@
-import { emptyPlayerMatchStats } from "../domain/emptyPlayerMatchStats";
-import type { PlayerMatchData } from "../domain/types/PlayerMatchData.type";
+import { emptyPlayerMatchStats } from "@/backend/match/domain/emptyPlayerMatchStats";
+import type { PlayerMatchData } from "@/backend/match/domain/types/PlayerMatchData.type";
 
 /** @description 도메인 테스트의 완전한 정상 경기 fixture. 테스트마다 필요한 필드 상태만 덮어써 경계 조건을 표현한다. */
 export function createPlayerMatchData(

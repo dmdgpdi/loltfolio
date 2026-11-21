@@ -1,8 +1,8 @@
 import { Result } from "@praha/byethrow";
 import { z } from "zod";
-import { PlayerLookupResponseError } from "../../application/errors/PlayerLookupResponseError";
-import { Player } from "../../domain/Player";
-import { RiotId } from "../../domain/RiotId.VO";
+import { PlayerLookupResponseError } from "@/backend/player/application/errors/PlayerLookupResponseError";
+import { Player } from "@/backend/player/domain/Player";
+import { RiotId } from "@/backend/player/domain/RiotId.VO";
 
 const accountSchema = z.object({
   puuid: z.string().refine((value) => value.trim().length > 0),

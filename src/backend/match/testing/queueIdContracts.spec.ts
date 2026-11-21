@@ -1,21 +1,21 @@
 import { expectTypeOf, it } from "vitest";
-import type { MatchCollectionService } from "../application/MatchCollectionService";
-import type { RiotMatchClient } from "../application/RiotMatchClient";
-import type { MatchSync } from "../domain/MatchSync";
-import type { GameMode } from "../domain/types/GameMode.type";
-import type { MapId } from "../domain/types/MapId.type";
-import type { MatchSyncData } from "../domain/types/MatchSyncData.type";
-import type { MatchSyncRepository } from "../domain/types/MatchSyncRepository.type";
-import type { PlayerMatchRepository } from "../domain/types/PlayerMatchRepository.type";
-import type { Position } from "../domain/types/Position.type";
-import type { QueueId } from "../domain/types/QueueId.type";
-import type { DrizzleMatchSyncRepository } from "../infrastructure/persistence/DrizzleMatchSyncRepository";
-import type { DrizzlePlayerMatchRepository } from "../infrastructure/persistence/DrizzlePlayerMatchRepository";
+import type { MatchCollectionService } from "@/backend/match/application/MatchCollectionService";
+import type { RiotMatchClient } from "@/backend/match/application/RiotMatchClient";
+import type { MatchSync } from "@/backend/match/domain/MatchSync";
+import type { GameMode } from "@/backend/match/domain/types/GameMode.type";
+import type { MapId } from "@/backend/match/domain/types/MapId.type";
+import type { MatchSyncData } from "@/backend/match/domain/types/MatchSyncData.type";
+import type { MatchSyncRepository } from "@/backend/match/domain/types/MatchSyncRepository.type";
+import type { PlayerMatchRepository } from "@/backend/match/domain/types/PlayerMatchRepository.type";
+import type { Position } from "@/backend/match/domain/types/Position.type";
+import type { QueueId } from "@/backend/match/domain/types/QueueId.type";
+import type { DrizzleMatchSyncRepository } from "@/backend/match/infrastructure/persistence/DrizzleMatchSyncRepository";
+import type { DrizzlePlayerMatchRepository } from "@/backend/match/infrastructure/persistence/DrizzlePlayerMatchRepository";
 import type {
   matchSyncs,
   playerMatches,
-} from "../infrastructure/persistence/match.schema";
-import type { RiotMatchAdapter } from "../infrastructure/riot/RiotMatchAdapter";
+} from "@/backend/match/infrastructure/persistence/match.schema";
+import type { RiotMatchAdapter } from "@/backend/match/infrastructure/riot/RiotMatchAdapter";
 
 it("저장소·클라이언트 계약은 큐를 임의의 number가 아닌 QueueId로 받는다", () => {
   // Assert

@@ -6,6 +6,7 @@
 
 - Riot ID 검증·PUUID 조회, 최근 최대 20경기 수집·저장·부분 성공·완료 표본 보존.
 - 19개 분석의 타입·순수 계산·검증·동결·테스트와 저장 경기 → DTO → `GET /api/analysis` 연결.
+- 프로젝트 전체 부모 상대경로 import는 Biome `noRestrictedImports`로 금지하고 `@/…`로 통일했다. `./`는 허용하며 Vitest 별칭도 설정했다. 설치 버전에서 `require()`·mock 호출은 검사하지 않는다.
 
 화면은 `Home`이 null을 반환하는 초기 상태다. 검색·최초 생성·최신화 Command와 화면 연결은 미구현이다.
 

@@ -1,6 +1,6 @@
 import { config } from "dotenv";
 import { sql } from "drizzle-orm";
-import { getDatabase } from "../src/backend/db/client";
+import { getDatabase } from "@/backend/db/client";
 
 config({ path: ".env", quiet: true });
 

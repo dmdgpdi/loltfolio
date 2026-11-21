@@ -1,8 +1,8 @@
 import { Result } from "@praha/byethrow";
-import { QueueId } from "../../match/domain/QueueId";
-import type { AnalysisReader } from "../application/AnalysisReader";
-import { AnalysisReadError } from "../application/errors/AnalysisReadError";
-import type { AnalysisTarget } from "../application/types/AnalysisTarget.type";
+import type { AnalysisReader } from "@/backend/analysis/application/AnalysisReader";
+import { AnalysisReadError } from "@/backend/analysis/application/errors/AnalysisReadError";
+import type { AnalysisTarget } from "@/backend/analysis/application/types/AnalysisTarget.type";
+import { QueueId } from "@/backend/match/domain/QueueId";
 import type { AnalysisHttpError } from "./AnalysisHttpError.type";
 
 /** @description 조회 인자를 검증하고 Query 결과를 HTTP 응답으로 변환하며 수집을 시작하지 않는다. */

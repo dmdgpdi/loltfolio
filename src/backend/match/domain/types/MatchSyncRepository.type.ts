@@ -1,7 +1,7 @@
 import type { Result } from "@praha/byethrow";
-import type { MatchRepositoryError } from "../errors/MatchRepositoryError";
-import type { MatchSyncStartNotAllowedError } from "../errors/MatchSyncStartNotAllowedError";
-import type { MatchSync } from "../MatchSync";
+import type { MatchRepositoryError } from "@/backend/match/domain/errors/MatchRepositoryError";
+import type { MatchSyncStartNotAllowedError } from "@/backend/match/domain/errors/MatchSyncStartNotAllowedError";
+import type { MatchSync } from "@/backend/match/domain/MatchSync";
 import type { QueueId } from "./QueueId.type";
 
 /** @description 플레이어·큐별 수집 시작을 원자적으로 확보하고 동일 시도의 완료만 저장하는 계약. */

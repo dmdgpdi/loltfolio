@@ -1,8 +1,8 @@
 import { Result } from "@praha/byethrow";
 import { expect, it } from "vitest";
-import { CalculatedAnalysisReader } from "../application/CalculatedAnalysisReader";
-import { AnalysisCalculationError } from "../application/errors/AnalysisCalculationError";
-import { AnalysisReadError } from "../application/errors/AnalysisReadError";
+import { CalculatedAnalysisReader } from "@/backend/analysis/application/CalculatedAnalysisReader";
+import { AnalysisCalculationError } from "@/backend/analysis/application/errors/AnalysisCalculationError";
+import { AnalysisReadError } from "@/backend/analysis/application/errors/AnalysisReadError";
 import { AnalysisController } from "./AnalysisController";
 
 it("일반 DTO를 200으로 반환하고 Query 입력만 전달한다", async () => {

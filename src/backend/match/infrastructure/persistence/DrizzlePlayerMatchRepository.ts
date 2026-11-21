@@ -1,11 +1,11 @@
 import { Result } from "@praha/byethrow";
 import { and, eq, inArray } from "drizzle-orm";
-import type { getDatabase } from "../../../db/client";
-import { MatchRepositoryError } from "../../domain/errors/MatchRepositoryError";
-import { PlayerMatch } from "../../domain/PlayerMatch";
-import type { PlayerMatchRepository } from "../../domain/types/PlayerMatchRepository.type";
-import type { QueueId } from "../../domain/types/QueueId.type";
-import { storedPlayerMatchSchema } from "../storedPlayerMatchSchema";
+import type { getDatabase } from "@/backend/db/client";
+import { MatchRepositoryError } from "@/backend/match/domain/errors/MatchRepositoryError";
+import { PlayerMatch } from "@/backend/match/domain/PlayerMatch";
+import type { PlayerMatchRepository } from "@/backend/match/domain/types/PlayerMatchRepository.type";
+import type { QueueId } from "@/backend/match/domain/types/QueueId.type";
+import { storedPlayerMatchSchema } from "@/backend/match/infrastructure/storedPlayerMatchSchema";
 import { playerMatches } from "./match.schema";
 import { toStoredPlayerMatch } from "./toStoredPlayerMatch";
 

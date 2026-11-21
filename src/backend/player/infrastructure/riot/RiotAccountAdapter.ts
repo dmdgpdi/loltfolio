@@ -1,12 +1,12 @@
 import { Result } from "@praha/byethrow";
 import ky from "ky";
 import { z } from "zod";
-import { PlayerLookupConfigurationError } from "../../application/errors/PlayerLookupConfigurationError";
-import type { PlayerLookupFailure } from "../../application/errors/PlayerLookupFailure";
-import { PlayerNotFoundError } from "../../application/errors/PlayerNotFoundError";
-import type { RiotAccountClient } from "../../application/RiotAccountClient";
-import type { Player } from "../../domain/Player";
-import type { RiotId } from "../../domain/RiotId.VO";
+import { PlayerLookupConfigurationError } from "@/backend/player/application/errors/PlayerLookupConfigurationError";
+import type { PlayerLookupFailure } from "@/backend/player/application/errors/PlayerLookupFailure";
+import { PlayerNotFoundError } from "@/backend/player/application/errors/PlayerNotFoundError";
+import type { RiotAccountClient } from "@/backend/player/application/RiotAccountClient";
+import type { Player } from "@/backend/player/domain/Player";
+import type { RiotId } from "@/backend/player/domain/RiotId.VO";
 import { parseAccount } from "./parseAccount";
 import { toPlayerLookupFailure } from "./toPlayerLookupFailure";
 

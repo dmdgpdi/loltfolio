@@ -1,9 +1,9 @@
-import { getDatabase } from "../../db/client";
-import { DrizzleCompletedMatchReader } from "../../match/infrastructure/persistence/DrizzleCompletedMatchReader";
-import type { AnalysisReader } from "../application/AnalysisReader";
-import { CalculatedAnalysisReader } from "../application/CalculatedAnalysisReader";
-import { StoredAnalysisInputReader } from "../infrastructure/match/StoredAnalysisInputReader";
-import { AnalysisController } from "../presentation/AnalysisController";
+import type { AnalysisReader } from "@/backend/analysis/application/AnalysisReader";
+import { CalculatedAnalysisReader } from "@/backend/analysis/application/CalculatedAnalysisReader";
+import { StoredAnalysisInputReader } from "@/backend/analysis/infrastructure/match/StoredAnalysisInputReader";
+import { AnalysisController } from "@/backend/analysis/presentation/AnalysisController";
+import { getDatabase } from "@/backend/db/client";
+import { DrizzleCompletedMatchReader } from "@/backend/match/infrastructure/persistence/DrizzleCompletedMatchReader";
 
 let controller: AnalysisController | undefined;
 let reader: AnalysisReader | undefined;

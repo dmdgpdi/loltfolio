@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { toProvidedStat } from "../domain/toProvidedStat";
+import { toProvidedStat } from "@/backend/match/domain/toProvidedStat";
 
 /** @description 원본 누락·null·빈 문자열은 미제공으로 바꾸고, 자료형이 잘못된 값은 오류로 남긴다. */
 export function providedStatSchema<T extends z.ZodType>(value: T) {

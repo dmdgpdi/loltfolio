@@ -1,10 +1,10 @@
 import { Result } from "@praha/byethrow";
 import { z } from "zod";
-import { MatchCollectionError } from "../../application/errors/MatchCollectionError";
-import type { LaningSnapshot } from "../../domain/types/LaningSnapshot.type";
-import type { LaningValues } from "../../domain/types/LaningValues.type";
-import type { Stat } from "../../domain/types/Stat.type";
-import { providedStatSchema } from "../providedStatSchema";
+import { MatchCollectionError } from "@/backend/match/application/errors/MatchCollectionError";
+import type { LaningSnapshot } from "@/backend/match/domain/types/LaningSnapshot.type";
+import type { LaningValues } from "@/backend/match/domain/types/LaningValues.type";
+import type { Stat } from "@/backend/match/domain/types/Stat.type";
+import { providedStatSchema } from "@/backend/match/infrastructure/providedStatSchema";
 import type { LaningSnapshotContext } from "./LaningSnapshotContext.type";
 
 const frameSchema = z.object({

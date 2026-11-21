@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { toProvidedStat } from "../domain/toProvidedStat";
+import { toProvidedStat } from "@/backend/match/domain/toProvidedStat";
 
 /** @description 저장된 상태 객체와 과거 원시값을 함께 검증한다. 과거 null·누락·빈 문자열은 미제공으로 복원한다. */
 export function storedStatSchema<T extends z.ZodType>(value: T) {
