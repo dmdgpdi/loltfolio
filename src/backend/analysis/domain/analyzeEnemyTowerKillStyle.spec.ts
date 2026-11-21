@@ -94,6 +94,53 @@ it("미확보 공통 표본과 실제 0킬 분모를 구분한다", () => {
   });
 });
 
+it("빈 입력과 전부 미제공인 관측은 수치를 만들지 않는다", () => {
+  // Arrange
+  const input = zeroRecord();
+
+  for (const key of Object.keys(input)) {
+    Reflect.set(input, key, { status: "NOT_PROVIDED" });
+  }
+
+  // Act
+  const empty = analyzeEnemyTowerKillStyle([]);
+  const missing = analyzeEnemyTowerKillStyle([input]);
+
+  if (Result.isFailure(empty)) {
+    throw empty.error;
+  }
+
+  if (Result.isFailure(missing)) {
+    throw missing.error;
+  }
+
+  // Assert
+  expect(empty.value.matchCount).toBe(0);
+  expect(missing.value.matchCount).toBe(1);
+  expect(JSON.stringify(empty.value)).not.toContain('"status":"AVAILABLE"');
+  expect(JSON.stringify(missing.value)).not.toContain('"status":"AVAILABLE"');
+});
+
+it("반환 그래프를 동결하고 원본 변경 및 후속 계산과 분리한다", () => {
+  // Arrange
+  const input = zeroRecord();
+
+  // Act
+  const result = analyzeEnemyTowerKillStyle([input]);
+
+  if (Result.isFailure(result)) {
+    throw result.error;
+  }
+
+  const before = JSON.stringify(result.value);
+  Reflect.set(input.killsNearEnemyTower, "value", 1);
+  analyzeEnemyTowerKillStyle([input]);
+
+  // Assert
+  expectFrozen(result.value);
+  expect(JSON.stringify(result.value)).toBe(before);
+});
+
 it.each([
   "EXCESS",
   "INVALID_EXCLUDED",
@@ -127,14 +174,6 @@ it.each([
   expect(result).toEqual(Result.fail(expect.any(InvalidAnalysisValueError)));
 });
 
-/** @description 모든 원천이 실제 0으로 확보된 입력이며 각 테스트가 독립적으로 변경한다. */
-function zeroRecord(): EnemyTowerKillRecord {
-  return {
-    killsNearEnemyTower: { status: "AVAILABLE", value: 0 },
-    kills: { status: "AVAILABLE", value: 0 },
-  };
-}
-
 it.each([
   "killsNearEnemyTower",
   "kills",
@@ -150,32 +189,13 @@ it.each([
   expect(result).toEqual(Result.fail(expect.any(InvalidAnalysisValueError)));
 });
 
-it("빈 입력과 전부 미제공인 관측은 수치를 만들지 않는다", () => {
-  // Arrange
-  const input = zeroRecord();
-
-  for (const key of Object.keys(input)) {
-    Reflect.set(input, key, { status: "NOT_PROVIDED" });
-  }
-
-  // Act
-  const empty = analyzeEnemyTowerKillStyle([]);
-  const missing = analyzeEnemyTowerKillStyle([input]);
-
-  if (Result.isFailure(empty)) {
-    throw empty.error;
-  }
-
-  if (Result.isFailure(missing)) {
-    throw missing.error;
-  }
-
-  // Assert
-  expect(empty.value.matchCount).toBe(0);
-  expect(missing.value.matchCount).toBe(1);
-  expect(JSON.stringify(empty.value)).not.toContain('"status":"AVAILABLE"');
-  expect(JSON.stringify(missing.value)).not.toContain('"status":"AVAILABLE"');
-});
+/** @description 모든 원천이 실제 0으로 확보된 입력이며 각 테스트가 독립적으로 변경한다. */
+function zeroRecord(): EnemyTowerKillRecord {
+  return {
+    killsNearEnemyTower: { status: "AVAILABLE", value: 0 },
+    kills: { status: "AVAILABLE", value: 0 },
+  };
+}
 
 /** @description 반환 그래프 전체를 확인해 중첩 지표의 런타임 불변성 누락을 검출한다. */
 function expectFrozen(value: unknown): void {
@@ -189,23 +209,3 @@ function expectFrozen(value: unknown): void {
     expectFrozen(child);
   }
 }
-
-it("반환 그래프를 동결하고 원본 변경 및 후속 계산과 분리한다", () => {
-  // Arrange
-  const input = zeroRecord();
-
-  // Act
-  const result = analyzeEnemyTowerKillStyle([input]);
-
-  if (Result.isFailure(result)) {
-    throw result.error;
-  }
-
-  const before = JSON.stringify(result.value);
-  Reflect.set(input.killsNearEnemyTower, "value", 1);
-  analyzeEnemyTowerKillStyle([input]);
-
-  // Assert
-  expectFrozen(result.value);
-  expect(JSON.stringify(result.value)).toBe(before);
-});

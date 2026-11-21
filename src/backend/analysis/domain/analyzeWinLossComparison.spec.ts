@@ -4,38 +4,6 @@ import { analyzeWinLossComparison } from "./analyzeWinLossComparison";
 import { InvalidAnalysisValueError } from "./errors/InvalidAnalysisValueError";
 import type { WinLossRecord } from "./types/WinLossRecord.type";
 
-/** @description 실제 0을 포함한 승패별 행동 관측을 만든다. */
-function record(overrides: Partial<WinLossRecord> = {}): WinLossRecord {
-  return {
-    win: { status: "AVAILABLE", value: true },
-    enemyMissingPings: { status: "AVAILABLE", value: 0 },
-    dangerPings: { status: "NOT_PROVIDED" },
-    retreatPings: { status: "UNKNOWN" },
-    controlWardsBought: { status: "AVAILABLE", value: 2 },
-    wardsRemoved: { status: "AVAILABLE", value: 4 },
-    soloKills: { status: "AVAILABLE", value: 1 },
-    ...overrides,
-  };
-}
-
-/** @description 서로 다른 표본 상태의 비교용 경기 기록을 구성한다. */
-function mixedRecords(): WinLossRecord[] {
-  return [
-    record(),
-    record({ enemyMissingPings: { status: "AVAILABLE", value: 4 } }),
-    record({
-      win: { status: "AVAILABLE", value: false },
-      enemyMissingPings: { status: "AVAILABLE", value: 8 },
-      dangerPings: { status: "AVAILABLE", value: 3 },
-    }),
-    record({
-      win: { status: "NOT_PROVIDED" },
-      enemyMissingPings: { status: "AVAILABLE", value: 999 },
-    }),
-    record({ win: { status: "UNKNOWN" } }),
-  ];
-}
-
 it("승패 집단·지표별 표본을 보존하고 승리 평균에서 패배 평균을 뺀다", () => {
   // Arrange
   const records = mixedRecords();
@@ -137,6 +105,53 @@ it("미확보 승패를 패배로 바꾸지 않는다", () => {
   });
 });
 
+it("빈 입력과 전부 미제공인 관측은 수치를 만들지 않는다", () => {
+  // Arrange
+  const input = zeroRecord();
+
+  for (const key of Object.keys(input)) {
+    Reflect.set(input, key, { status: "NOT_PROVIDED" });
+  }
+
+  // Act
+  const empty = analyzeWinLossComparison([]);
+  const missing = analyzeWinLossComparison([input]);
+
+  if (Result.isFailure(empty)) {
+    throw empty.error;
+  }
+
+  if (Result.isFailure(missing)) {
+    throw missing.error;
+  }
+
+  // Assert
+  expect(empty.value.matchCount).toBe(0);
+  expect(missing.value.matchCount).toBe(1);
+  expect(JSON.stringify(empty.value)).not.toContain('"status":"AVAILABLE"');
+  expect(JSON.stringify(missing.value)).not.toContain('"status":"AVAILABLE"');
+});
+
+it("반환 그래프를 동결하고 원본 변경 및 후속 계산과 분리한다", () => {
+  // Arrange
+  const input = zeroRecord();
+
+  // Act
+  const result = analyzeWinLossComparison([input]);
+
+  if (Result.isFailure(result)) {
+    throw result.error;
+  }
+
+  const before = JSON.stringify(result.value);
+  Reflect.set(input.enemyMissingPings, "value", 1);
+  analyzeWinLossComparison([input]);
+
+  // Assert
+  expectFrozen(result.value);
+  expect(JSON.stringify(result.value)).toBe(before);
+});
+
 it.each([
   "INVALID_WIN",
   "EXCLUDED_VALUE",
@@ -170,19 +185,6 @@ it.each([
   expect(result).toEqual(Result.fail(expect.any(InvalidAnalysisValueError)));
 });
 
-/** @description 모든 원천이 실제 0으로 확보된 입력이며 각 테스트가 독립적으로 변경한다. */
-function zeroRecord(): WinLossRecord {
-  return {
-    win: { status: "AVAILABLE", value: true },
-    enemyMissingPings: { status: "AVAILABLE", value: 0 },
-    dangerPings: { status: "AVAILABLE", value: 0 },
-    retreatPings: { status: "AVAILABLE", value: 0 },
-    controlWardsBought: { status: "AVAILABLE", value: 0 },
-    wardsRemoved: { status: "AVAILABLE", value: 0 },
-    soloKills: { status: "AVAILABLE", value: 0 },
-  };
-}
-
 it.each([
   "enemyMissingPings",
   "dangerPings",
@@ -202,32 +204,50 @@ it.each([
   expect(result).toEqual(Result.fail(expect.any(InvalidAnalysisValueError)));
 });
 
-it("빈 입력과 전부 미제공인 관측은 수치를 만들지 않는다", () => {
-  // Arrange
-  const input = zeroRecord();
+/** @description 실제 0을 포함한 승패별 행동 관측을 만든다. */
+function record(overrides: Partial<WinLossRecord> = {}): WinLossRecord {
+  return {
+    win: { status: "AVAILABLE", value: true },
+    enemyMissingPings: { status: "AVAILABLE", value: 0 },
+    dangerPings: { status: "NOT_PROVIDED" },
+    retreatPings: { status: "UNKNOWN" },
+    controlWardsBought: { status: "AVAILABLE", value: 2 },
+    wardsRemoved: { status: "AVAILABLE", value: 4 },
+    soloKills: { status: "AVAILABLE", value: 1 },
+    ...overrides,
+  };
+}
 
-  for (const key of Object.keys(input)) {
-    Reflect.set(input, key, { status: "NOT_PROVIDED" });
-  }
+/** @description 서로 다른 표본 상태의 비교용 경기 기록을 구성한다. */
+function mixedRecords(): WinLossRecord[] {
+  return [
+    record(),
+    record({ enemyMissingPings: { status: "AVAILABLE", value: 4 } }),
+    record({
+      win: { status: "AVAILABLE", value: false },
+      enemyMissingPings: { status: "AVAILABLE", value: 8 },
+      dangerPings: { status: "AVAILABLE", value: 3 },
+    }),
+    record({
+      win: { status: "NOT_PROVIDED" },
+      enemyMissingPings: { status: "AVAILABLE", value: 999 },
+    }),
+    record({ win: { status: "UNKNOWN" } }),
+  ];
+}
 
-  // Act
-  const empty = analyzeWinLossComparison([]);
-  const missing = analyzeWinLossComparison([input]);
-
-  if (Result.isFailure(empty)) {
-    throw empty.error;
-  }
-
-  if (Result.isFailure(missing)) {
-    throw missing.error;
-  }
-
-  // Assert
-  expect(empty.value.matchCount).toBe(0);
-  expect(missing.value.matchCount).toBe(1);
-  expect(JSON.stringify(empty.value)).not.toContain('"status":"AVAILABLE"');
-  expect(JSON.stringify(missing.value)).not.toContain('"status":"AVAILABLE"');
-});
+/** @description 모든 원천이 실제 0으로 확보된 입력이며 각 테스트가 독립적으로 변경한다. */
+function zeroRecord(): WinLossRecord {
+  return {
+    win: { status: "AVAILABLE", value: true },
+    enemyMissingPings: { status: "AVAILABLE", value: 0 },
+    dangerPings: { status: "AVAILABLE", value: 0 },
+    retreatPings: { status: "AVAILABLE", value: 0 },
+    controlWardsBought: { status: "AVAILABLE", value: 0 },
+    wardsRemoved: { status: "AVAILABLE", value: 0 },
+    soloKills: { status: "AVAILABLE", value: 0 },
+  };
+}
 
 /** @description 반환 그래프 전체를 확인해 중첩 지표의 런타임 불변성 누락을 검출한다. */
 function expectFrozen(value: unknown): void {
@@ -241,23 +261,3 @@ function expectFrozen(value: unknown): void {
     expectFrozen(child);
   }
 }
-
-it("반환 그래프를 동결하고 원본 변경 및 후속 계산과 분리한다", () => {
-  // Arrange
-  const input = zeroRecord();
-
-  // Act
-  const result = analyzeWinLossComparison([input]);
-
-  if (Result.isFailure(result)) {
-    throw result.error;
-  }
-
-  const before = JSON.stringify(result.value);
-  Reflect.set(input.enemyMissingPings, "value", 1);
-  analyzeWinLossComparison([input]);
-
-  // Assert
-  expectFrozen(result.value);
-  expect(JSON.stringify(result.value)).toBe(before);
-});

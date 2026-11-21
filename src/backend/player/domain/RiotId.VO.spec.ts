@@ -4,6 +4,55 @@ import { PlayerNameRequiredError } from "./errors/PlayerNameRequiredError";
 import { TagLineRequiredError } from "./errors/TagLineRequiredError";
 import { RiotId } from "./RiotId.VO";
 
+it("이름과 태그라인으로 Riot ID를 생성한다", () => {
+  // Arrange
+  const name = "Hide on bush";
+  const tagLine = "KR1";
+
+  // Act
+  const result = RiotId.create(name, tagLine);
+  const riotId = Result.unwrap(result);
+
+  // Assert
+  expect(Result.isSuccess(result)).toBe(true);
+  expect(riotId.name).toBe("Hide on bush");
+  expect(riotId.tagLine).toBe("KR1");
+});
+
+it.each([
+  { name: "Hide on bush", tagLine: "KR1", expected: true },
+  { name: "Other player", tagLine: "KR1", expected: false },
+  { name: "Hide on bush", tagLine: "KR2", expected: false },
+])("이름 $name·태그 $tagLine의 동등 비교 결과는 $expected 이다", ({
+  name,
+  tagLine,
+  expected,
+}) => {
+  // Arrange
+  const riotId = Result.unwrap(RiotId.create("Hide on bush", "KR1"));
+
+  // Act
+  const isEqual = riotId.equals(Result.unwrap(RiotId.create(name, tagLine)));
+
+  // Assert
+  expect(isEqual).toBe(expected);
+});
+
+it("생성한 값은 런타임에서도 변경할 수 없다", () => {
+  // Arrange
+  const riotId = Result.unwrap(RiotId.create("Hide on bush", "KR1"));
+
+  // Act
+  const nameChanged = Reflect.set(riotId, "name", "Other player");
+  const tagLineChanged = Reflect.set(riotId, "tagLine", "KR2");
+
+  // Assert
+  expect(nameChanged).toBe(false);
+  expect(tagLineChanged).toBe(false);
+  expect(riotId.name).toBe("Hide on bush");
+  expect(riotId.tagLine).toBe("KR1");
+});
+
 it.each([
   "",
   " ",
@@ -19,19 +68,6 @@ it.each([
   expect(result).toEqual(Result.fail(expect.any(PlayerNameRequiredError)));
 });
 
-it("유효한 태그라인이면 성공 결과로 생성한다", () => {
-  // Arrange: 테스트 인자와 명시한 입력을 사용한다.
-
-  // Act
-  const result = RiotId.create("Hide on bush", "KR1");
-  const riotId = Result.unwrap(result);
-
-  // Assert
-  expect(Result.isSuccess(result)).toBe(true);
-  expect(riotId.name).toBe("Hide on bush");
-  expect(riotId.tagLine).toBe("KR1");
-});
-
 it.each([
   "",
   " ",
@@ -45,52 +81,4 @@ it.each([
 
   // Assert
   expect(result).toEqual(Result.fail(expect.any(TagLineRequiredError)));
-});
-
-it("이름과 태그가 모두 같으면 같은 값으로 판단한다", () => {
-  // Arrange
-  const riotId = Result.unwrap(RiotId.create("Hide on bush", "KR1"));
-
-  // Act
-  const isEqual = riotId.equals(
-    Result.unwrap(RiotId.create("Hide on bush", "KR1")),
-  );
-
-  // Assert
-  expect(isEqual).toBe(true);
-
-  // Act
-  const isEqual2 = riotId.equals(
-    Result.unwrap(RiotId.create("Other player", "KR1")),
-  );
-
-  // Assert
-  expect(isEqual2).toBe(false);
-
-  // Act
-  const isEqual3 = riotId.equals(
-    Result.unwrap(RiotId.create("Hide on bush", "KR2")),
-  );
-
-  // Assert
-  expect(isEqual3).toBe(false);
-});
-
-it("생성한 값은 런타임에서도 변경할 수 없다", () => {
-  // Arrange
-  const riotId = Result.unwrap(RiotId.create("Hide on bush", "KR1"));
-
-  // Act
-  const wasChanged = Reflect.set(riotId, "name", "Other player");
-
-  // Assert
-  expect(wasChanged).toBe(false);
-
-  // Act
-  const wasChanged2 = Reflect.set(riotId, "tagLine", "KR2");
-
-  // Assert
-  expect(wasChanged2).toBe(false);
-  expect(riotId.name).toBe("Hide on bush");
-  expect(riotId.tagLine).toBe("KR1");
 });

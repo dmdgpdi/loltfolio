@@ -6,16 +6,45 @@ import { InvalidChampionIdError } from "./errors/InvalidChampionIdError";
 import type { AnalysisPosition } from "./types/AnalysisPosition.type";
 import type { ChampionPreferenceRecord } from "./types/ChampionPreferenceRecord.type";
 
-/** @description 챔피언과 역할을 각각 독립 관측으로 가진 선택 기록을 만든다. */
-function record(
-  id: number,
-  position: AnalysisPosition = "MIDDLE",
-): ChampionPreferenceRecord {
-  return {
-    championId: { status: "AVAILABLE", value: id },
-    position: { status: "AVAILABLE", value: position },
-  };
-}
+it("챔피언과 포지션별 횟수 및 가장 많이 플레이한 항목을 반환한다", () => {
+  // Arrange
+  const records: ChampionPreferenceRecord[] = [
+    {
+      championId: { status: "AVAILABLE", value: 103 },
+      position: { status: "AVAILABLE", value: "MIDDLE" },
+    },
+    {
+      championId: { status: "AVAILABLE", value: 103 },
+      position: { status: "AVAILABLE", value: "MIDDLE" },
+    },
+    {
+      championId: { status: "AVAILABLE", value: 7 },
+      position: { status: "AVAILABLE", value: "TOP" },
+    },
+  ];
+
+  // Act
+  const result = Result.unwrap(analyzeChampionPreference(records));
+
+  // Assert
+  expect(result.matchCount).toBe(3);
+  expect(result.champions).toEqual({
+    status: "AVAILABLE",
+    sampleCount: 3,
+    notProvidedCount: 0,
+    unknownCount: 0,
+    value: [
+      { value: 103, matchCount: 2 },
+      { value: 7, matchCount: 1 },
+    ],
+  });
+  expect(result.mostPlayedChampions).toEqual([103]);
+  expect(result.positionFrequencies).toEqual([
+    { value: "MIDDLE", matchCount: 2 },
+    { value: "TOP", matchCount: 1 },
+  ]);
+  expect(result.mostPlayedPositions).toEqual(["MIDDLE"]);
+});
 
 it("전체 챔피언 빈도를 보존하고 횟수 내림차순·동률 ID 오름차순으로 정렬한다", () => {
   // Arrange
@@ -52,35 +81,6 @@ it("전체 챔피언 빈도를 보존하고 횟수 내림차순·동률 ID 오�
   expect(result.value.mostPlayedChampions).toEqual([7, 103]);
 });
 
-it("입력 순서를 바꿔도 챔피언·포지션 동률 결과는 동일하다", () => {
-  // Arrange
-  const records = [
-    record(103, "BOTTOM"),
-    record(7, "TOP"),
-    record(1, "UTILITY"),
-    record(99, "JUNGLE"),
-    record(9, "MIDDLE"),
-  ];
-
-  // Act
-  const forward = analyzeChampionPreference(records);
-  const backward = analyzeChampionPreference([...records].reverse());
-
-  // Assert
-  expect(forward).toEqual(backward);
-
-  if (Result.isSuccess(forward)) {
-    expect(forward.value.mostPlayedChampions).toEqual([1, 7, 9, 99, 103]);
-    expect(forward.value.mostPlayedPositions).toEqual([
-      "TOP",
-      "JUNGLE",
-      "MIDDLE",
-      "BOTTOM",
-      "UTILITY",
-    ]);
-  }
-});
-
 it("역할별 빈도와 공동 최다를 반환하고 NONE은 별도 분포로만 보존한다", () => {
   // Arrange
   const records = [
@@ -113,6 +113,52 @@ it("역할별 빈도와 공동 최다를 반환하고 NONE은 별도 분포로�
     BOTTOM: 0,
     UTILITY: 0,
     NONE: 5,
+  });
+});
+
+it("입력 순서를 바꿔도 챔피언·포지션 동률 결과는 동일하다", () => {
+  // Arrange
+  const records = [
+    record(103, "BOTTOM"),
+    record(7, "TOP"),
+    record(1, "UTILITY"),
+    record(99, "JUNGLE"),
+    record(9, "MIDDLE"),
+  ];
+
+  // Act
+  const forward = analyzeChampionPreference(records);
+  const backward = analyzeChampionPreference([...records].reverse());
+
+  // Assert
+  expect(forward).toEqual(backward);
+
+  const preference = Result.unwrap(forward);
+  expect(preference.mostPlayedChampions).toEqual([1, 7, 9, 99, 103]);
+  expect(preference.mostPlayedPositions).toEqual([
+    "TOP",
+    "JUNGLE",
+    "MIDDLE",
+    "BOTTOM",
+    "UTILITY",
+  ]);
+});
+
+it("외부 목록 조회 없이 양의 안전 정수 ID를 보존한다", () => {
+  // Arrange
+  const input = record(Number.MAX_SAFE_INTEGER);
+
+  // Act
+  const result = analyzeChampionPreference([input]);
+
+  if (Result.isFailure(result)) {
+    throw result.error;
+  }
+
+  // Assert
+  expect(result.value.mostPlayedChampions).toEqual([Number.MAX_SAFE_INTEGER]);
+  expect(result.value.champions).toMatchObject({
+    value: [{ value: Number.MAX_SAFE_INTEGER, matchCount: 1 }],
   });
 });
 
@@ -154,29 +200,6 @@ it("챔피언과 포지션 미확보를 서로 독립 집계한다", () => {
   expect(result.value.mostPlayedPositions).toEqual(["JUNGLE", "MIDDLE"]);
 });
 
-it("빈 입력은 가상의 챔피언·최다 포지션을 만들지 않는다", () => {
-  // Arrange
-  const records: ChampionPreferenceRecord[] = [];
-
-  // Act
-  const result = analyzeChampionPreference(records);
-
-  if (Result.isFailure(result)) {
-    throw result.error;
-  }
-
-  // Assert
-  expect(result.value.champions).toEqual({
-    status: "UNAVAILABLE",
-    sampleCount: 0,
-    notProvidedCount: 0,
-    unknownCount: 0,
-  });
-  expect(result.value.mostPlayedChampions).toEqual([]);
-  expect(result.value.positionFrequencies).toEqual([]);
-  expect(result.value.mostPlayedPositions).toEqual([]);
-});
-
 it("전부 미확보인 챔피언의 이유를 보존하며 NONE을 최다 역할로 만들지 않는다", () => {
   // Arrange
   const records: ChampionPreferenceRecord[] = [
@@ -209,59 +232,27 @@ it("전부 미확보인 챔피언의 이유를 보존하며 NONE을 최다 역�
   expect(result.value.positions.byPosition.NONE).toBe(2);
 });
 
-it.each([
-  0,
-  -1,
-  1.5,
-  NaN,
-  Infinity,
-  Number.MAX_SAFE_INTEGER + 1,
-  "103",
-  null,
-  undefined,
-])("잘못된 챔피언 ID %s는 입력 오류다", (value) => {
+it("빈 입력은 가상의 챔피언·최다 포지션을 만들지 않는다", () => {
   // Arrange
-  const input = record(1);
-  Reflect.set(input.championId, "value", value);
+  const records: ChampionPreferenceRecord[] = [];
 
   // Act
-  const result = analyzeChampionPreference([input]);
-
-  // Assert
-  expect(result).toEqual(Result.fail(expect.any(InvalidChampionIdError)));
-});
-
-it("외부 목록 조회 없이 양의 안전 정수 ID를 보존한다", () => {
-  // Arrange
-  const input = record(Number.MAX_SAFE_INTEGER);
-
-  // Act
-  const result = analyzeChampionPreference([input]);
+  const result = analyzeChampionPreference(records);
 
   if (Result.isFailure(result)) {
     throw result.error;
   }
 
   // Assert
-  expect(result.value.mostPlayedChampions).toEqual([Number.MAX_SAFE_INTEGER]);
-  expect(result.value.champions).toMatchObject({
-    value: [{ value: Number.MAX_SAFE_INTEGER, matchCount: 1 }],
+  expect(result.value.champions).toEqual({
+    status: "UNAVAILABLE",
+    sampleCount: 0,
+    notProvidedCount: 0,
+    unknownCount: 0,
   });
-});
-
-it("잘못된 역할을 챔피언 누락 뒤로 숨기지 않는다", () => {
-  // Arrange
-  const input: ChampionPreferenceRecord = {
-    championId: { status: "NOT_PROVIDED" },
-    position: { status: "AVAILABLE", value: "TOP" },
-  };
-  Reflect.set(input.position, "value", "INVALID");
-
-  // Act
-  const result = analyzeChampionPreference([input]);
-
-  // Assert
-  expect(result).toEqual(Result.fail(expect.any(InvalidAnalysisPositionError)));
+  expect(result.value.mostPlayedChampions).toEqual([]);
+  expect(result.value.positionFrequencies).toEqual([]);
+  expect(result.value.mostPlayedPositions).toEqual([]);
 });
 
 it("중첩 목록과 항목을 동결하며 입력·다른 집계와 참조를 공유하지 않는다", () => {
@@ -292,3 +283,51 @@ it("중첩 목록과 항목을 동결하며 입력·다른 집계와 참조를 �
     expect(Object.isFrozen(result.value.champions.value[0])).toBe(true);
   }
 });
+
+it.each([
+  0,
+  -1,
+  1.5,
+  NaN,
+  Infinity,
+  Number.MAX_SAFE_INTEGER + 1,
+  "103",
+  null,
+  undefined,
+])("잘못된 챔피언 ID %s는 입력 오류다", (value) => {
+  // Arrange
+  const input = record(1);
+  Reflect.set(input.championId, "value", value);
+
+  // Act
+  const result = analyzeChampionPreference([input]);
+
+  // Assert
+  expect(result).toEqual(Result.fail(expect.any(InvalidChampionIdError)));
+});
+
+it("잘못된 역할을 챔피언 누락 뒤로 숨기지 않는다", () => {
+  // Arrange
+  const input: ChampionPreferenceRecord = {
+    championId: { status: "NOT_PROVIDED" },
+    position: { status: "AVAILABLE", value: "TOP" },
+  };
+  Reflect.set(input.position, "value", "INVALID");
+
+  // Act
+  const result = analyzeChampionPreference([input]);
+
+  // Assert
+  expect(result).toEqual(Result.fail(expect.any(InvalidAnalysisPositionError)));
+});
+
+/** @description 챔피언과 역할을 각각 독립 관측으로 가진 선택 기록을 만든다. */
+function record(
+  id: number,
+  position: AnalysisPosition = "MIDDLE",
+): ChampionPreferenceRecord {
+  return {
+    championId: { status: "AVAILABLE", value: id },
+    position: { status: "AVAILABLE", value: position },
+  };
+}

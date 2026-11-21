@@ -4,17 +4,6 @@ import { InvalidVisionCountError } from "./errors/InvalidVisionCountError";
 import type { VisionRecord } from "./types/VisionRecord.type";
 import { VisionStyle } from "./VisionStyle";
 
-/** @description 누락된 행동을 명시적으로 미제공으로 남긴 한 경기의 시야 관측을 만든다. */
-function record(overrides: Partial<VisionRecord> = {}): VisionRecord {
-  return {
-    controlWardsBought: { status: "NOT_PROVIDED" },
-    wardsPlaced: { status: "NOT_PROVIDED" },
-    wardsRemoved: { status: "NOT_PROVIDED" },
-    wardTakedownsBefore20Minutes: { status: "NOT_PROVIDED" },
-    ...overrides,
-  };
-}
-
 it("구매와 설치를 구분하고 미구매는 실제 0에서만 센다", () => {
   // Arrange
   const records = [
@@ -124,6 +113,29 @@ it("모두 0인 구매 기록도 유효한 관측이며 미제공을 미구매�
   });
 });
 
+it("유효 관측이 없으면 상태별 표본 수만 반환한다", () => {
+  // Arrange
+  const records = [
+    record(),
+    record({ controlWardsBought: { status: "UNKNOWN" } }),
+  ] satisfies Parameters<typeof VisionStyle.analyze>[0];
+
+  // Act
+  const result = VisionStyle.analyze(records);
+
+  if (Result.isFailure(result)) {
+    throw result.error;
+  }
+
+  // Assert
+  expect(result.value.activities.controlWardsBought).toEqual({
+    status: "UNAVAILABLE",
+    sampleCount: 0,
+    notProvidedCount: 1,
+    unknownCount: 1,
+  });
+});
+
 it("빈 입력은 미구매 0회가 아니라 계산 불가다", () => {
   // Arrange
   const records = [] satisfies Parameters<typeof VisionStyle.analyze>[0];
@@ -150,12 +162,10 @@ it("빈 입력은 미구매 0회가 아니라 계산 불가다", () => {
   }
 });
 
-it("유효 관측이 없으면 상태별 표본 수만 반환한다", () => {
+it("결과는 원본 변경에 영향받지 않는 불변 값이다", () => {
   // Arrange
-  const records = [
-    record(),
-    record({ controlWardsBought: { status: "UNKNOWN" } }),
-  ] satisfies Parameters<typeof VisionStyle.analyze>[0];
+  const count = { status: "AVAILABLE" as const, value: 3 };
+  const records = [record({ wardsPlaced: count })];
 
   // Act
   const result = VisionStyle.analyze(records);
@@ -164,13 +174,17 @@ it("유효 관측이 없으면 상태별 표본 수만 반환한다", () => {
     throw result.error;
   }
 
+  count.value = 99;
+  records.length = 0;
+
   // Assert
-  expect(result.value.activities.controlWardsBought).toEqual({
-    status: "UNAVAILABLE",
-    sampleCount: 0,
-    notProvidedCount: 1,
-    unknownCount: 1,
-  });
+  expect(result.value.matchCount).toBe(1);
+  expect(result.value.activities.wardsPlaced).toMatchObject({ total: 3 });
+  expect(Object.isFrozen(result.value)).toBe(true);
+  expect(Object.isFrozen(result.value.activities)).toBe(true);
+  expect(Object.values(result.value.activities).every(Object.isFrozen)).toBe(
+    true,
+  );
 });
 
 it.each([
@@ -223,27 +237,13 @@ it("합계의 정밀도를 잃으면 실패한다", () => {
   expect(Result.isFailure(result)).toBe(true);
 });
 
-it("결과는 원본 변경에 영향받지 않는 불변 값이다", () => {
-  // Arrange
-  const count = { status: "AVAILABLE" as const, value: 3 };
-  const records = [record({ wardsPlaced: count })];
-
-  // Act
-  const result = VisionStyle.analyze(records);
-
-  if (Result.isFailure(result)) {
-    throw result.error;
-  }
-
-  count.value = 99;
-  records.length = 0;
-
-  // Assert
-  expect(result.value.matchCount).toBe(1);
-  expect(result.value.activities.wardsPlaced).toMatchObject({ total: 3 });
-  expect(Object.isFrozen(result.value)).toBe(true);
-  expect(Object.isFrozen(result.value.activities)).toBe(true);
-  expect(Object.values(result.value.activities).every(Object.isFrozen)).toBe(
-    true,
-  );
-});
+/** @description 누락된 행동을 명시적으로 미제공으로 남긴 한 경기의 시야 관측을 만든다. */
+function record(overrides: Partial<VisionRecord> = {}): VisionRecord {
+  return {
+    controlWardsBought: { status: "NOT_PROVIDED" },
+    wardsPlaced: { status: "NOT_PROVIDED" },
+    wardsRemoved: { status: "NOT_PROVIDED" },
+    wardTakedownsBefore20Minutes: { status: "NOT_PROVIDED" },
+    ...overrides,
+  };
+}

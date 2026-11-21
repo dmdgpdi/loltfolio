@@ -31,6 +31,25 @@ it("일반 DTO를 200으로 반환하고 Query 입력만 전달한다", async ()
   expect(response.headers.get("Cache-Control")).toBe("no-store");
 });
 
+it("완료 표본이 없으면 자동 생성 없이 404를 반환한다", async () => {
+  // Arrange
+  const controller = new AnalysisController({
+    findLatest: async () => Result.succeed(null),
+  });
+
+  // Act
+  const response = await controller.get(
+    new Request("http://localhost/api/analysis?puuid=player&queueId=450"),
+  );
+
+  // Assert
+  expect(response.status).toBe(404);
+  expect(await response.json()).toMatchObject({
+    error: { code: "ANALYSIS_NOT_FOUND" },
+  });
+  expect(response.headers.get("Cache-Control")).toBe("no-store");
+});
+
 it.each([
   "",
   "?puuid=player",
@@ -63,25 +82,6 @@ it.each([
   expect(await response.json()).toMatchObject({
     error: { code: "INVALID_ANALYSIS_QUERY" },
   });
-});
-
-it("완료 표본이 없으면 자동 생성 없이 404를 반환한다", async () => {
-  // Arrange
-  const controller = new AnalysisController({
-    findLatest: async () => Result.succeed(null),
-  });
-
-  // Act
-  const response = await controller.get(
-    new Request("http://localhost/api/analysis?puuid=player&queueId=450"),
-  );
-
-  // Assert
-  expect(response.status).toBe(404);
-  expect(await response.json()).toMatchObject({
-    error: { code: "ANALYSIS_NOT_FOUND" },
-  });
-  expect(response.headers.get("Cache-Control")).toBe("no-store");
 });
 
 it.each([

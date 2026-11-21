@@ -21,6 +21,27 @@ const fields = [
   "summoner1Id",
   "summoner2Id",
 ] as const;
+
+it("확보된 값과 0·false는 DB 직렬화 후에도 그대로 복원한다", () => {
+  // Arrange
+  const match = new PlayerMatch(
+    createPlayerMatchData({
+      gameId: { status: "AVAILABLE", value: 0 },
+      win: { status: "AVAILABLE", value: false },
+    }),
+  );
+
+  // Act
+  const restored = new PlayerMatch(
+    storedPlayerMatchSchema.parse(
+      JSON.parse(JSON.stringify(toStoredPlayerMatch(match))),
+    ),
+  );
+
+  // Assert
+  expect(restored).toEqual(match);
+});
+
 it.each(
   fields,
 )("%s의 NOT_PROVIDED와 UNKNOWN을 SQL 값·상태로 분리하고 정확히 복원한다", (field) => {
@@ -48,6 +69,7 @@ it.each(
     expect(restored).toEqual(match);
   }
 });
+
 it.each(
   fields,
 )("기존 DB의 %s NULL은 UNKNOWN이 아니라 NOT_PROVIDED로 복원한다", (field) => {
@@ -61,75 +83,7 @@ it.each(
   // Assert
   expect(restored[field]).toEqual({ status: "NOT_PROVIDED" });
 });
-it("확보된 값과 0·false는 DB 직렬화 후에도 그대로 복원한다", () => {
-  // Arrange
-  const match = new PlayerMatch(
-    createPlayerMatchData({
-      gameId: { status: "AVAILABLE", value: 0 },
-      win: { status: "AVAILABLE", value: false },
-    }),
-  );
 
-  // Act
-  const restored = new PlayerMatch(
-    storedPlayerMatchSchema.parse(
-      JSON.parse(JSON.stringify(toStoredPlayerMatch(match))),
-    ),
-  );
-
-  // Assert
-  expect(restored).toEqual(match);
-});
-it("상태 맵이나 확보된 값의 잘못된 타입은 조용히 미제공으로 바꾸지 않는다", () => {
-  // Arrange
-  const stored = toStoredPlayerMatch(new PlayerMatch(createPlayerMatchData()));
-
-  // Act
-  const isValid = storedPlayerMatchSchema.safeParse({
-    ...stored,
-    fieldStates: { gameId: "INVALID" },
-  }).success;
-
-  // Assert
-  expect(isValid).toBe(false);
-
-  // Act
-  const isValid2 = storedPlayerMatchSchema.safeParse({
-    ...stored,
-    gameId: "invalid",
-  }).success;
-
-  // Assert
-  expect(isValid2).toBe(false);
-});
-it("미등록 저장 분류는 UNKNOWN, 잘못된 분류 자료형은 오류다", () => {
-  // Arrange
-  const stored = toStoredPlayerMatch(new PlayerMatch(createPlayerMatchData()));
-
-  // Act
-  const restored = new PlayerMatch(
-    storedPlayerMatchSchema.parse({
-      ...stored,
-      position: "ROAMER",
-      gameMode: "FUTURE_MODE",
-      mapId: 99999,
-    }),
-  );
-
-  // Assert
-  expect(restored.position).toEqual({ status: "UNKNOWN" });
-  expect(restored.gameMode).toEqual({ status: "UNKNOWN" });
-  expect(restored.mapId).toEqual({ status: "UNKNOWN" });
-
-  // Act
-  const isValid = storedPlayerMatchSchema.safeParse({
-    ...stored,
-    position: 123,
-  }).success;
-
-  // Assert
-  expect(isValid).toBe(false);
-});
 it("과거 Timeline의 원시 수치·null과 누락된 시점을 상태로 복원한다", () => {
   // Arrange
   const stored = toStoredPlayerMatch(new PlayerMatch(createPlayerMatchData()));
@@ -158,4 +112,56 @@ it("과거 Timeline의 원시 수치·null과 누락된 시점을 상태로 복�
     status: "UNKNOWN",
   });
   expect(restored.laningSnapshots[1].own).toEqual({ status: "NOT_PROVIDED" });
+});
+
+it("미등록 저장 분류는 UNKNOWN, 잘못된 분류 자료형은 오류다", () => {
+  // Arrange
+  const stored = toStoredPlayerMatch(new PlayerMatch(createPlayerMatchData()));
+
+  // Act
+  const restored = new PlayerMatch(
+    storedPlayerMatchSchema.parse({
+      ...stored,
+      position: "ROAMER",
+      gameMode: "FUTURE_MODE",
+      mapId: 99999,
+    }),
+  );
+
+  // Assert
+  expect(restored.position).toEqual({ status: "UNKNOWN" });
+  expect(restored.gameMode).toEqual({ status: "UNKNOWN" });
+  expect(restored.mapId).toEqual({ status: "UNKNOWN" });
+
+  // Act
+  const isValid = storedPlayerMatchSchema.safeParse({
+    ...stored,
+    position: 123,
+  }).success;
+
+  // Assert
+  expect(isValid).toBe(false);
+});
+
+it("상태 맵이나 확보된 값의 잘못된 타입은 조용히 미제공으로 바꾸지 않는다", () => {
+  // Arrange
+  const stored = toStoredPlayerMatch(new PlayerMatch(createPlayerMatchData()));
+
+  // Act
+  const isValid = storedPlayerMatchSchema.safeParse({
+    ...stored,
+    fieldStates: { gameId: "INVALID" },
+  }).success;
+
+  // Assert
+  expect(isValid).toBe(false);
+
+  // Act
+  const isValid2 = storedPlayerMatchSchema.safeParse({
+    ...stored,
+    gameId: "invalid",
+  }).success;
+
+  // Assert
+  expect(isValid2).toBe(false);
 });

@@ -80,6 +80,29 @@ it("빈 입력은 모든 역할과 상태의 경기 수가 0이다", () => {
   );
 });
 
+it("결과를 동결하고 입력 변경과 후속 계산으로부터 분리한다", () => {
+  // Arrange
+  const record: PositionRecord = {
+    position: { status: "AVAILABLE", value: "TOP" },
+  };
+
+  // Act
+  const result = PositionDistribution.analyze([record]);
+  Reflect.set(record.position, "value", "JUNGLE");
+  PositionDistribution.analyze([record]);
+
+  if (Result.isFailure(result)) {
+    throw result.error;
+  }
+
+  // Assert
+  expect(Object.isFrozen(result.value)).toBe(true);
+  expect(Object.isFrozen(result.value.byPosition)).toBe(true);
+  expect(Reflect.set(result.value.byPosition, "TOP", 9)).toBe(false);
+  expect(result.value.byPosition.TOP).toBe(1);
+  expect(result.value.byPosition.JUNGLE).toBe(0);
+});
+
 it.each([
   "UNKNOWN",
   "",
@@ -105,27 +128,4 @@ it.each([
   if (Result.isFailure(result)) {
     expect(result.error).toBeInstanceOf(InvalidAnalysisPositionError);
   }
-});
-
-it("결과를 동결하고 입력 변경과 후속 계산으로부터 분리한다", () => {
-  // Arrange
-  const record: PositionRecord = {
-    position: { status: "AVAILABLE", value: "TOP" },
-  };
-
-  // Act
-  const result = PositionDistribution.analyze([record]);
-  Reflect.set(record.position, "value", "JUNGLE");
-  PositionDistribution.analyze([record]);
-
-  if (Result.isFailure(result)) {
-    throw result.error;
-  }
-
-  // Assert
-  expect(Object.isFrozen(result.value)).toBe(true);
-  expect(Object.isFrozen(result.value.byPosition)).toBe(true);
-  expect(Reflect.set(result.value.byPosition, "TOP", 9)).toBe(false);
-  expect(result.value.byPosition.TOP).toBe(1);
-  expect(result.value.byPosition.JUNGLE).toBe(0);
 });

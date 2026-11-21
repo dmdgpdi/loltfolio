@@ -4,22 +4,6 @@ import { CommunicationStyle } from "./CommunicationStyle";
 import { InvalidPingCountError } from "./errors/InvalidPingCountError";
 import type { CommunicationRecord } from "./types/CommunicationRecord.type";
 
-/** @description 미관측 종류를 명시하여 한 경기의 의사소통 입력을 만든다. */
-function record(
-  overrides: Partial<CommunicationRecord> = {},
-): CommunicationRecord {
-  return {
-    enemyMissing: { status: "NOT_PROVIDED" },
-    danger: { status: "NOT_PROVIDED" },
-    retreat: { status: "NOT_PROVIDED" },
-    getBack: { status: "NOT_PROVIDED" },
-    onMyWay: { status: "NOT_PROVIDED" },
-    allIn: { status: "NOT_PROVIDED" },
-    assistMe: { status: "NOT_PROVIDED" },
-    ...overrides,
-  };
-}
-
 it("종류별 평균·최다·합계는 해당 관측만 사용하고 실제 0을 포함한다", () => {
   // Arrange
   const records = [
@@ -60,6 +44,42 @@ it("종류별 평균·최다·합계는 해당 관측만 사용하고 실제 0�
     average: 7,
     maximum: 7,
   });
+});
+
+it("후퇴·getBack과 이동·총공격은 개별 사용량을 유지한다", () => {
+  // Arrange
+  const records = [
+    record({
+      retreat: { status: "AVAILABLE", value: 2 },
+      getBack: { status: "AVAILABLE", value: 3 },
+      onMyWay: { status: "AVAILABLE", value: 4 },
+      allIn: { status: "AVAILABLE", value: 6 },
+      assistMe: { status: "AVAILABLE", value: 8 },
+    }),
+  ] satisfies Parameters<typeof CommunicationStyle.analyze>[0];
+
+  // Act
+  const result = CommunicationStyle.analyze(records);
+
+  if (Result.isFailure(result)) {
+    throw result.error;
+  }
+
+  for (const [kind, total] of [
+    ["retreat", 2],
+    ["getBack", 3],
+    ["onMyWay", 4],
+    ["allIn", 6],
+    ["assistMe", 8],
+  ] as const) {
+    // Assert
+    expect(result.value.pings[kind]).toMatchObject({
+      status: "AVAILABLE",
+      total,
+      average: total,
+      maximum: total,
+    });
+  }
 });
 
 it("유효 관측 0개와 사용 횟수가 0인 관측을 구분한다", () => {
@@ -128,17 +148,10 @@ it("빈 경기 목록은 모든 종류에서 계산 불가다", () => {
   }
 });
 
-it("후퇴·getBack과 이동·총공격은 개별 사용량을 유지한다", () => {
+it("원본이 변경되어도 분석 결과는 바뀌지 않는다", () => {
   // Arrange
-  const records = [
-    record({
-      retreat: { status: "AVAILABLE", value: 2 },
-      getBack: { status: "AVAILABLE", value: 3 },
-      onMyWay: { status: "AVAILABLE", value: 4 },
-      allIn: { status: "AVAILABLE", value: 6 },
-      assistMe: { status: "AVAILABLE", value: 8 },
-    }),
-  ] satisfies Parameters<typeof CommunicationStyle.analyze>[0];
+  const count = { status: "AVAILABLE" as const, value: 4 };
+  const records = [record({ enemyMissing: count })];
 
   // Act
   const result = CommunicationStyle.analyze(records);
@@ -147,21 +160,15 @@ it("후퇴·getBack과 이동·총공격은 개별 사용량을 유지한다", (
     throw result.error;
   }
 
-  for (const [kind, total] of [
-    ["retreat", 2],
-    ["getBack", 3],
-    ["onMyWay", 4],
-    ["allIn", 6],
-    ["assistMe", 8],
-  ] as const) {
-    // Assert
-    expect(result.value.pings[kind]).toMatchObject({
-      status: "AVAILABLE",
-      total,
-      average: total,
-      maximum: total,
-    });
-  }
+  count.value = 99;
+  records.length = 0;
+
+  // Assert
+  expect(result.value.matchCount).toBe(1);
+  expect(result.value.pings.enemyMissing).toMatchObject({ total: 4 });
+  expect(Object.isFrozen(result.value)).toBe(true);
+  expect(Object.isFrozen(result.value.pings)).toBe(true);
+  expect(Object.values(result.value.pings).every(Object.isFrozen)).toBe(true);
 });
 
 it.each([
@@ -204,25 +211,18 @@ it("합계의 정밀도를 잃는 입력을 거부한다", () => {
   expect(Result.isFailure(result)).toBe(true);
 });
 
-it("원본이 변경되어도 분석 결과는 바뀌지 않는다", () => {
-  // Arrange
-  const count = { status: "AVAILABLE" as const, value: 4 };
-  const records = [record({ enemyMissing: count })];
-
-  // Act
-  const result = CommunicationStyle.analyze(records);
-
-  if (Result.isFailure(result)) {
-    throw result.error;
-  }
-
-  count.value = 99;
-  records.length = 0;
-
-  // Assert
-  expect(result.value.matchCount).toBe(1);
-  expect(result.value.pings.enemyMissing).toMatchObject({ total: 4 });
-  expect(Object.isFrozen(result.value)).toBe(true);
-  expect(Object.isFrozen(result.value.pings)).toBe(true);
-  expect(Object.values(result.value.pings).every(Object.isFrozen)).toBe(true);
-});
+/** @description 미관측 종류를 명시하여 한 경기의 의사소통 입력을 만든다. */
+function record(
+  overrides: Partial<CommunicationRecord> = {},
+): CommunicationRecord {
+  return {
+    enemyMissing: { status: "NOT_PROVIDED" },
+    danger: { status: "NOT_PROVIDED" },
+    retreat: { status: "NOT_PROVIDED" },
+    getBack: { status: "NOT_PROVIDED" },
+    onMyWay: { status: "NOT_PROVIDED" },
+    allIn: { status: "NOT_PROVIDED" },
+    assistMe: { status: "NOT_PROVIDED" },
+    ...overrides,
+  };
+}

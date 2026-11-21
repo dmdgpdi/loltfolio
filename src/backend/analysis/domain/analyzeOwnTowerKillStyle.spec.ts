@@ -4,7 +4,7 @@ import { analyzeOwnTowerKillStyle } from "./analyzeOwnTowerKillStyle";
 import { InvalidAnalysisValueError } from "./errors/InvalidAnalysisValueError";
 import type { OwnTowerKillRecord } from "./types/OwnTowerKillRecord.type";
 
-it("원천 행동의 합계·평균·최다·발생 경기 수와 표본 상태를 계산한다", () => {
+it("아군 포탑 근처 처치의 합계·평균·최다·발생 경기 수와 표본 상태를 계산한다", () => {
   // Arrange
   const records: OwnTowerKillRecord[] = [
     { killsUnderOwnTower: { status: "AVAILABLE", value: 0 } },
@@ -52,25 +52,6 @@ it("빈 표본은 행동 수치를 만들지 않는다", () => {
   );
 });
 
-/** @description 모든 원천이 실제 0으로 확보된 입력이며 각 테스트가 독립적으로 변경한다. */
-function zeroRecord(): OwnTowerKillRecord {
-  return { killsUnderOwnTower: { status: "AVAILABLE", value: 0 } };
-}
-
-it.each([
-  "killsUnderOwnTower",
-] as const)("%s의 잘못된 확보 값을 입력 오류로 전달한다", (key) => {
-  // Arrange
-  const input = zeroRecord();
-  Reflect.set(input[key], "value", -1);
-
-  // Act
-  const result = analyzeOwnTowerKillStyle([input]);
-
-  // Assert
-  expect(result).toEqual(Result.fail(expect.any(InvalidAnalysisValueError)));
-});
-
 it("빈 입력과 전부 미제공인 관측은 수치를 만들지 않는다", () => {
   // Arrange
   const input = zeroRecord();
@@ -98,19 +79,6 @@ it("빈 입력과 전부 미제공인 관측은 수치를 만들지 않는다", 
   expect(JSON.stringify(missing.value)).not.toContain('"status":"AVAILABLE"');
 });
 
-/** @description 반환 그래프 전체를 확인해 중첩 지표의 런타임 불변성 누락을 검출한다. */
-function expectFrozen(value: unknown): void {
-  if (value === null || typeof value !== "object") {
-    return;
-  }
-
-  expect(Object.isFrozen(value)).toBe(true);
-
-  for (const child of Object.values(value)) {
-    expectFrozen(child);
-  }
-}
-
 it("반환 그래프를 동결하고 원본 변경 및 후속 계산과 분리한다", () => {
   // Arrange
   const input = zeroRecord();
@@ -130,3 +98,35 @@ it("반환 그래프를 동결하고 원본 변경 및 후속 계산과 분리�
   expectFrozen(result.value);
   expect(JSON.stringify(result.value)).toBe(before);
 });
+
+it.each([
+  "killsUnderOwnTower",
+] as const)("%s의 잘못된 확보 값을 입력 오류로 전달한다", (key) => {
+  // Arrange
+  const input = zeroRecord();
+  Reflect.set(input[key], "value", -1);
+
+  // Act
+  const result = analyzeOwnTowerKillStyle([input]);
+
+  // Assert
+  expect(result).toEqual(Result.fail(expect.any(InvalidAnalysisValueError)));
+});
+
+/** @description 모든 원천이 실제 0으로 확보된 입력이며 각 테스트가 독립적으로 변경한다. */
+function zeroRecord(): OwnTowerKillRecord {
+  return { killsUnderOwnTower: { status: "AVAILABLE", value: 0 } };
+}
+
+/** @description 반환 그래프 전체를 확인해 중첩 지표의 런타임 불변성 누락을 검출한다. */
+function expectFrozen(value: unknown): void {
+  if (value === null || typeof value !== "object") {
+    return;
+  }
+
+  expect(Object.isFrozen(value)).toBe(true);
+
+  for (const child of Object.values(value)) {
+    expectFrozen(child);
+  }
+}

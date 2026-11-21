@@ -3,15 +3,6 @@ import { FirstBloodStyle } from "./FirstBloodStyle";
 import type { FirstBloodObservation } from "./types/FirstBloodObservation.type";
 import type { FirstBloodRecord } from "./types/FirstBloodRecord.type";
 
-/** @description 매개변수 테스트에서 확보된 true·false와 두 미확보 상태를 명시적으로 구성한다. */
-function observation(
-  value: boolean | "NOT_PROVIDED" | "UNKNOWN",
-): FirstBloodObservation {
-  return typeof value === "boolean"
-    ? { status: "AVAILABLE", value }
-    : { status: value };
-}
-
 it("직접 획득·어시스트·전체 관여는 각각의 유효 표본을 사용한다", () => {
   // Arrange
   const records: FirstBloodRecord[] = [
@@ -92,29 +83,6 @@ it.each([
   );
 });
 
-it("빈 입력은 획득·어시스트·관여를 모두 계산 불가로 남긴다", () => {
-  // Arrange
-  const records: FirstBloodRecord[] = [];
-
-  // Act
-  const style = FirstBloodStyle.analyze(records);
-
-  // Assert
-  expect(style.matchCount).toBe(0);
-  expect(style.kills).toEqual({
-    status: "UNAVAILABLE",
-    sampleCount: 0,
-    notProvidedCount: 0,
-    unknownCount: 0,
-  });
-  expect(style.assists).toEqual(style.kills);
-  expect(style.participation).toEqual({
-    status: "UNAVAILABLE",
-    sampleCount: 0,
-    unresolvedMatchCount: 0,
-  });
-});
-
 it("전부 false인 실제 관측은 계산 가능한 0%다", () => {
   // Arrange
   const records: FirstBloodRecord[] = [
@@ -193,6 +161,29 @@ it("같은 항목의 모든 표본 수 합은 입력 경기 수와 일치한다"
   ).toBe(style.matchCount);
 });
 
+it("빈 입력은 획득·어시스트·관여를 모두 계산 불가로 남긴다", () => {
+  // Arrange
+  const records: FirstBloodRecord[] = [];
+
+  // Act
+  const style = FirstBloodStyle.analyze(records);
+
+  // Assert
+  expect(style.matchCount).toBe(0);
+  expect(style.kills).toEqual({
+    status: "UNAVAILABLE",
+    sampleCount: 0,
+    notProvidedCount: 0,
+    unknownCount: 0,
+  });
+  expect(style.assists).toEqual(style.kills);
+  expect(style.participation).toEqual({
+    status: "UNAVAILABLE",
+    sampleCount: 0,
+    unresolvedMatchCount: 0,
+  });
+});
+
 it("원본을 변경해도 결과는 유지되며 집계는 불변 값이다", () => {
   // Arrange
   const kill = { status: "AVAILABLE" as const, value: true };
@@ -215,3 +206,12 @@ it("원본을 변경해도 결과는 유지되며 집계는 불변 값이다", (
   expect(Object.isFrozen(style.assists)).toBe(true);
   expect(Object.isFrozen(style.participation)).toBe(true);
 });
+
+/** @description 매개변수 테스트에서 확보된 true·false와 두 미확보 상태를 명시적으로 구성한다. */
+function observation(
+  value: boolean | "NOT_PROVIDED" | "UNKNOWN",
+): FirstBloodObservation {
+  return typeof value === "boolean"
+    ? { status: "AVAILABLE", value }
+    : { status: value };
+}
