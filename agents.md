@@ -1,81 +1,81 @@
-# Agent Guidelines
+# 에이전트 지침
 
-## Tech Stack
+## 기술 스택
 
-- **Common**: TypeScript, pnpm; Biome for linting and formatting.
-- **Framework**: Next.js (App Router) for frontend and server-side code.
-- **Testing**: Vitest.
-- **Tooling**: `tsx` for TypeScript scripts, `dotenv` for loading environment variables in standalone scripts, React Compiler via `babel-plugin-react-compiler`.
+- **공통**: TypeScript, pnpm. 린트와 포맷에는 Biome을 사용한다.
+- **프레임워크**: 프론트엔드와 서버 코드 모두 Next.js(App Router)를 사용한다.
+- **테스트**: Vitest.
+- **도구**: TypeScript 스크립트는 `tsx`, 독립 실행 스크립트의 환경변수 로딩은 `dotenv`, React Compiler는 `babel-plugin-react-compiler`를 사용한다.
 
-## Code Organization
+## 코드 구성
 
-- `src/app`: Thin Next.js page, layout, and Route Handler entry points.
-- `src/frontend`: Frontend implementations; follow [Frontend Guidelines](src/frontend/AGENTS.md).
-- `src/backend`: Domain modules and database infrastructure; follow [Backend Guidelines](src/backend/AGENTS.md).
-- Entry points in `src/app` follow the relevant frontend or backend architecture linked above.
+- `src/app`: 최소한의 Next.js 페이지·레이아웃·Route Handler 진입점.
+- `src/frontend`: 프론트엔드 구현. [프론트엔드 지침](src/frontend/AGENTS.md)을 따른다.
+- `src/backend`: 도메인 모듈과 데이터베이스 인프라. [백엔드 지침](src/backend/AGENTS.md)을 따른다.
+- `src/app`의 진입점은 위에 연결한 해당 프론트엔드·백엔드 아키텍처를 따른다.
 
-## Development Rules
+## 개발 규칙
 
-- Implement only what is explicitly requested.
-- Do not add features, abstractions, dependencies, or refactor unrelated code without being asked.
-- Prefer simple solutions over speculative extensibility.
-- Follow existing code conventions and structure.
-- Export only one declaration per file, including types. Keep filenames aligned with the exported declaration.
-- Keep changes minimal and focused.
-- Update relevant tests when behavior changes.
+- 명시적으로 요청한 내용만 구현한다.
+- 요청하지 않은 기능·추상화·의존성을 추가하거나 관련 없는 코드를 리팩토링하지 않는다.
+- 추측에 기반한 확장성보다 단순한 해결책을 우선한다.
+- 기존 코드의 관례와 구조를 따른다.
+- 타입을 포함해 파일마다 선언 하나만 내보낸다. 파일명은 내보내는 선언과 일치시킨다.
+- 변경은 최소한으로 유지하고 작업 범위에 집중한다.
+- 동작이 바뀌면 관련 테스트를 갱신한다.
 
-## Code Documentation
+## 코드 문서화
 
-- When writing or modifying functions, classes, types, or non-obvious processing logic, add concise JSDoc with `@description` written in Korean.
-- Explain purpose, intent, reasons for design decisions, and meaningful behavior boundaries rather than restating syntax or names.
-- Keep straightforward descriptions to one or two sentences, avoid unnecessary comments for self-explanatory code, and update comments when behavior changes.
+- 함수·클래스·타입이나 이해하기 어려운 처리 로직을 작성·수정할 때는 한국어 `@description`을 포함한 간결한 JSDoc을 추가한다.
+- 문법이나 이름을 반복하기보다 목적·의도·설계 이유와 의미 있는 동작 경계를 설명한다.
+- 간단한 설명은 한두 문장으로 유지한다. 자명한 코드에는 불필요한 주석을 달지 않으며 동작이 바뀌면 주석도 갱신한다.
 
-## PR Preparation
+## PR 준비
 
-- Before creating any pull request, including a draft, explain the change's intent and key behavior, then ask 3–5 comprehension questions.
-- Wait for the user's answers and resolve misunderstandings before creating the pull request. Do not create a draft first or defer these questions until requesting review.
-- Use `.github/PULL_REQUEST_TEMPLATE.md` for the PR description.
+- 초안을 포함한 모든 PR을 만들기 전에 변경 의도와 핵심 동작을 설명하고 이해 확인 질문 3~5개를 한다.
+- 사용자의 답변을 기다리고 오해를 해소한 뒤 PR을 만든다. 초안을 먼저 만들거나 질문을 리뷰 요청 시점으로 미루지 않는다.
+- PR 본문은 `.github/PULL_REQUEST_TEMPLATE.md`를 사용한다.
 
-## Documentation
+## 문서 관리
 
-- Keep AGENTS.md concise and focused on essential rules.
-- Create or update documents in `docs/` only when additional explanation or maintained knowledge is necessary.
-- Keep documentation accurate and up to date when relevant changes occur.
-- Use AGENTS.md as the navigation entry point for documentation.
-- Add relative Markdown links to relevant `docs/` files under the Documentation Index below.
-- Update or remove navigation links when documents change or are deleted.
-- Do not duplicate detailed documentation in AGENTS.md.
-- Before starting work, briefly record its scope and approach in the relevant `docs/` document.
-- After completing work, update the relevant documents and remove completed items from their remaining-work lists.
+- AGENTS.md는 필수 규칙을 중심으로 간결하게 유지한다.
+- 추가 설명이나 지속적으로 관리할 지식이 필요한 경우에만 `docs/`의 문서를 생성·수정한다.
+- 관련 변경이 발생하면 문서의 정확성과 최신 상태를 유지한다.
+- AGENTS.md를 문서 탐색의 진입점으로 사용한다.
+- 아래 문서 목록에 관련 `docs/` 파일의 상대 Markdown 링크를 추가한다.
+- 문서가 변경·삭제되면 탐색 링크도 갱신·제거한다.
+- 상세 문서를 AGENTS.md에 중복해서 작성하지 않는다.
+- 작업 시작 전에 관련 `docs/` 문서에 범위와 접근 방식을 간단히 기록한다.
+- 작업 완료 후 관련 문서를 갱신하고 남은 작업 목록에서 완료 항목을 제거한다.
 
-### Documentation Index
+### 문서 목록
 
 - [플레이 성향 분석 콘텐츠](docs/analysis-content.md): 카드별 표시 항목, 원천 필드, 계산 기준과 검토 사항.
 - [현재 진행 상황과 다음 작업](docs/project-status.md): 작업 시작 전에 구현 범위와 미결정 사항을 확인하고, 관련 작업을 마치면 갱신한다.
 - [분석 입력과 Query 조회 계약](docs/analysis-read-contracts.md): 읽기 인터페이스, DTO와 최신 표본 범위.
 - [경기 수집과 저장](docs/match-data.md)
 
-## Completion Checklist
+## 완료 확인
 
-After every task, run the following commands in order before reporting completion:
+모든 작업에서 완료를 보고하기 전에 다음 명령을 순서대로 실행한다.
 
 1. `pnpm run fmt`
 2. `pnpm run lint`
 3. `pnpm run test -- --run`
 
-- Fix issues introduced by the changes.
-- Rerun validation after making further fixes.
-- Do not make unrelated changes to resolve pre-existing issues.
-- Never claim validation passed without actually running the commands.
-- Report any remaining failures or checks that could not run, including the reasons.
-- Do not consider a task complete without running these checks.
+- 이번 변경으로 발생한 문제를 수정한다.
+- 추가 수정 후에는 검증을 다시 실행한다.
+- 기존 문제를 해결하기 위해 관련 없는 코드를 변경하지 않는다.
+- 명령을 실제로 실행하지 않고 검증이 통과했다고 말하지 않는다.
+- 남은 실패나 실행하지 못한 검증은 이유와 함께 보고한다.
+- 위 검증을 실행하지 않은 상태에서는 작업을 완료로 간주하지 않는다.
 
 <!-- BEGIN:nextjs-agent-rules -->
 
-## This is NOT the Next.js you know
+## 기존에 알고 있던 Next.js와 다를 수 있다
 
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+이 버전에는 호환성을 깨는 변경이 있다. API·관례·파일 구조가 학습 데이터와 다를 수 있으므로 코드를 작성하기 전에 `node_modules/next/dist/docs/`의 관련 가이드를 읽는다. 경로는 이 파일의 디렉터리를 기준으로 해석하며, 모노레포에서는 저장소 루트에서 `next` 패키지가 보이지 않을 수 있다. 사용 중단 안내를 준수한다.
 
-This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+이 블록은 `next dev`가 작성하고 다시 추가한다. 구현은 `node_modules/next/dist/server/lib/generate-agent-files.js`에서 확인한다. 변경 내역에서 제거해도 커밋되지 않은 변경으로 다시 생성되므로, 작업과 함께 커밋해 작업 트리를 정리한다.
 
 <!-- END:nextjs-agent-rules -->
