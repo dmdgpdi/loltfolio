@@ -1,7 +1,7 @@
 import { Result } from "@praha/byethrow";
 import { expect, it } from "vitest";
-import { createRiotMatchResponse as matchResponse } from "../../testing/createRiotMatchResponse";
-import { createRiotTimelineResponse as timelineResponse } from "../../testing/createRiotTimelineResponse";
+import { createRiotMatchResponse as matchResponse } from "@/backend/match/testing/createRiotMatchResponse";
+import { createRiotTimelineResponse as timelineResponse } from "@/backend/match/testing/createRiotTimelineResponse";
 import { parsePlayerMatch } from "./parsePlayerMatch";
 
 it("10·15분 실제 시각과 본인·상대의 수치 차이를 보존한다", () => {

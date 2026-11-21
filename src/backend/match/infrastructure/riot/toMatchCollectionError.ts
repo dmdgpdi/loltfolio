@@ -1,5 +1,5 @@
 import { HTTPError, TimeoutError } from "ky";
-import { MatchCollectionError } from "../../application/errors/MatchCollectionError";
+import { MatchCollectionError } from "@/backend/match/application/errors/MatchCollectionError";
 
 export function toMatchCollectionError(cause: unknown): MatchCollectionError {
   if (cause instanceof TimeoutError) {

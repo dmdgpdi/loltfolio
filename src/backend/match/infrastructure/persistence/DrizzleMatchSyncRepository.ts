@@ -1,12 +1,12 @@
 import { Result } from "@praha/byethrow";
 import { and, eq, isNull, lte, ne, or } from "drizzle-orm";
-import type { getDatabase } from "../../../db/client";
-import { MatchRepositoryError } from "../../domain/errors/MatchRepositoryError";
-import { MatchSyncStartNotAllowedError } from "../../domain/errors/MatchSyncStartNotAllowedError";
-import { MATCH_SYNC_SUCCESS_COOLDOWN_MS } from "../../domain/MATCH_SYNC_SUCCESS_COOLDOWN_MS";
-import { MatchSync } from "../../domain/MatchSync";
-import type { MatchSyncRepository } from "../../domain/types/MatchSyncRepository.type";
-import type { QueueId } from "../../domain/types/QueueId.type";
+import type { getDatabase } from "@/backend/db/client";
+import { MatchRepositoryError } from "@/backend/match/domain/errors/MatchRepositoryError";
+import { MatchSyncStartNotAllowedError } from "@/backend/match/domain/errors/MatchSyncStartNotAllowedError";
+import { MATCH_SYNC_SUCCESS_COOLDOWN_MS } from "@/backend/match/domain/MATCH_SYNC_SUCCESS_COOLDOWN_MS";
+import { MatchSync } from "@/backend/match/domain/MatchSync";
+import type { MatchSyncRepository } from "@/backend/match/domain/types/MatchSyncRepository.type";
+import type { QueueId } from "@/backend/match/domain/types/QueueId.type";
 import { matchSyncs } from "./match.schema";
 
 export class DrizzleMatchSyncRepository implements MatchSyncRepository {

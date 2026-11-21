@@ -1,12 +1,12 @@
 import { HTTPError } from "ky";
-import { PlayerLookupAuthenticationError } from "../../application/errors/PlayerLookupAuthenticationError";
-import { PlayerLookupError } from "../../application/errors/PlayerLookupError";
-import type { PlayerLookupFailure } from "../../application/errors/PlayerLookupFailure";
-import { PlayerLookupRateLimitError } from "../../application/errors/PlayerLookupRateLimitError";
-import { PlayerLookupRequestError } from "../../application/errors/PlayerLookupRequestError";
-import { PlayerLookupResponseError } from "../../application/errors/PlayerLookupResponseError";
-import { PlayerLookupUnavailableError } from "../../application/errors/PlayerLookupUnavailableError";
-import { PlayerNotFoundError } from "../../application/errors/PlayerNotFoundError";
+import { PlayerLookupAuthenticationError } from "@/backend/player/application/errors/PlayerLookupAuthenticationError";
+import { PlayerLookupError } from "@/backend/player/application/errors/PlayerLookupError";
+import type { PlayerLookupFailure } from "@/backend/player/application/errors/PlayerLookupFailure";
+import { PlayerLookupRateLimitError } from "@/backend/player/application/errors/PlayerLookupRateLimitError";
+import { PlayerLookupRequestError } from "@/backend/player/application/errors/PlayerLookupRequestError";
+import { PlayerLookupResponseError } from "@/backend/player/application/errors/PlayerLookupResponseError";
+import { PlayerLookupUnavailableError } from "@/backend/player/application/errors/PlayerLookupUnavailableError";
+import { PlayerNotFoundError } from "@/backend/player/application/errors/PlayerNotFoundError";
 
 export function toPlayerLookupFailure(
   cause: unknown,

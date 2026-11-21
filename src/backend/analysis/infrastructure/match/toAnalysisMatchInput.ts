@@ -1,10 +1,10 @@
-import type { PlayerMatch } from "../../../match/domain/PlayerMatch";
-import type { LaningValues } from "../../../match/domain/types/LaningValues.type";
-import type { Stat } from "../../../match/domain/types/Stat.type";
-import type { AnalysisMatchInput } from "../../application/types/AnalysisMatchInput.type";
-import type { AnalysisObservation } from "../../domain/types/AnalysisObservation.type";
-import type { LaningGameRule } from "../../domain/types/LaningGameRule.type";
-import type { LaningGrowth } from "../../domain/types/LaningGrowth.type";
+import type { AnalysisMatchInput } from "@/backend/analysis/application/types/AnalysisMatchInput.type";
+import type { AnalysisObservation } from "@/backend/analysis/domain/types/AnalysisObservation.type";
+import type { LaningGameRule } from "@/backend/analysis/domain/types/LaningGameRule.type";
+import type { LaningGrowth } from "@/backend/analysis/domain/types/LaningGrowth.type";
+import type { PlayerMatch } from "@/backend/match/domain/PlayerMatch";
+import type { LaningValues } from "@/backend/match/domain/types/LaningValues.type";
+import type { Stat } from "@/backend/match/domain/types/Stat.type";
 
 /** @description 저장 경기의 상태와 단위를 유지해 각 분석 입력으로 변환한다. 새 의미를 추정하거나 원천을 대체하지 않는다. */
 export function toAnalysisMatchInput(match: PlayerMatch): AnalysisMatchInput {

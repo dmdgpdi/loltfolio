@@ -1,6 +1,6 @@
 import { Result } from "@praha/byethrow";
-import type { Player } from "../domain/Player";
-import type { RiotId } from "../domain/RiotId.VO";
+import type { Player } from "@/backend/player/domain/Player";
+import type { RiotId } from "@/backend/player/domain/RiotId.VO";
 import type { PlayerLookupFailure } from "./errors/PlayerLookupFailure";
 import { PlayerNotFoundError } from "./errors/PlayerNotFoundError";
 import type { RiotAccountClient } from "./RiotAccountClient";

@@ -1,5 +1,5 @@
-import type { PlayerMatch } from "../../domain/PlayerMatch";
-import type { Stat } from "../../domain/types/Stat.type";
+import type { PlayerMatch } from "@/backend/match/domain/PlayerMatch";
+import type { Stat } from "@/backend/match/domain/types/Stat.type";
 
 /** @description SQL 원시 컬럼에는 확보된 값만 넣고, 미제공·판별 불가는 fieldStates에 별도로 저장한다. */
 function storedValue<T>(stat: Stat<T>): T | null {

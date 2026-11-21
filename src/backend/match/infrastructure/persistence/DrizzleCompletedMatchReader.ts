@@ -1,11 +1,11 @@
 import { Result } from "@praha/byethrow";
 import { and, eq } from "drizzle-orm";
 import { z } from "zod";
-import type { getDatabase } from "../../../db/client";
-import type { CompletedMatchReader } from "../../application/CompletedMatchReader";
-import type { CompletedMatchSet } from "../../application/types/CompletedMatchSet.type";
-import { MatchRepositoryError } from "../../domain/errors/MatchRepositoryError";
-import type { QueueId } from "../../domain/types/QueueId.type";
+import type { getDatabase } from "@/backend/db/client";
+import type { CompletedMatchReader } from "@/backend/match/application/CompletedMatchReader";
+import type { CompletedMatchSet } from "@/backend/match/application/types/CompletedMatchSet.type";
+import { MatchRepositoryError } from "@/backend/match/domain/errors/MatchRepositoryError";
+import type { QueueId } from "@/backend/match/domain/types/QueueId.type";
 import { DrizzlePlayerMatchRepository } from "./DrizzlePlayerMatchRepository";
 import { matchSyncs } from "./match.schema";
 

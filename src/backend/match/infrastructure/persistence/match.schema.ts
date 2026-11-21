@@ -9,13 +9,13 @@ import {
   text,
   timestamp,
 } from "drizzle-orm/pg-core";
-import type { GameMode } from "../../domain/types/GameMode.type";
-import type { LaningSnapshot } from "../../domain/types/LaningSnapshot.type";
-import type { MapId } from "../../domain/types/MapId.type";
-import type { MatchSyncStatus } from "../../domain/types/MatchSyncStatus.type";
-import type { PlayerMatchStats } from "../../domain/types/PlayerMatchStats.type";
-import type { Position } from "../../domain/types/Position.type";
-import type { QueueId } from "../../domain/types/QueueId.type";
+import type { GameMode } from "@/backend/match/domain/types/GameMode.type";
+import type { LaningSnapshot } from "@/backend/match/domain/types/LaningSnapshot.type";
+import type { MapId } from "@/backend/match/domain/types/MapId.type";
+import type { MatchSyncStatus } from "@/backend/match/domain/types/MatchSyncStatus.type";
+import type { PlayerMatchStats } from "@/backend/match/domain/types/PlayerMatchStats.type";
+import type { Position } from "@/backend/match/domain/types/Position.type";
+import type { QueueId } from "@/backend/match/domain/types/QueueId.type";
 
 export const matchSyncs = pgTable(
   "match_syncs",

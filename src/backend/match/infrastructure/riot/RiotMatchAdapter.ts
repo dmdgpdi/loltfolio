@@ -1,9 +1,9 @@
 import { Result } from "@praha/byethrow";
 import ky from "ky";
 import { z } from "zod";
-import { MatchCollectionError } from "../../application/errors/MatchCollectionError";
-import type { RiotMatchClient } from "../../application/RiotMatchClient";
-import type { QueueId } from "../../domain/types/QueueId.type";
+import { MatchCollectionError } from "@/backend/match/application/errors/MatchCollectionError";
+import type { RiotMatchClient } from "@/backend/match/application/RiotMatchClient";
+import type { QueueId } from "@/backend/match/domain/types/QueueId.type";
 import { parsePlayerMatch } from "./parsePlayerMatch";
 import { toMatchCollectionError } from "./toMatchCollectionError";
 

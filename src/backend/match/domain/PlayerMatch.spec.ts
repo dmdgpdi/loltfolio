@@ -1,5 +1,5 @@
 import { expect, it } from "vitest";
-import { createPlayerMatchData } from "../testing/createPlayerMatchData";
+import { createPlayerMatchData } from "@/backend/match/testing/createPlayerMatchData";
 import { PlayerMatch } from "./PlayerMatch";
 import type { PlayerMatchData } from "./types/PlayerMatchData.type";
 

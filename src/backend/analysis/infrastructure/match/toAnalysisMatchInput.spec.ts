@@ -1,8 +1,8 @@
 import { expect, it } from "vitest";
-import { emptyPlayerMatchStats } from "../../../match/domain/emptyPlayerMatchStats";
-import { PlayerMatch } from "../../../match/domain/PlayerMatch";
-import type { PlayerMatchStats } from "../../../match/domain/types/PlayerMatchStats.type";
-import { createPlayerMatchData } from "../../../match/testing/createPlayerMatchData";
+import { emptyPlayerMatchStats } from "@/backend/match/domain/emptyPlayerMatchStats";
+import { PlayerMatch } from "@/backend/match/domain/PlayerMatch";
+import type { PlayerMatchStats } from "@/backend/match/domain/types/PlayerMatchStats.type";
+import { createPlayerMatchData } from "@/backend/match/testing/createPlayerMatchData";
 import { toAnalysisMatchInput } from "./toAnalysisMatchInput";
 
 /** @description 각 원천에 서로 다른 값을 부여해 비슷한 이름의 필드가 뒤바뀌는지 검출한다. */

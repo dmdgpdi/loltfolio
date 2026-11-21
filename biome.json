@@ -23,6 +23,19 @@
     "enabled": true,
     "rules": {
       "recommended": true,
+      "style": {
+        "noRestrictedImports": {
+          "level": "error",
+          "options": {
+            "patterns": [
+              {
+                "group": ["../**", ".."],
+                "message": "부모 상대경로 대신 @/ 별칭을 사용하세요. 같은 디렉터리의 ./ 경로는 허용합니다."
+              }
+            ]
+          }
+        }
+      },
       "complexity": "on",
       "security": {
         "noBlankTarget": "on",

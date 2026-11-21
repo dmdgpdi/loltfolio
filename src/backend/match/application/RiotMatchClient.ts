@@ -1,6 +1,6 @@
 import type { Result } from "@praha/byethrow";
-import type { PlayerMatch } from "../domain/PlayerMatch";
-import type { QueueId } from "../domain/types/QueueId.type";
+import type { PlayerMatch } from "@/backend/match/domain/PlayerMatch";
+import type { QueueId } from "@/backend/match/domain/types/QueueId.type";
 import type { MatchCollectionError } from "./errors/MatchCollectionError";
 
 /** @description 검증된 매칭 종류로 경기 목록과 플레이어별 상세 기록을 조회하는 외부 수집 계약. */

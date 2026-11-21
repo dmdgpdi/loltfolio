@@ -1,8 +1,8 @@
 import { Result } from "@praha/byethrow";
 import { expect, it, vi } from "vitest";
-import { MatchCollectionError } from "../../application/errors/MatchCollectionError";
-import { createRiotMatchResponse as matchResponse } from "../../testing/createRiotMatchResponse";
-import { createRiotTimelineResponse as timelineResponse } from "../../testing/createRiotTimelineResponse";
+import { MatchCollectionError } from "@/backend/match/application/errors/MatchCollectionError";
+import { createRiotMatchResponse as matchResponse } from "@/backend/match/testing/createRiotMatchResponse";
+import { createRiotTimelineResponse as timelineResponse } from "@/backend/match/testing/createRiotTimelineResponse";
 import { RiotMatchAdapter } from "./RiotMatchAdapter";
 
 it("큐·시작 위치·개수를 전달하고 API 키는 헤더로 보낸다", async () => {

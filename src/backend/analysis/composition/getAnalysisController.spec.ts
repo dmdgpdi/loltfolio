@@ -1,8 +1,8 @@
 import { beforeEach, expect, it, vi } from "vitest";
-import type { getDatabase as databaseFactory } from "../../db/client";
+import type { getDatabase as databaseFactory } from "@/backend/db/client";
 
 const { getDatabase } = vi.hoisted(() => ({ getDatabase: vi.fn() }));
-vi.mock("../../db/client", () => ({ getDatabase }));
+vi.mock("@/backend/db/client", () => ({ getDatabase }));
 
 beforeEach(() => {
   vi.resetModules();
@@ -21,7 +21,7 @@ function databaseWithSelection(rows: unknown[]) {
 
 it("실제 GET 진입점의 잘못된 입력은 DB 초기화 전에 차단한다", async () => {
   // Arrange
-  const { GET } = await import("../../../app/api/analysis/route");
+  const { GET } = await import("@/app/api/analysis/route");
 
   // Act
   const response = await GET(new Request("http://localhost/api/analysis"));
@@ -36,7 +36,7 @@ it("조회 객체를 재사용하고 요청마다 저장 표본을 다시 읽어
   const reads = databaseWithSelection([
     { lastCompletedMatchIds: [], lastSucceededAt: new Date(0) },
   ]);
-  const { GET } = await import("../../../app/api/analysis/route");
+  const { GET } = await import("@/app/api/analysis/route");
   const request = () =>
     new Request("http://localhost/api/analysis?puuid=player&queueId=420");
 
@@ -59,7 +59,7 @@ it("조회 객체를 재사용하고 요청마다 저장 표본을 다시 읽어
 it("실제 저장 표본 부재도 수집·저장 없이 404로 반환한다", async () => {
   // Arrange
   databaseWithSelection([]);
-  const { GET } = await import("../../../app/api/analysis/route");
+  const { GET } = await import("@/app/api/analysis/route");
 
   // Act
   const response = await GET(
@@ -77,7 +77,7 @@ it("DB 조회 예외를 저장소·Application 경계를 거쳐 503으로 반환
   // Arrange
   const reads = databaseWithSelection([]);
   reads.mockRejectedValue(new Error("secret SQL detail"));
-  const { GET } = await import("../../../app/api/analysis/route");
+  const { GET } = await import("@/app/api/analysis/route");
 
   // Act
   const response = await GET(
@@ -96,7 +96,7 @@ it("설정 초기화 실패는 HTTP 밖으로 예외를 던지지 않는다", as
   getDatabase.mockImplementation(() => {
     throw new Error("secret configuration");
   });
-  const { GET } = await import("../../../app/api/analysis/route");
+  const { GET } = await import("@/app/api/analysis/route");
 
   // Act
   const response = await GET(

@@ -1,7 +1,7 @@
 import { Result } from "@praha/byethrow";
 import { expect, it } from "vitest";
-import { Player } from "../domain/Player";
-import { RiotId } from "../domain/RiotId.VO";
+import { Player } from "@/backend/player/domain/Player";
+import { RiotId } from "@/backend/player/domain/RiotId.VO";
 import { PlayerLookupError } from "./errors/PlayerLookupError";
 import { PlayerNotFoundError } from "./errors/PlayerNotFoundError";
 import { PlayerLookupService } from "./PlayerLookupService";

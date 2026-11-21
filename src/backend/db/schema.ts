@@ -1,4 +1,4 @@
 export {
   matchSyncs,
   playerMatches,
-} from "../match/infrastructure/persistence/match.schema";
+} from "@/backend/match/infrastructure/persistence/match.schema";

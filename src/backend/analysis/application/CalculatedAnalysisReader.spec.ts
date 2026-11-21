@@ -1,10 +1,10 @@
 import { Result } from "@praha/byethrow";
 import { expect, it } from "vitest";
-import { emptyPlayerMatchStats } from "../../match/domain/emptyPlayerMatchStats";
-import { PlayerMatch } from "../../match/domain/PlayerMatch";
-import { createPlayerMatchData } from "../../match/testing/createPlayerMatchData";
-import { StoredAnalysisInputReader } from "../infrastructure/match/StoredAnalysisInputReader";
-import { toAnalysisMatchInput } from "../infrastructure/match/toAnalysisMatchInput";
+import { StoredAnalysisInputReader } from "@/backend/analysis/infrastructure/match/StoredAnalysisInputReader";
+import { toAnalysisMatchInput } from "@/backend/analysis/infrastructure/match/toAnalysisMatchInput";
+import { emptyPlayerMatchStats } from "@/backend/match/domain/emptyPlayerMatchStats";
+import { PlayerMatch } from "@/backend/match/domain/PlayerMatch";
+import { createPlayerMatchData } from "@/backend/match/testing/createPlayerMatchData";
 import { CalculatedAnalysisReader } from "./CalculatedAnalysisReader";
 import { AnalysisCalculationError } from "./errors/AnalysisCalculationError";
 import { AnalysisReadError } from "./errors/AnalysisReadError";

@@ -1,6 +1,6 @@
 import type { Result } from "@praha/byethrow";
-import type { MatchRepositoryError } from "../errors/MatchRepositoryError";
-import type { PlayerMatch } from "../PlayerMatch";
+import type { MatchRepositoryError } from "@/backend/match/domain/errors/MatchRepositoryError";
+import type { PlayerMatch } from "@/backend/match/domain/PlayerMatch";
 import type { QueueId } from "./QueueId.type";
 
 /** @description 플레이어별 경기 기록의 조회와 일괄 저장 계약. 외부 API 응답이나 DB 구현 세부사항을 도메인에서 분리한다. */

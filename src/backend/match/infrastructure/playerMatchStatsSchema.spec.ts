@@ -1,5 +1,5 @@
 import { expect, it } from "vitest";
-import { emptyPlayerMatchStats } from "../domain/emptyPlayerMatchStats";
+import { emptyPlayerMatchStats } from "@/backend/match/domain/emptyPlayerMatchStats";
 import { playerMatchStatsSchema } from "./playerMatchStatsSchema";
 
 it("기존 DB 원시값과 null을 각각 확보됨과 미제공으로 복원한다", () => {

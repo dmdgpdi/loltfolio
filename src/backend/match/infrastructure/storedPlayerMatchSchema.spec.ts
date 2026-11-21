@@ -1,6 +1,6 @@
 import { expect, it } from "vitest";
-import { PlayerMatch } from "../domain/PlayerMatch";
-import { createPlayerMatchData } from "../testing/createPlayerMatchData";
+import { PlayerMatch } from "@/backend/match/domain/PlayerMatch";
+import { createPlayerMatchData } from "@/backend/match/testing/createPlayerMatchData";
 import { toStoredPlayerMatch } from "./persistence/toStoredPlayerMatch";
 import { storedPlayerMatchSchema } from "./storedPlayerMatchSchema";
 

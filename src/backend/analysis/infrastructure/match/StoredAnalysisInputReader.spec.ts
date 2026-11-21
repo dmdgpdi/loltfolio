@@ -1,9 +1,9 @@
 import { Result } from "@praha/byethrow";
 import { expect, it } from "vitest";
-import { MatchRepositoryError } from "../../../match/domain/errors/MatchRepositoryError";
-import { PlayerMatch } from "../../../match/domain/PlayerMatch";
-import { createPlayerMatchData } from "../../../match/testing/createPlayerMatchData";
-import { AnalysisReadError } from "../../application/errors/AnalysisReadError";
+import { AnalysisReadError } from "@/backend/analysis/application/errors/AnalysisReadError";
+import { MatchRepositoryError } from "@/backend/match/domain/errors/MatchRepositoryError";
+import { PlayerMatch } from "@/backend/match/domain/PlayerMatch";
+import { createPlayerMatchData } from "@/backend/match/testing/createPlayerMatchData";
 import { StoredAnalysisInputReader } from "./StoredAnalysisInputReader";
 
 it("공개 match Reader만 호출해 순서와 상태를 유지한 입력을 반환한다", async () => {

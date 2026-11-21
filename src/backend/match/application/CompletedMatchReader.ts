@@ -1,6 +1,6 @@
 import type { Result } from "@praha/byethrow";
-import type { MatchRepositoryError } from "../domain/errors/MatchRepositoryError";
-import type { QueueId } from "../domain/types/QueueId.type";
+import type { MatchRepositoryError } from "@/backend/match/domain/errors/MatchRepositoryError";
+import type { QueueId } from "@/backend/match/domain/types/QueueId.type";
 import type { CompletedMatchSet } from "./types/CompletedMatchSet.type";
 
 /** @description 다른 모듈에 공개하는 저장 경기 읽기 경계. 완료 목록이 없는 과거 기록을 추정하거나 수집·저장하지 않는다. */

@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { playerMatchClassificationSchema } from "../playerMatchClassificationSchema";
-import { providedStatSchema } from "../providedStatSchema";
+import { playerMatchClassificationSchema } from "@/backend/match/infrastructure/playerMatchClassificationSchema";
+import { providedStatSchema } from "@/backend/match/infrastructure/providedStatSchema";
 
 const numberStat = z.preprocess(
   (input) =>

@@ -1,14 +1,14 @@
 import { Result } from "@praha/byethrow";
 import { expect, it, vi } from "vitest";
-import { PlayerLookupAuthenticationError } from "../../application/errors/PlayerLookupAuthenticationError";
-import { PlayerLookupConfigurationError } from "../../application/errors/PlayerLookupConfigurationError";
-import { PlayerLookupRateLimitError } from "../../application/errors/PlayerLookupRateLimitError";
-import { PlayerLookupRequestError } from "../../application/errors/PlayerLookupRequestError";
-import { PlayerLookupResponseError } from "../../application/errors/PlayerLookupResponseError";
-import { PlayerLookupUnavailableError } from "../../application/errors/PlayerLookupUnavailableError";
-import { PlayerNotFoundError } from "../../application/errors/PlayerNotFoundError";
-import { PlayerLookupService } from "../../application/PlayerLookupService";
-import { RiotId } from "../../domain/RiotId.VO";
+import { PlayerLookupAuthenticationError } from "@/backend/player/application/errors/PlayerLookupAuthenticationError";
+import { PlayerLookupConfigurationError } from "@/backend/player/application/errors/PlayerLookupConfigurationError";
+import { PlayerLookupRateLimitError } from "@/backend/player/application/errors/PlayerLookupRateLimitError";
+import { PlayerLookupRequestError } from "@/backend/player/application/errors/PlayerLookupRequestError";
+import { PlayerLookupResponseError } from "@/backend/player/application/errors/PlayerLookupResponseError";
+import { PlayerLookupUnavailableError } from "@/backend/player/application/errors/PlayerLookupUnavailableError";
+import { PlayerNotFoundError } from "@/backend/player/application/errors/PlayerNotFoundError";
+import { PlayerLookupService } from "@/backend/player/application/PlayerLookupService";
+import { RiotId } from "@/backend/player/domain/RiotId.VO";
 import { RiotAccountAdapter } from "./RiotAccountAdapter";
 
 const riotId = Result.unwrap(RiotId.create("플레이어 / 이름", "KR1"));

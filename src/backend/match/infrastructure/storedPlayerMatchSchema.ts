@@ -1,8 +1,8 @@
 import { z } from "zod";
-import { GameMode } from "../domain/GameMode";
-import { MapId } from "../domain/MapId";
-import { Position } from "../domain/Position";
-import { QueueId } from "../domain/QueueId";
+import { GameMode } from "@/backend/match/domain/GameMode";
+import { MapId } from "@/backend/match/domain/MapId";
+import { Position } from "@/backend/match/domain/Position";
+import { QueueId } from "@/backend/match/domain/QueueId";
 import { classifiedStatSchema } from "./classifiedStatSchema";
 import { playerMatchStatsSchema } from "./playerMatchStatsSchema";
 import { storedStatSchema } from "./storedStatSchema";

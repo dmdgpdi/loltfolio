@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { Stat } from "../domain/types/Stat.type";
+import type { Stat } from "@/backend/match/domain/types/Stat.type";
 
 /** @description 원본 누락·빈 문자열은 NOT_PROVIDED, 자료형은 맞지만 지원 목록 밖인 분류는 UNKNOWN으로 구분한다. */
 export function classifiedStatSchema<T extends string | number>(
