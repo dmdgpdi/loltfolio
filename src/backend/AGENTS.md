@@ -1,58 +1,58 @@
-# Backend Guidelines
+# 백엔드 지침
 
-## Tech Stack
+## 기술 스택
 
-PostgreSQL (local Docker / Neon) via `pg`, Drizzle ORM, Drizzle Kit. Use the Node.js runtime for database access.
+PostgreSQL(로컬 Docker / Neon)에 `pg`, Drizzle ORM, Drizzle Kit으로 접근한다. 데이터베이스 접근에는 Node.js 런타임을 사용한다.
 
-## Architecture
+## 아키텍처
 
-Organize backend code into domain modules. Keep each domain's Controller, Service, entities, aggregates, Repository interface, and Repository implementation together.
+백엔드 코드는 도메인 모듈로 구성한다. 각 도메인의 Controller·Service·엔티티·애그리거트·Repository 인터페이스와 구현체를 같은 모듈에 둔다.
 
-- **Route Handler (`app/**/route.ts`)**: Thin Next.js entry point that delegates HTTP methods to the domain Controller.
-- **Presentation (`presentation/`)**: Contains Controllers that parse and validate HTTP input, call Application use cases, and map results and errors to HTTP responses. Keep HTTP handling out of Application services.
-- **Service**: Orchestrates use cases and transaction boundaries using domain objects and Repository interfaces. Keep HTTP types out of its interface.
-- **Entity / Aggregate**: Owns business rules, invariants, and state changes. Must not depend on Next.js or Drizzle.
-- **Repository interface**: Defines domain persistence contracts without Drizzle-specific types.
-- **Repository implementation**: Implements those contracts using Drizzle. Keep database table definitions distinct from domain entities.
-- **Composition (`composition/`)**: Creates concrete infrastructure and wires it into services/readers and Controllers through constructor injection. Controllers and Application services must not instantiate infrastructure implementations.
+- **Route Handler (`app/**/route.ts`)**: HTTP 메서드를 도메인 Controller에 위임하는 최소한의 Next.js 진입점이다.
+- **Presentation (`presentation/`)**: Controller가 HTTP 입력을 해석·검증하고 Application 유스케이스를 호출하며 결과·오류를 HTTP 응답으로 변환한다. Application 서비스에 HTTP 처리를 넣지 않는다.
+- **Service**: 도메인 객체와 Repository 인터페이스로 유스케이스와 트랜잭션 경계를 조율한다. 인터페이스에 HTTP 타입을 포함하지 않는다.
+- **엔티티 / 애그리거트**: 비즈니스 규칙·불변 조건·상태 변경을 담당한다. Next.js나 Drizzle에 의존하지 않는다.
+- **Repository 인터페이스**: Drizzle 전용 타입 없이 도메인의 영속성 계약을 정의한다.
+- **Repository 구현체**: Drizzle로 영속성 계약을 구현한다. 데이터베이스 테이블 정의와 도메인 엔티티는 분리한다.
+- **Composition (`composition/`)**: 구체적인 인프라 구현체를 생성하고 생성자 주입으로 서비스·Reader·Controller를 연결한다. Controller와 Application 서비스는 인프라 구현체를 직접 생성하지 않는다.
 
-Dependency direction: `Route Handler → Controller → Service → domain objects / Repository interfaces`. Drizzle implementations depend on Repository interfaces; Services must not depend directly on those implementations.
+의존 방향은 `Route Handler → Controller → Service → 도메인 객체 / Repository 인터페이스`다. Drizzle 구현체는 Repository 인터페이스에 의존하며, Service는 구현체에 직접 의존하지 않는다.
 
-Unit test domain rules and Service behavior; use Repository test doubles for Service tests. Add roles only when a feature needs them, rather than creating every layer in advance.
+도메인 규칙과 Service 동작을 단위 테스트한다. Service 테스트에는 Repository 대역을 사용한다. 모든 계층을 미리 만들지 말고 기능에 필요한 역할만 추가한다.
 
-## Development Workflow
+## 개발 순서
 
-- Define the behavior specification before implementation: inputs, outputs, invariants, missing or unknown values, errors, and boundary conditions.
-- Define the required interfaces and types from that specification, then write behavior tests against those contracts before implementing them.
-- Run the tests and confirm they fail for the expected unimplemented behavior, rather than unrelated setup errors.
-- Implement only what is needed to satisfy the specification and tests, then run the completion checks in the root AGENTS.md.
-- Keep interfaces and tests grounded in the specification. Do not weaken assertions or change expected behavior merely to make an implementation pass; revise the specification first when requirements change.
+- 구현 전에 입력·출력·불변 조건·미제공 및 판별 불가 값·오류·경계 조건을 포함한 동작 명세를 정의한다.
+- 명세에서 필요한 인터페이스와 타입을 정의하고, 구현 전에 그 계약에 대한 동작 테스트를 작성한다.
+- 테스트를 실행해 관련 없는 설정 오류가 아니라 아직 구현하지 않은 동작 때문에 예상대로 실패하는지 확인한다.
+- 명세와 테스트를 만족하는 데 필요한 내용만 구현하고 루트 AGENTS.md의 완료 검증을 실행한다.
+- 인터페이스와 테스트는 명세를 기준으로 유지한다. 구현을 통과시키려고 검증을 약화하거나 기대 동작을 바꾸지 않는다. 요구사항이 바뀌면 명세부터 수정한다.
 
-## Testing
+## 테스트
 
-- Prefer classicist tests: use real domain objects and verify observable behavior.
-- Structure tests with Arrange–Act–Assert; use test doubles at external boundaries when needed.
-- Write tests as executable specifications: names, inputs, and expected outcomes must explain the feature without reading its implementation.
-- Order each spec from a representative basic usage example through behavior variations, boundary cases, and errors or combined conditions. Expand the explanation rather than forcing every later test to be more complex.
-- Protect public interfaces and observable behavior contracts, including ordering, errors, missing-value handling, and input mutation. Internal refactoring that preserves these contracts should not require test changes.
-- Keep tests independently runnable; reading order must not create shared-state or execution-order dependencies.
-- Focus each test on one behavior so failures identify the broken rule. Multiple assertions are appropriate when they describe that behavior.
-- Use small, verifiable inputs and explicit expected values derived from the specification. Do not reproduce the implementation's calculations to generate expectations; keep important inputs visible instead of hiding them in helpers.
+- 고전파(Classicist) 방식을 우선한다. 실제 도메인 객체를 사용하고 외부에서 관찰할 수 있는 동작을 검증한다.
+- 준비 → 실행 → 검증(Arrange–Act–Assert)으로 구성하고, 필요한 경우 외부 경계에 테스트 대역을 사용한다.
+- 실행 가능한 명세로 작성한다. 구현을 읽지 않아도 테스트 이름·입력·기대 결과로 기능을 이해할 수 있어야 한다.
+- 각 spec은 대표적인 기본 사용 예시부터 주요 동작의 변형, 경계 조건, 오류·복합 조건 순서로 구성한다. 뒤의 테스트를 무조건 복잡하게 만들기보다 설명을 확장한다.
+- 공개 인터페이스와 관찰 가능한 동작 계약을 보호한다. 정렬 순서·오류·미제공 처리·입력 변경 여부도 계약에 포함한다. 계약을 유지하는 내부 리팩토링에는 테스트 수정이 필요하지 않아야 한다.
+- 각 테스트는 독립적으로 실행할 수 있어야 한다. 읽는 순서가 공유 상태나 실행 순서에 대한 의존성을 만들지 않도록 한다.
+- 한 테스트는 하나의 동작에 집중해 실패 시 깨진 규칙을 알 수 있게 한다. 같은 동작을 설명한다면 여러 검증문을 사용해도 된다.
+- 작고 확인하기 쉬운 입력과 명세에서 도출한 명시적인 기대값을 사용한다. 구현의 계산을 재현해 기대값을 만들지 않으며 중요한 입력을 헬퍼에 숨기지 않는다.
 
-## Error Handling
+## 오류 처리
 
-- Use railway-oriented error handling with `@praha/byethrow` for expected failures.
-- Define custom errors with `@praha/error-factory` in the owning layer's `errors/` directory.
+- 예상 가능한 실패는 `@praha/byethrow`를 사용해 성공·실패 흐름을 분리하는 방식(Railway-oriented)으로 처리한다.
+- 사용자 정의 오류는 `@praha/error-factory`로 정의하고 담당 계층의 `errors/` 디렉터리에 둔다.
 
-## Database
+## 데이터베이스
 
-- DB client and table schema entry point: `db/client.ts`, `db/schema.ts`.
-- Drizzle configuration: `drizzle.config.ts`; generated SQL and snapshots: `db/migrations/`.
-- Run package scripts from the repository root. The config resolves schema, output, and env paths from its location back to the repository root.
-- Generate and review migrations during development; commit SQL and snapshots. Apply reviewed migrations with `migrate`; do not use `push` in production or edit applied migrations.
+- DB 클라이언트와 테이블 스키마 진입점은 `db/client.ts`, `db/schema.ts`다.
+- Drizzle 설정은 `drizzle.config.ts`, 생성한 SQL과 스냅샷은 `db/migrations/`에 둔다.
+- 패키지 스크립트는 저장소 루트에서 실행한다. 설정 파일은 자신의 위치에서 저장소 루트를 찾아 스키마·출력·환경변수 파일 경로를 해석한다.
+- 개발 중 마이그레이션을 생성·검토하고 SQL과 스냅샷을 커밋한다. 검토한 마이그레이션은 `migrate`로 적용한다. 운영 환경에서 `push`를 사용하거나 이미 적용한 마이그레이션을 수정하지 않는다.
 
-## Type Consistency
+## 타입 일관성
 
-- Reuse established domain types across entities, interfaces, services, implementations, database mappings, and test doubles. Do not widen a domain type to `number` or `string` for the same value (for example, use `QueueId` for queue identifiers).
-- Validate external input at boundaries before converting it to domain types; type annotations or assertions do not replace runtime validation.
-- When changing a shared type, check all callers, implementations, mappings, and tests for consistency. Add type contract checks when needed and run the TypeScript type checker.
+- 엔티티·인터페이스·서비스·구현체·DB 매핑·테스트 대역에서 기존 도메인 타입을 재사용한다. 같은 값을 표현하는 도메인 타입을 `number`나 `string`으로 넓히지 않는다. 예를 들어 큐 식별자에는 `QueueId`를 사용한다.
+- 외부 입력은 경계에서 검증한 뒤 도메인 타입으로 변환한다. 타입 표기나 단언은 런타임 검증을 대신하지 않는다.
+- 공유 타입을 바꿀 때는 모든 호출부·구현체·매핑·테스트의 일관성을 확인한다. 필요한 경우 타입 계약 검증을 추가하고 TypeScript 타입 검사를 실행한다.
