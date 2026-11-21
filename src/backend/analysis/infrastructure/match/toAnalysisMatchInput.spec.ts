@@ -5,28 +5,6 @@ import type { PlayerMatchStats } from "@/backend/match/domain/types/PlayerMatchS
 import { createPlayerMatchData } from "@/backend/match/testing/createPlayerMatchData";
 import { toAnalysisMatchInput } from "./toAnalysisMatchInput";
 
-/** @description 각 원천에 서로 다른 값을 부여해 비슷한 이름의 필드가 뒤바뀌는지 검출한다. */
-function sourceStats(): PlayerMatchStats {
-  const stats = structuredClone(emptyPlayerMatchStats());
-  let value = 1;
-
-  for (const group of Object.values(stats)) {
-    for (const key of Object.keys(group)) {
-      Reflect.set(group, key, { status: "AVAILABLE", value: value++ });
-    }
-  }
-
-  for (const key of ["firstBloodKill", "firstBloodAssist"]) {
-    Reflect.set(stats.combat, key, { status: "AVAILABLE", value: true });
-  }
-
-  for (const key of ["firstTowerKill", "firstTowerAssist"]) {
-    Reflect.set(stats.objective, key, { status: "AVAILABLE", value: false });
-  }
-
-  return stats;
-}
-
 it("비슷한 이름의 원천 지표와 단위를 바꾸지 않고 모든 콘텐츠에 매핑한다", () => {
   // Arrange
   const stats = sourceStats();
@@ -216,3 +194,25 @@ it("전부 미제공인 원천을 0으로 바꾸지 않고 중첩 입력도 동�
   expect(Object.isFrozen(input.laning.points)).toBe(true);
   expect(Object.isFrozen(input.laning.points[0])).toBe(true);
 });
+
+/** @description 각 원천에 서로 다른 값을 부여해 비슷한 이름의 필드가 뒤바뀌는지 검출한다. */
+function sourceStats(): PlayerMatchStats {
+  const stats = structuredClone(emptyPlayerMatchStats());
+  let value = 1;
+
+  for (const group of Object.values(stats)) {
+    for (const key of Object.keys(group)) {
+      Reflect.set(group, key, { status: "AVAILABLE", value: value++ });
+    }
+  }
+
+  for (const key of ["firstBloodKill", "firstBloodAssist"]) {
+    Reflect.set(stats.combat, key, { status: "AVAILABLE", value: true });
+  }
+
+  for (const key of ["firstTowerKill", "firstTowerAssist"]) {
+    Reflect.set(stats.objective, key, { status: "AVAILABLE", value: false });
+  }
+
+  return stats;
+}

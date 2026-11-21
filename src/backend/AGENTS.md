@@ -32,6 +32,12 @@ Unit test domain rules and Service behavior; use Repository test doubles for Ser
 
 - Prefer classicist tests: use real domain objects and verify observable behavior.
 - Structure tests with Arrange–Act–Assert; use test doubles at external boundaries when needed.
+- Write tests as executable specifications: names, inputs, and expected outcomes must explain the feature without reading its implementation.
+- Order each spec from a representative basic usage example through behavior variations, boundary cases, and errors or combined conditions. Expand the explanation rather than forcing every later test to be more complex.
+- Protect public interfaces and observable behavior contracts, including ordering, errors, missing-value handling, and input mutation. Internal refactoring that preserves these contracts should not require test changes.
+- Keep tests independently runnable; reading order must not create shared-state or execution-order dependencies.
+- Focus each test on one behavior so failures identify the broken rule. Multiple assertions are appropriate when they describe that behavior.
+- Use small, verifiable inputs and explicit expected values derived from the specification. Do not reproduce the implementation's calculations to generate expectations; keep important inputs visible instead of hiding them in helpers.
 
 ## Error Handling
 

@@ -13,18 +13,6 @@ import { RiotAccountAdapter } from "./RiotAccountAdapter";
 
 const riotId = Result.unwrap(RiotId.create("플레이어 / 이름", "KR1"));
 
-function createAdapter(
-  request: typeof fetch,
-  options: { apiKey?: string; region?: string } = {},
-) {
-  return new RiotAccountAdapter({
-    apiKey: "test-key",
-    region: "ASIA",
-    ...options,
-    fetch: request,
-  });
-}
-
 it.each([
   "ASIA",
   "AMERICAS",
@@ -230,3 +218,15 @@ it("요청 제한의 Retry-After가 LookupService까지 전달된다", async () 
   expect(result).toEqual(Result.fail(expect.any(PlayerLookupRateLimitError)));
   expect(result).toMatchObject({ error: { retryAfter: "120" } });
 });
+
+function createAdapter(
+  request: typeof fetch,
+  options: { apiKey?: string; region?: string } = {},
+) {
+  return new RiotAccountAdapter({
+    apiKey: "test-key",
+    region: "ASIA",
+    ...options,
+    fetch: request,
+  });
+}

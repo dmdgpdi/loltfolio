@@ -9,6 +9,42 @@ import { parsePlayerMatch } from "./riot/parsePlayerMatch";
 import { storedPlayerMatchSchema } from "./storedPlayerMatchSchema";
 
 it.each([
+  0, -0.35, 23.25,
+])("정상 통계 수치 %s는 소수·음수를 보정하지 않고 보존한다", (value) => {
+  // Arrange
+  const body = createRiotMatchResponse();
+  body.info.participants[1].challenges.goldPerMinute = value;
+
+  // Act
+  const match = Result.unwrap(
+    parsePlayerMatch(body, createRiotTimelineResponse(), "KR_1", "target"),
+  );
+
+  // Assert
+  expect(match.stats.laning.goldPerMinute).toEqual({
+    status: "AVAILABLE",
+    value,
+  });
+});
+
+it("안전한 정수의 경계값은 그대로 허용한다", () => {
+  // Arrange
+  const body = createRiotMatchResponse();
+  body.info.gameId = Number.MAX_SAFE_INTEGER;
+
+  // Act
+  const parsedGameId = Result.unwrap(
+    parsePlayerMatch(body, createRiotTimelineResponse(), "KR_1", "target"),
+  ).gameId;
+
+  // Assert
+  expect(parsedGameId).toEqual({
+    status: "AVAILABLE",
+    value: Number.MAX_SAFE_INTEGER,
+  });
+});
+
+it.each([
   Number.NaN,
   Infinity,
   -Infinity,
@@ -55,24 +91,7 @@ it.each([
   // Assert
   expect(isRejected2).toBe(true);
 });
-it.each([
-  0, -0.35, 23.25,
-])("정상 통계 수치 %s는 소수·음수를 보정하지 않고 보존한다", (value) => {
-  // Arrange
-  const body = createRiotMatchResponse();
-  body.info.participants[1].challenges.goldPerMinute = value;
 
-  // Act
-  const match = Result.unwrap(
-    parsePlayerMatch(body, createRiotTimelineResponse(), "KR_1", "target"),
-  );
-
-  // Assert
-  expect(match.stats.laning.goldPerMinute).toEqual({
-    status: "AVAILABLE",
-    value,
-  });
-});
 it.each([
   1.5,
   Number.MAX_SAFE_INTEGER + 1,
@@ -104,20 +123,4 @@ it.each([
 
   // Assert
   expect(isValid).toBe(false);
-});
-it("안전한 정수의 경계값은 그대로 허용한다", () => {
-  // Arrange
-  const body = createRiotMatchResponse();
-  body.info.gameId = Number.MAX_SAFE_INTEGER;
-
-  // Act
-  const parsedGameId = Result.unwrap(
-    parsePlayerMatch(body, createRiotTimelineResponse(), "KR_1", "target"),
-  ).gameId;
-
-  // Assert
-  expect(parsedGameId).toEqual({
-    status: "AVAILABLE",
-    value: Number.MAX_SAFE_INTEGER,
-  });
 });

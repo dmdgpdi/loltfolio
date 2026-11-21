@@ -3,37 +3,6 @@ import { createPlayerMatchData } from "@/backend/match/testing/createPlayerMatch
 import { PlayerMatch } from "./PlayerMatch";
 import type { PlayerMatchData } from "./types/PlayerMatchData.type";
 
-it("같은 경기에서도 PUUID가 다른 플레이어 기록을 구분한다", () => {
-  // Arrange
-  const first = new PlayerMatch(createPlayerMatchData());
-
-  // Act
-  const second = new PlayerMatch(createPlayerMatchData({ puuid: "other" }));
-
-  // Assert
-  expect(first.matchId).toBe(second.matchId);
-  expect(first.puuid).not.toBe(second.puuid);
-});
-
-it("입력과 반환 Date의 수정이 내부 시작 시각을 바꾸지 않는다", () => {
-  // Arrange
-  const date = new Date(0);
-
-  // Act
-  const match = new PlayerMatch(
-    createPlayerMatchData({ startedAt: { status: "AVAILABLE", value: date } }),
-  );
-  date.setTime(100);
-  const returned = match.startedAt;
-
-  if (returned.status === "AVAILABLE") {
-    returned.value.setTime(200);
-  }
-
-  // Assert
-  expect(match.startedAt).toEqual({ status: "AVAILABLE", value: new Date(0) });
-});
-
 const valueFields = [
   "startedAt",
   "champion",
@@ -51,37 +20,19 @@ const valueFields = [
   "summoner1Id",
   "summoner2Id",
 ] as const;
-it.each(
-  valueFields,
-)("%s의 미제공·판별 불가 상태를 null 없이 보존한다", (field) => {
-  // Arrange: 각 경우의 입력을 순회한다.
-  for (const status of ["NOT_PROVIDED", "UNKNOWN"] as const) {
-    // Arrange
-    const data = createPlayerMatchData({ [field]: { status } });
 
-    // Act
-    const result = new PlayerMatch(data)[field];
+it("같은 경기에서도 PUUID가 다른 플레이어 기록을 구분한다", () => {
+  // Arrange
+  const first = new PlayerMatch(createPlayerMatchData());
 
-    // Assert
-    expect(result).toEqual({ status });
-  }
+  // Act
+  const second = new PlayerMatch(createPlayerMatchData({ puuid: "other" }));
+
+  // Assert
+  expect(first.matchId).toBe(second.matchId);
+  expect(first.puuid).not.toBe(second.puuid);
 });
 
-it.each([
-  "endOfGameResult",
-  "gameEndedInEarlySurrender",
-] as const)("%s가 미제공 또는 판별 불가면 분석에서 제외한다", (field) => {
-  // Arrange: 각 경우의 입력을 순회한다.
-  for (const status of ["NOT_PROVIDED", "UNKNOWN"] as const) {
-    // Act
-    const isEligible = new PlayerMatch(
-      createPlayerMatchData({ [field]: { status } }),
-    ).isEligibleForAnalysis();
-
-    // Assert
-    expect(isEligible).toBe(false);
-  }
-});
 it.each([
   false,
   true,
@@ -98,29 +49,7 @@ it.each([
   // Assert
   expect(isEligible).toBe(true);
 });
-it("초반 항복이나 비정상 종료는 분석에서 제외한다", () => {
-  // Arrange: 테스트 인자와 명시한 입력을 사용한다.
 
-  // Act
-  const isEligible = new PlayerMatch(
-    createPlayerMatchData({
-      gameEndedInEarlySurrender: { status: "AVAILABLE", value: true },
-    }),
-  ).isEligibleForAnalysis();
-
-  // Assert
-  expect(isEligible).toBe(false);
-
-  // Act
-  const isEligible2 = new PlayerMatch(
-    createPlayerMatchData({
-      endOfGameResult: { status: "AVAILABLE", value: "AbortUnexpected" },
-    }),
-  ).isEligibleForAnalysis();
-
-  // Assert
-  expect(isEligible2).toBe(false);
-});
 it.each<Partial<PlayerMatchData>>([
   { gameMode: { status: "AVAILABLE", value: "ARAM" } },
   { mapId: { status: "AVAILABLE", value: 12 } },
@@ -145,24 +74,38 @@ it.each<Partial<PlayerMatchData>>([
     ),
   ).toBe(true);
 });
-it("입력 상태와 통계를 변경해도 저장할 기록은 바뀌지 않는다", () => {
-  // Arrange
-  const data = createPlayerMatchData();
-  const match = new PlayerMatch(data);
-  Reflect.set(data.gameId, "value", 999);
+
+it.each(
+  valueFields,
+)("%s의 미제공·판별 불가 상태를 null 없이 보존한다", (field) => {
+  // Arrange: 각 경우의 입력을 순회한다.
+  for (const status of ["NOT_PROVIDED", "UNKNOWN"] as const) {
+    // Arrange
+    const data = createPlayerMatchData({ [field]: { status } });
+
+    // Act
+    const result = new PlayerMatch(data)[field];
+
+    // Assert
+    expect(result).toEqual({ status });
+  }
+});
+
+it("빈 Timeline 배열도 10·15분의 명시적인 미제공 상태로 채운다", () => {
+  // Arrange: 테스트 인자와 명시한 입력을 사용한다.
 
   // Act
-  Reflect.set(data.stats.combat.kda, "status", "UNKNOWN");
+  const match = new PlayerMatch(createPlayerMatchData({ laningSnapshots: [] }));
 
   // Assert
-  expect(match.gameId).toEqual({ status: "AVAILABLE", value: 1 });
-  expect(match.stats.combat.kda).toEqual({ status: "NOT_PROVIDED" });
-
-  // Act
-  const wasChanged = Reflect.set(match.gameId, "value", 100);
-
-  // Assert
-  expect(wasChanged).toBe(false);
+  expect(match.laningSnapshots.map((item) => item.minute)).toEqual([10, 15]);
+  expect(
+    match.laningSnapshots.every(
+      (item) =>
+        item.own.status === "NOT_PROVIDED" &&
+        item.opponentDifference.status === "UNKNOWN",
+    ),
+  ).toBe(true);
 });
 
 it.each(
@@ -187,19 +130,81 @@ it.each(
   }
 });
 
-it("빈 Timeline 배열도 10·15분의 명시적인 미제공 상태로 채운다", () => {
+it("입력과 반환 Date의 수정이 내부 시작 시각을 바꾸지 않는다", () => {
+  // Arrange
+  const date = new Date(0);
+
+  // Act
+  const match = new PlayerMatch(
+    createPlayerMatchData({ startedAt: { status: "AVAILABLE", value: date } }),
+  );
+  date.setTime(100);
+  const returned = match.startedAt;
+
+  if (returned.status === "AVAILABLE") {
+    returned.value.setTime(200);
+  }
+
+  // Assert
+  expect(match.startedAt).toEqual({ status: "AVAILABLE", value: new Date(0) });
+});
+
+it("입력 상태와 통계를 변경해도 저장할 기록은 바뀌지 않는다", () => {
+  // Arrange
+  const data = createPlayerMatchData();
+  const match = new PlayerMatch(data);
+  Reflect.set(data.gameId, "value", 999);
+
+  // Act
+  Reflect.set(data.stats.combat.kda, "status", "UNKNOWN");
+
+  // Assert
+  expect(match.gameId).toEqual({ status: "AVAILABLE", value: 1 });
+  expect(match.stats.combat.kda).toEqual({ status: "NOT_PROVIDED" });
+
+  // Act
+  const wasChanged = Reflect.set(match.gameId, "value", 100);
+
+  // Assert
+  expect(wasChanged).toBe(false);
+});
+
+it.each([
+  "endOfGameResult",
+  "gameEndedInEarlySurrender",
+] as const)("%s가 미제공 또는 판별 불가면 분석에서 제외한다", (field) => {
+  // Arrange: 각 경우의 입력을 순회한다.
+  for (const status of ["NOT_PROVIDED", "UNKNOWN"] as const) {
+    // Act
+    const isEligible = new PlayerMatch(
+      createPlayerMatchData({ [field]: { status } }),
+    ).isEligibleForAnalysis();
+
+    // Assert
+    expect(isEligible).toBe(false);
+  }
+});
+
+it("초반 항복이나 비정상 종료는 분석에서 제외한다", () => {
   // Arrange: 테스트 인자와 명시한 입력을 사용한다.
 
   // Act
-  const match = new PlayerMatch(createPlayerMatchData({ laningSnapshots: [] }));
+  const isEligible = new PlayerMatch(
+    createPlayerMatchData({
+      gameEndedInEarlySurrender: { status: "AVAILABLE", value: true },
+    }),
+  ).isEligibleForAnalysis();
 
   // Assert
-  expect(match.laningSnapshots.map((item) => item.minute)).toEqual([10, 15]);
-  expect(
-    match.laningSnapshots.every(
-      (item) =>
-        item.own.status === "NOT_PROVIDED" &&
-        item.opponentDifference.status === "UNKNOWN",
-    ),
-  ).toBe(true);
+  expect(isEligible).toBe(false);
+
+  // Act
+  const isEligible2 = new PlayerMatch(
+    createPlayerMatchData({
+      endOfGameResult: { status: "AVAILABLE", value: "AbortUnexpected" },
+    }),
+  ).isEligibleForAnalysis();
+
+  // Assert
+  expect(isEligible2).toBe(false);
 });

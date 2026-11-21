@@ -28,6 +28,27 @@ it("양·시간의 소수와 실제 0을 유효 표본으로 평균한다", () =
   );
 });
 
+it("미제공·판별 불가만 있으면 평균 0을 만들지 않는다", () => {
+  // Arrange
+  const observations: AnalysisObservation<number>[] = [
+    { status: "NOT_PROVIDED" },
+    { status: "UNKNOWN" },
+  ];
+
+  // Act
+  const result = averageAnalysisValues(observations);
+
+  // Assert
+  expect(result).toEqual(
+    Result.succeed({
+      status: "UNAVAILABLE",
+      sampleCount: 0,
+      notProvidedCount: 1,
+      unknownCount: 1,
+    }),
+  );
+});
+
 it.each([
   NaN,
   Infinity,
@@ -58,25 +79,4 @@ it("양·시간 합계가 무한대가 되면 거부한다", () => {
 
   // Assert
   expect(result).toEqual(Result.fail(expect.any(InvalidAnalysisValueError)));
-});
-
-it("미제공·판별 불가만 있으면 평균 0을 만들지 않는다", () => {
-  // Arrange
-  const observations: AnalysisObservation<number>[] = [
-    { status: "NOT_PROVIDED" },
-    { status: "UNKNOWN" },
-  ];
-
-  // Act
-  const result = averageAnalysisValues(observations);
-
-  // Assert
-  expect(result).toEqual(
-    Result.succeed({
-      status: "UNAVAILABLE",
-      sampleCount: 0,
-      notProvidedCount: 1,
-      unknownCount: 1,
-    }),
-  );
 });

@@ -13,11 +13,6 @@ describe("Player", () => {
 
     // Assert
     expect(player.puuid).toBe("example-puuid");
-
-    // Act
-    const isEqual = player.riotId.equals(riotId);
-
-    // Assert
-    expect(isEqual).toBe(true);
+    expect(player.riotId.equals(riotId)).toBe(true);
   });
 });
