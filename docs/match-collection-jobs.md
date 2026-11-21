@@ -1,6 +1,6 @@
 # 비동기 경기 수집 작업 설계
 
-기준일: 2026-11-21. **설계안이며 미구현**이다. 합의한 동작을 구체화하며 아래 타입·메서드·API 경로는 구현을 위한 제안이다. 코드·스키마·DB·배포 설정은 변경하지 않았다.
+기준일: 2026-11-21. **1단계 작업 도메인·독립 spec은 구현했고 2~6단계는 미구현**이다. 아래 Application 인터페이스·HTTP 경로·실행 권한은 설계 제안이며 스키마·DB·배포 설정은 변경하지 않았다.
 
 ## 목적과 흐름
 
@@ -37,7 +37,7 @@ Command는 작업을 안전하게 저장한 뒤 접수를 응답한다. 프론�
 | `status` | 내부 상태: `QUEUED`, `RUNNING`, `RETRY_WAIT`, `FINALIZING`, `SUCCEEDED`, `PARTIALLY_SUCCEEDED`, `FAILED` |
 | `requestedAt`, `startedAt`, `finishedAt` | 접수·최초 실행·최종 종료 시각. 시작·종료 전에는 null |
 | `selectedMatchIds` | 아직 목록을 확정하지 않았으면 null, 정상 빈 목록이면 `[]`. 최대 20개·중복 없음·원래 순서 유지 |
-| `attemptCount` | 최초 수집 선점을 포함한 수집 실행 시도 수. 같은 작업의 복구에서 초기화하지 않음 |
+| `attemptCount`, `maxAttempts` | 최초 수집 선점을 포함한 실행 시도 수와 작업 생성 시 주입·고정하는 한도. 복구에서 초기화하지 않으며 설정 변경은 새 작업부터 반영 |
 | `nextAttemptAt` | 자동 복구를 다시 시도할 수 있는 가장 빠른 시각 |
 | `lastFailure` | 내부 실패 분류와 원인. 원본 오류는 HTTP에 노출하지 않음 |
 | `outcome` | `FINALIZING`에서 기록하고 종료 후에도 유지하는 성공·부분 성공·실패 결과. 429이면 실패 코드·관측한 재시도 가능 시각도 보존. 결과 기록 전에는 null |
@@ -181,7 +181,7 @@ Domain은 상태 전이·시도 한도·선택 목록·종료 결과 불변식�
 
 ## 구현 순서와 spec
 
-다음 6단계는 모두 미착수다. 도메인 계약부터 구현하고 DB의 동시성·원자성 보장을 확인한 뒤 API·워커를 연결한다.
+1단계는 완료했으며 2~6단계는 미착수다. 다음은 Application 계약·유스케이스이며 DB의 동시성·원자성 보장을 확인한 뒤 API·워커를 연결한다.
 
 | 단계 | 작업 범위 | 완료 기준 |
 | --- | --- | --- |
@@ -195,6 +195,12 @@ Domain은 상태 전이·시도 한도·선택 목록·종료 결과 불변식�
 각 단계의 spec은 기본 사용법 → 주요 규칙 → 경계·오류 순서로 작성한다. 새 동작은 계약에 따른 실패를 확인한 뒤 최소 구현하며 기존 검증을 유지한다. 단계별 관련 테스트와 루트 지침의 fmt·lint·전체 테스트를 실행하고, 타입·공유 계약 변경 시 타입 검사도 실행한다. 실행하지 못한 DB·운영 검증은 별도로 보고한다. 배포·대상 DB 마이그레이션 적용은 로컬 구현·검증과 구분해 별도 작업으로 진행한다.
 
 ### 첫 작업: 1단계에 한정
+
+완료: [MatchCollectionJob](../src/backend/match/domain/MatchCollectionJob.ts), [기록 타입](../src/backend/match/domain/types/MatchCollectionJobData.type.ts), 상태·실패·결과 타입과 오류 계약, [독립 spec](../src/backend/match/domain/MatchCollectionJob.spec.ts). 미구현 상태의 실패를 확인한 뒤 구현했으며 72개 사례가 기본·무작위 순서로 통과했다.
+
+현재 도메인 API는 `create`, `snapshot`, `start`, `selectMatches`, `scheduleRetry`, `recordOutcome`, `finish`다. 작업 생성·변경은 `Result`로 입력 오류와 전이 거절을 구분하며 실패한 변경은 상태를 보존한다. `snapshot`은 Date를 복사하고 목록·결과 객체를 동결한 관찰용 기록이다. DB 복원·원자적 선점·공개 DTO 투영은 아직 구현하지 않았다.
+
+수집 복구는 `WORKER_INTERRUPTED`·`TEMPORARY_FAILURE`에만 허용한다. 한도 소진 결과는 `ATTEMPTS_EXHAUSTED`로 기록하되 마지막 실제 장애 사유도 따로 보존한다. 성공에는 확정 목록이 필요하며 빈 목록은 정상 성공, 빈 목록의 부분 성공은 입력 오류다. 시각은 마지막 전이보다 역행할 수 없고, 복구 예정 시각과 같은 순간부터 다시 시작할 수 있다.
 
 - 작업 상태·선택 목록·수집 시도 한도·종료 결과의 타입과 필요한 오류 계약.
 - `MatchCollectionJob`의 생성·수집 시작·복구 대기·결과 기록·최종 종료 전이.

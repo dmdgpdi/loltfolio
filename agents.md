@@ -54,7 +54,7 @@
 - [현재 진행 상황과 다음 작업](docs/project-status.md): 작업 시작 전에 구현 범위와 미결정 사항을 확인하고, 관련 작업을 마치면 갱신한다.
 - [분석 입력과 Query 조회 계약](docs/analysis-read-contracts.md): 읽기 인터페이스, DTO와 최신 표본 범위.
 - [경기 수집과 저장](docs/match-data.md)
-- [비동기 경기 수집 작업 설계](docs/match-collection-jobs.md): 작업 모델, 접수·상태 조회, 워커 실행·복구와 완료 트랜잭션 계약. 미구현 설계안.
+- [비동기 경기 수집 작업 설계](docs/match-collection-jobs.md): 1단계 작업 도메인 구현과 후속 접수·상태 조회·워커 실행·복구·완료 트랜잭션 설계.
 
 ## 완료 확인
 
