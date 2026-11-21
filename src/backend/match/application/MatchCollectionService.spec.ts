@@ -133,8 +133,8 @@ it("제외 경기가 있어도 과거 페이지로 20개를 채우지 않고 제
   ];
   const client = clientFor(ids);
   const requests: number[] = [];
-  client.findRecentMatchIds = async (_puuid, _queueId, _count, start = 0) => {
-    requests.push(start);
+  client.findRecentMatchIds = async (_puuid, _queueId, _count, options) => {
+    requests.push(options?.start ?? 0);
     return Result.succeed(ids);
   };
   client.findPlayerMatch = async (id) =>
