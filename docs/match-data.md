@@ -59,6 +59,8 @@ DB에 없는 경기는 한 수집 안에서 최대 두 개씩 병렬 조회한�
 
 DB의 조건부 UPSERT로 같은 플레이어·큐의 중복 시작과 전체·부분 성공 후 20분 제한을 보장한다. 완료 저장은 같은 `lastAttemptAt`의 진행 중 작업에만 허용한다. 프로세스 강제 종료로 남은 `IN_PROGRESS` 상태의 자동 복구 정책은 아직 없다.
 
+위 내용은 현재 구현 기준이다. 향후 작업 접수·실행 권한·고정 목록 복구와 원자적 완료는 [비동기 경기 수집 작업 설계](match-collection-jobs.md)에 제안했으며 아직 적용하지 않았다.
+
 ## 검증
 
 일반 테스트 외 DB 통합 테스트는 `MATCH_DB_TEST_URL`을 지정해 `pnpm exec vitest run src/backend/match/infrastructure/persistence/repositories.integration.spec.ts`로 실행한다. 로컬 PostgreSQL 주소만 허용하며, 임시 스키마에 마이그레이션을 적용한 뒤 삭제한다. 환경 변수가 없으면 DB 테스트는 건너뛴다.
