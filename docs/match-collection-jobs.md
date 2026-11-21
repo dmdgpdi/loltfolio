@@ -1,6 +1,6 @@
 # 비동기 경기 수집 작업 설계
 
-기준일: 2026-11-21. **1단계 작업 도메인·독립 spec은 구현했고 2~6단계는 미구현**이다. 아래 Application 인터페이스·HTTP 경로·실행 권한은 설계 제안이며 스키마·DB·배포 설정은 변경하지 않았다.
+기준일: 2026-11-21. **1~2단계 도메인·Application과 독립 spec은 구현했고 3~6단계는 미구현**이다. Application은 아래 계약과 대역으로 검증했으며 실제 수집 연결·DB 실행 권한·HTTP·배포 설정은 아직 구현하지 않았다.
 
 ## 목적과 흐름
 
@@ -101,9 +101,9 @@ FINALIZING → SUCCEEDED / PARTIALLY_SUCCEEDED / FAILED
 | `RunMatchCollection.execute` | 작업·`COLLECT` 권한·`AbortSignal` → 수집 결과 저장 또는 복구 예약 |
 | `FinalizeMatchCollection.execute` | 작업·`FINALIZE` 권한 → 저장된 종료 결과를 원자적으로 확정 |
 | `MatchCollectionAdmission.admit` | 대상 → 위 접수 트랜잭션의 결과 |
-| `MatchCollectionExecution.claimNext` | 실행 정책 → 작업과 `COLLECT` 또는 `FINALIZE` 권한, 없으면 null |
-| `MatchCollectionExecution.renew` | 현재 권한·유효기간 → 갱신된 권한 또는 권한 상실 |
-| `MatchCollectionExecution.scheduleRetry` | `COLLECT` 권한·실패 분류·실행 정책 → `RETRY_WAIT` 예약 또는 한도 소진의 `FINALIZING` 기록 |
+| `MatchCollectionExecution.claimNext` | 작업과 `COLLECT` 또는 `FINALIZE` 권한, 없으면 null. 실행 정책은 구현체에 주입 |
+| `MatchCollectionExecution.renew` | 현재 권한 → 갱신된 권한 또는 권한 상실. 유효기간은 구현체에 주입 |
+| `MatchCollectionExecution.scheduleRetry` | `COLLECT` 권한·실패 분류 → `RETRY_WAIT` 예약(null) 또는 한도 소진의 `FINALIZING` 작업·권한. 지연은 구현체에 주입 |
 | `MatchCollectionProgress.saveSelection` | `COLLECT` 권한·ID 목록 → 최초 목록 확정 또는 권한 상실 |
 | `MatchCollectionProgress.saveMatches` | `COLLECT` 권한·확보 경기 → 실행 권한 검증과 경기 저장 |
 | `MatchCollectionCompletion.recordOutcome` | `COLLECT` 권한·종료 결과 → `FINALIZING`과 결과 저장·`FINALIZE` 권한 반환 |
@@ -181,7 +181,7 @@ Domain은 상태 전이·시도 한도·선택 목록·종료 결과 불변식�
 
 ## 구현 순서와 spec
 
-1단계는 완료했으며 2~6단계는 미착수다. 다음은 Application 계약·유스케이스이며 DB의 동시성·원자성 보장을 확인한 뒤 API·워커를 연결한다.
+1~2단계는 완료했으며 3~6단계는 미착수다. 다음은 기존 수집 서비스 연결이며 DB의 동시성·원자성 보장을 확인한 뒤 API·워커를 연결한다.
 
 | 단계 | 작업 범위 | 완료 기준 |
 | --- | --- | --- |
@@ -209,5 +209,20 @@ Domain은 상태 전이·시도 한도·선택 목록·종료 결과 불변식�
 - 작은 입력과 명시적 기대값을 사용하는 독립 spec.
 
 1단계에서는 실제 DB 선점·토큰 소유권·만료 경쟁, HTTP·워커 진입점, 기존 수집 서비스 변경을 구현하지 않는다. 도메인은 전달된 시각·결과로 규칙을 검증하고 실제 실행 권한의 원자성은 4단계 DB 통합 테스트에서 확인한다. 유효기간·갱신 간격 등 운영 숫자는 고정하지 않는다.
+
+### 2단계: Application 계약·유스케이스 — 완료
+
+- [RequestMatchCollection](../src/backend/match/application/RequestMatchCollection.ts): 대상·시도 한도를 검증하고 원자적 접수 포트에 위임한다. 직접 수집하거나 DB 시각·작업 ID를 생성하지 않는다.
+- [ProjectedMatchCollectionJobReader](../src/backend/match/application/ProjectedMatchCollectionJobReader.ts): 읽기 전용 포트에서 작업과 현재 대상의 접수 제한을 받아 내부 상태를 공개 DTO로 투영한다. 실패 코드의 고정 안내와 ISO 시각만 반환한다.
+- [RunMatchCollection](../src/backend/match/application/RunMatchCollection.ts): 권한 재확인 → 최초 목록 저장 또는 고정 목록 재사용 → 수집 → 경기 저장 → 결과 기록을 조율한다. 반환 작업은 `FINALIZING`·`FINALIZE` 권한이며 null은 복구 예약 성공이다.
+- [FinalizeMatchCollection](../src/backend/match/application/FinalizeMatchCollection.ts): 수집 경계에 의존하지 않고 기록된 결과의 완료만 요청한다. 완료 포트가 현재 권한 또는 이미 커밋한 종료 결과를 확인하므로 응답 유실 뒤에도 불필요한 선행 권한 갱신으로 종료 확인을 막지 않는다.
+
+접수·실행 권한·진행 저장·결과 확정의 영속성 포트, 읽기 전용 Query/Reader, `ExecutionLease`·선점 작업·공개 DTO 계약을 추가했다. 실제 DB 시간 판정·직렬화·원자성은 각 포트의 요구 계약이며 구현·증명은 4단계다.
+
+[MatchCollectionSource](../src/backend/match/application/MatchCollectionSource.ts)는 다음 단계에서 기존 수집 로직을 연결할 포트다. `findSelection`과 `collectSelection`으로 목록 조회와 고정 목록 수집을 나눴다. 수집 구현은 저장 경기를 읽고 누락만 요청한 뒤 신규 경기와 결론을 반환한다. 작업·경기 저장 및 완료 표본 공개는 Application의 권한 검증 포트를 통해 수행한다. 긴 수집 중 주기적 권한 갱신과 중단 신호 전달은 5단계 워커에서 연결하며 현재 유스케이스는 외부 수집 전후의 경계에서 권한을 재확인한다.
+
+429는 미저장 경기 캐시보다 결과 기록을 우선한다. 다른 영구 수집 실패도 캐시 저장 장애 때문에 일반 수집 복구로 바꾸지 않는다. 결과 기록의 저장 실패는 `MatchCollectionOutcomeSaveError`에 관측한 결과·권한·원인을 남긴다. 호출자는 DB 상태 확인 후 `recordOutcome`만 재시도해야 하며 `RunMatchCollection.execute`를 재실행해서는 안 된다. 이 호출자 복구 루프는 5단계에서 연결한다.
+
+새 spec 71개는 실제 작업·MatchSync를 사용하는 [메모리 대역](../src/backend/match/testing/MemoryMatchCollectionJobs.ts)으로 기본·무작위 순서에서 통과했다. 접수부터 완료까지의 대표 Application 흐름, 활성 작업 공유·20분 경계, 429·권한 상실·저장 장애·커밋 응답 유실을 검증했다. 대역은 DB 경쟁·트랜잭션 원자성·실제 워커 중단 복구를 검증한 증거가 아니다. 기존 수집 서비스·Riot 어댑터·분석 Query는 변경하지 않았다.
 
 필수 검증 사례는 동시 접수 1건, 대기·복구·종료 확정 중 ID 공유, 내부 상태의 화면 상태 투영, 20분/429 경계, 목록 확정 전후 중단, 저장분 재사용, 토큰 교체 후 늦은 쓰기, 한도 소진 점유 해제, 완료 응답 유실 재확인, 완료 트랜잭션 롤백, 분석만 실패한 재조회다. 429는 결과 저장 후 종료 실패·기록 응답 유실·사실 자체의 유실을 구분해 검증한다. 초기 spec과 DB 통합 검증으로 계약을 확인하기 전에는 구현 완료로 표시하지 않는다.
