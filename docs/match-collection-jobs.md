@@ -181,7 +181,7 @@ Domain은 상태 전이·시도 한도·선택 목록·종료 결과 불변식�
 
 ## 구현 순서와 spec
 
-1~3단계와 4단계의 상태 복원·DB 스키마는 완료했다. 다음은 작업 저장소의 DB 구현·통합 검증이며 동시성·원자성 보장을 확인한 뒤 API·워커를 연결한다.
+1~4단계는 완료했다. 다음은 5단계의 HTTP·워커·Composition 연결이다. DB 통합 검증은 로컬 임시 스키마에서 수행했으며 앱 DB 적용·배포는 별도다.
 
 | 단계 | 작업 범위 | 완료 기준 |
 | --- | --- | --- |
@@ -198,7 +198,7 @@ Domain은 상태 전이·시도 한도·선택 목록·종료 결과 불변식�
 
 완료: [MatchCollectionJob](../src/backend/match/domain/MatchCollectionJob.ts), [기록 타입](../src/backend/match/domain/types/MatchCollectionJobData.type.ts), 상태·실패·결과 타입과 오류 계약, [독립 spec](../src/backend/match/domain/MatchCollectionJob.spec.ts). 미구현 상태의 실패를 확인한 뒤 구현했으며 72개 사례가 기본·무작위 순서로 통과했다.
 
-현재 도메인 API는 `create`, `snapshot`, `start`, `selectMatches`, `scheduleRetry`, `recordOutcome`, `finish`다. 작업 생성·변경은 `Result`로 입력 오류와 전이 거절을 구분하며 실패한 변경은 상태를 보존한다. `snapshot`은 Date를 복사하고 목록·결과 객체를 동결한 관찰용 기록이다. DB 복원 계약은 4단계 첫 범위에서 추가했고 공개 DTO 투영은 2단계에서 구현했다. 원자적 선점은 아직 구현하지 않았다.
+현재 도메인 API는 `create`, `snapshot`, `start`, `selectMatches`, `scheduleRetry`, `recordOutcome`, `finish`다. 작업 생성·변경은 `Result`로 입력 오류와 전이 거절을 구분하며 실패한 변경은 상태를 보존한다. `snapshot`은 Date를 복사하고 목록·결과 객체를 동결한 관찰용 기록이다. DB 복원 계약은 4단계 첫 범위에서 추가했고 공개 DTO 투영은 2단계에서 구현했다. 원자적 선점은 4단계 DB 저장소에서 구현했다.
 
 수집 복구는 `WORKER_INTERRUPTED`·`TEMPORARY_FAILURE`에만 허용한다. 한도 소진 결과는 `ATTEMPTS_EXHAUSTED`로 기록하되 마지막 실제 장애 사유도 따로 보존한다. 성공에는 확정 목록이 필요하며 빈 목록은 정상 성공, 빈 목록의 부분 성공은 입력 오류다. 시각은 마지막 전이보다 역행할 수 없고, 복구 예정 시각과 같은 순간부터 다시 시작할 수 있다.
 
@@ -247,6 +247,17 @@ Application spec 71개는 실제 작업·MatchSync를 사용하는 [메모리 �
 
 `match_collection_jobs`는 작업 기록·확정 목록·결과·실행 토큰·용도·만료 시각을 저장한다. 활성 상태의 `(puuid, queueId)` 부분 유일 인덱스와 대기·재시도·만료 조회 인덱스를 둔다. DB는 기본 상태/시도/시각·목록 크기와 실행 권한의 필수 관계를 제한하고, 목록 중복·실패 코드·결과의 세부 불변 조건은 복원 계약으로 검증한다. 실행 중에는 COLLECT, 종료 확정 중에는 FINALIZE 권한이 필요하며 나머지 상태에는 권한을 남기지 않는다. 작업 시각은 JavaScript와 같은 밀리초 정밀도다.
 
-`match_syncs.active_job_id`는 동일 플레이어·큐 작업만 참조하도록 복합 외래 키를 사용한다. 활성 ID가 있으면 IN_PROGRESS여야 하지만, 기존 동기 수집 경로와의 호환을 위해 모든 IN_PROGRESS에 활성 ID를 강제하지 않는다. 활성 ID 제거·종료 상태와 MatchSync 갱신의 원자성은 다음 저장소 트랜잭션에서 보장해야 한다.
+`match_syncs.active_job_id`는 동일 플레이어·큐 작업만 참조하도록 복합 외래 키를 사용한다. 활성 ID가 있으면 IN_PROGRESS여야 하지만, 기존 동기 수집 경로와의 호환을 위해 모든 IN_PROGRESS에 활성 ID를 강제하지 않는다. 활성 ID 제거·종료 상태와 MatchSync 갱신은 아래 저장소의 완료 트랜잭션에서 함께 보장한다.
 
-마이그레이션은 생성·검토했고 로컬 임시 스키마에서 전체 이력 적용과 DB 테스트 17개를 검증했다. 앱 DB 적용은 하지 않았다. 남은 4단계 작업은 접수·선점·갱신·토큰 검증·목록 및 경기 저장·결과 기록·완료 트랜잭션 구현과 동시성·복구·롤백 통합 검증이다.
+마이그레이션은 생성·검토했고 로컬 임시 스키마에서 전체 이력 적용과 DB 테스트 17개를 검증했다. 앱 DB 적용은 하지 않았다. 후속 저장소 구현·검증은 아래와 같다.
+
+
+### 4단계 완료: DB 작업 저장소
+
+[DrizzleMatchCollectionJobs](../src/backend/match/infrastructure/persistence/DrizzleMatchCollectionJobs.ts)는 Admission·Execution·Progress·Completion·JobQuery 포트를 구현한다. 접수와 쓰기는 대상 → 작업 순서로 잠그고, 선점은 대상 잠금의 `SKIP LOCKED`로 다른 워커의 작업을 건너뛴다. 외부 API 호출 동안 트랜잭션을 유지하지 않는다. 잠금 후 DB 시각을 읽으며 갱신·쓰기에는 DB에 저장된 토큰·목적·만료·활성 연결·상태를 검사한다. 호출자가 가진 만료 시각은 신뢰하지 않고 SQL 처리 후에도 만료를 재확인해 롤백한다.
+
+만료 RUNNING은 같은 ID·선택 목록으로 복구를 예약하고 권한을 해제한다. 재시도 지연 후 새 토큰으로 수집하며 한도 소진이면 FINALIZING으로 넘긴다. 결과 기록은 새 FINALIZE 토큰으로 교체한다. 기록된 429와 만료 FINALIZING은 수집 횟수를 늘리지 않고 종료만 재개한다. `finish`는 작업 종료·MatchSync 결과·완료 표본·제한·활성 연결 해제를 한 트랜잭션으로 처리하고 이미 종료된 작업은 성공으로 재확인한다. 기록 커밋 응답 유실 시에는 Query로 확인해야 하며 기존 COLLECT 토큰으로 결과를 덮어쓰지 않는다.
+
+`leaseDurationMs`, `retryDelayMs`는 생성자로 주입하며 1~2147483647 밀리초 정수로 검증한다. 운영값은 고정하지 않는다. 알려진 PostgreSQL 직렬화 실패·교착·연결 장애만 `retryable`로 분류하며 미분류 오류·잘못된 기록은 자동 재시도 대상으로 추측하지 않는다. 활성 연결이 없는 기존 IN_PROGRESS는 복구 대상을 추정하지 않고 저장 오류로 반환한다.
+
+새 [DB spec](../src/backend/match/infrastructure/persistence/DrizzleMatchCollectionJobs.integration.spec.ts) 16개가 접수부터 표본 공개까지의 대표 흐름, 동시 접수/선점, 잠금 건너뛰기, 갱신·늦은 쓰기, 복구·한도 소진·기록된 429, 기존 표본 보존, SQL 도중 만료와 완료 장애 롤백, 순수 Query·오류 분류를 검증한다. 기존 DB spec 17개와 함께 로컬 임시 스키마에서 검증했다. 스키마 변경과 앱 DB 적용은 없다. 다음은 HTTP·워커 연결, 결과 기록 응답 유실의 호출자 복구 루프·종료 신호 처리이며 운영 환경의 중단·지연 검증은 남아 있다.
