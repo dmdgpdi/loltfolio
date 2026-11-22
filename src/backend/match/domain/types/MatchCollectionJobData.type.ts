@@ -11,6 +11,7 @@ export type MatchCollectionJobData = Readonly<{
   maxAttempts: number;
   status: MatchCollectionJobStatus;
   requestedAt: Date;
+  updatedAt: Date;
   startedAt: Date | null;
   finishedAt: Date | null;
   selectedMatchIds: readonly string[] | null;

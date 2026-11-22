@@ -1,6 +1,9 @@
+import { sql } from "drizzle-orm";
 import {
   bigint,
   boolean,
+  check,
+  foreignKey,
   index,
   integer,
   jsonb,
@@ -17,6 +20,8 @@ import type { PlayerMatchStats } from "@/backend/match/domain/types/PlayerMatchS
 import type { Position } from "@/backend/match/domain/types/Position.type";
 import type { QueueId } from "@/backend/match/domain/types/QueueId.type";
 
+import { matchCollectionJobs } from "./matchCollectionJobs.schema";
+
 export const matchSyncs = pgTable(
   "match_syncs",
   {
@@ -28,9 +33,25 @@ export const matchSyncs = pgTable(
     lastCompletedMatchIds: jsonb("last_completed_match_ids").$type<
       readonly string[]
     >(),
+    activeJobId: text("active_job_id"),
     retryAvailableAt: timestamp("retry_available_at", { withTimezone: true }),
   },
-  (table) => [primaryKey({ columns: [table.puuid, table.queueId] })],
+  (table) => [
+    primaryKey({ columns: [table.puuid, table.queueId] }),
+    foreignKey({
+      name: "match_syncs_active_job_fk",
+      columns: [table.puuid, table.queueId, table.activeJobId],
+      foreignColumns: [
+        matchCollectionJobs.puuid,
+        matchCollectionJobs.queueId,
+        matchCollectionJobs.jobId,
+      ],
+    }),
+    check(
+      "match_syncs_active_job_status_check",
+      sql`${table.activeJobId} IS NULL OR ${table.status} = 'IN_PROGRESS'`,
+    ),
+  ],
 );
 
 export const playerMatches = pgTable(
