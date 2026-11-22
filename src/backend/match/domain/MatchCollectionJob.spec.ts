@@ -33,6 +33,7 @@ it("작업을 접수하고 경기 목록을 수집한 뒤 성공 결과를 확�
     maxAttempts: 2,
     status: "SUCCEEDED",
     requestedAt: new Date(0),
+    updatedAt: new Date(3000),
     startedAt: new Date(1000),
     finishedAt: new Date(3000),
     selectedMatchIds: ["KR_2", "KR_1"],

@@ -181,7 +181,7 @@ Domain은 상태 전이·시도 한도·선택 목록·종료 결과 불변식�
 
 ## 구현 순서와 spec
 
-1~3단계는 완료했으며 4~6단계는 미착수다. 다음은 DB 구현·통합 검증이며 동시성·원자성 보장을 확인한 뒤 API·워커를 연결한다.
+1~3단계와 4단계의 상태 복원·DB 스키마는 완료했다. 다음은 작업 저장소의 DB 구현·통합 검증이며 동시성·원자성 보장을 확인한 뒤 API·워커를 연결한다.
 
 | 단계 | 작업 범위 | 완료 기준 |
 | --- | --- | --- |
@@ -198,7 +198,7 @@ Domain은 상태 전이·시도 한도·선택 목록·종료 결과 불변식�
 
 완료: [MatchCollectionJob](../src/backend/match/domain/MatchCollectionJob.ts), [기록 타입](../src/backend/match/domain/types/MatchCollectionJobData.type.ts), 상태·실패·결과 타입과 오류 계약, [독립 spec](../src/backend/match/domain/MatchCollectionJob.spec.ts). 미구현 상태의 실패를 확인한 뒤 구현했으며 72개 사례가 기본·무작위 순서로 통과했다.
 
-현재 도메인 API는 `create`, `snapshot`, `start`, `selectMatches`, `scheduleRetry`, `recordOutcome`, `finish`다. 작업 생성·변경은 `Result`로 입력 오류와 전이 거절을 구분하며 실패한 변경은 상태를 보존한다. `snapshot`은 Date를 복사하고 목록·결과 객체를 동결한 관찰용 기록이다. DB 복원·원자적 선점·공개 DTO 투영은 아직 구현하지 않았다.
+현재 도메인 API는 `create`, `snapshot`, `start`, `selectMatches`, `scheduleRetry`, `recordOutcome`, `finish`다. 작업 생성·변경은 `Result`로 입력 오류와 전이 거절을 구분하며 실패한 변경은 상태를 보존한다. `snapshot`은 Date를 복사하고 목록·결과 객체를 동결한 관찰용 기록이다. DB 복원 계약은 4단계 첫 범위에서 추가했고 공개 DTO 투영은 2단계에서 구현했다. 원자적 선점은 아직 구현하지 않았다.
 
 수집 복구는 `WORKER_INTERRUPTED`·`TEMPORARY_FAILURE`에만 허용한다. 한도 소진 결과는 `ATTEMPTS_EXHAUSTED`로 기록하되 마지막 실제 장애 사유도 따로 보존한다. 성공에는 확정 목록이 필요하며 빈 목록은 정상 성공, 빈 목록의 부분 성공은 입력 오류다. 시각은 마지막 전이보다 역행할 수 없고, 복구 예정 시각과 같은 순간부터 다시 시작할 수 있다.
 
@@ -237,3 +237,16 @@ Application spec 71개는 실제 작업·MatchSync를 사용하는 [메모리 �
 새 Source spec 27개와 실제 Riot 어댑터·파서부터 작업 완료까지 연결한 spec 3개, 목록 취소 spec 2개를 추가했다. HTTP 응답과 저장소만 대체했고 실제 수집 알고리즘·도메인·Application을 사용했다. 분석 Query·DB 스키마·실행 권한 저장 구현은 변경하지 않았다.
 
 필수 검증 사례는 동시 접수 1건, 대기·복구·종료 확정 중 ID 공유, 내부 상태의 화면 상태 투영, 20분/429 경계, 목록 확정 전후 중단, 저장분 재사용, 토큰 교체 후 늦은 쓰기, 한도 소진 점유 해제, 완료 응답 유실 재확인, 완료 트랜잭션 롤백, 분석만 실패한 재조회다. 429는 결과 저장 후 종료 실패·기록 응답 유실·사실 자체의 유실을 구분해 검증한다. 초기 spec과 DB 통합 검증으로 계약을 확인하기 전에는 구현 완료로 표시하지 않는다.
+
+
+### 4단계 첫 범위: 상태 복원과 DB 스키마
+
+완료: `MatchCollectionJob.restore`는 모든 내부 상태를 검증해 복원하고 모순된 기록을 거부한다. `updatedAt`은 마지막 상태 전이 시각이며 복원 후에도 시각 역행을 금지한다. 경기 목록 확정은 상태 전이가 아니므로 이 시각을 변경하지 않는다. 입력·출력의 Date와 중첩 값은 내부 상태와 분리한다.
+
+저장 변환은 SQL 날짜 열을 Date로, JSONB 내부 `retryAvailableAt`을 ISO 문자열로 취급한다. `restoreMatchCollectionJob`은 DB 행의 런타임 형태와 JSON 시각을 검사한 뒤 도메인 복원을 호출한다. 실행 토큰·lease는 도메인 기록과 별개다.
+
+`match_collection_jobs`는 작업 기록·확정 목록·결과·실행 토큰·용도·만료 시각을 저장한다. 활성 상태의 `(puuid, queueId)` 부분 유일 인덱스와 대기·재시도·만료 조회 인덱스를 둔다. DB는 기본 상태/시도/시각·목록 크기와 실행 권한의 필수 관계를 제한하고, 목록 중복·실패 코드·결과의 세부 불변 조건은 복원 계약으로 검증한다. 실행 중에는 COLLECT, 종료 확정 중에는 FINALIZE 권한이 필요하며 나머지 상태에는 권한을 남기지 않는다. 작업 시각은 JavaScript와 같은 밀리초 정밀도다.
+
+`match_syncs.active_job_id`는 동일 플레이어·큐 작업만 참조하도록 복합 외래 키를 사용한다. 활성 ID가 있으면 IN_PROGRESS여야 하지만, 기존 동기 수집 경로와의 호환을 위해 모든 IN_PROGRESS에 활성 ID를 강제하지 않는다. 활성 ID 제거·종료 상태와 MatchSync 갱신의 원자성은 다음 저장소 트랜잭션에서 보장해야 한다.
+
+마이그레이션은 생성·검토했고 로컬 임시 스키마에서 전체 이력 적용과 DB 테스트 17개를 검증했다. 앱 DB 적용은 하지 않았다. 남은 4단계 작업은 접수·선점·갱신·토큰 검증·목록 및 경기 저장·결과 기록·완료 트랜잭션 구현과 동시성·복구·롤백 통합 검증이다.

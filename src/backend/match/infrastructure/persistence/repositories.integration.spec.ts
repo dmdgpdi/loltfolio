@@ -5,6 +5,7 @@ import { Pool } from "pg";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { MatchCollectionService } from "@/backend/match/application/MatchCollectionService";
 import { MatchSyncStartNotAllowedError } from "@/backend/match/domain/errors/MatchSyncStartNotAllowedError";
+import { MatchCollectionJob } from "@/backend/match/domain/MatchCollectionJob";
 import { PlayerMatch } from "@/backend/match/domain/PlayerMatch";
 import { RiotMatchAdapter } from "@/backend/match/infrastructure/riot/RiotMatchAdapter";
 import { createPlayerMatchData } from "@/backend/match/testing/createPlayerMatchData";
@@ -13,6 +14,9 @@ import { createRiotTimelineResponse as timelineResponse } from "@/backend/match/
 import { DrizzleCompletedMatchReader } from "./DrizzleCompletedMatchReader";
 import { DrizzleMatchSyncRepository } from "./DrizzleMatchSyncRepository";
 import { DrizzlePlayerMatchRepository } from "./DrizzlePlayerMatchRepository";
+import { matchCollectionJobs } from "./matchCollectionJobs.schema";
+import { restoreMatchCollectionJob } from "./restoreMatchCollectionJob";
+import { serializeMatchCollectionJob } from "./serializeMatchCollectionJob";
 
 const connectionString = process.env.MATCH_DB_TEST_URL;
 
@@ -22,6 +26,85 @@ const at = (minute: number) => new Date(Date.UTC(2026, 9, 30, 0, minute));
 // biome-ignore lint/complexity/noExcessiveLinesPerFunction: 등록 함수로 명세를 숨기지 않고 독립된 저장소 시나리오를 읽는 순서대로 나열한다.
 describe.skipIf(!connectionString)("로컬 PostgreSQL 경기 저장소", () => {
   const { pool, syncs, matches, reader } = createRepositoryContext();
+
+  it("SQL 날짜와 JSONB에 저장한 429 종료 확정 기록을 실제 DB에서 복원한다", async () => {
+    const job = Result.unwrap(
+      MatchCollectionJob.create({
+        jobId: "job-1",
+        puuid: "player",
+        queueId: 420,
+        requestedAt: new Date(0),
+        maxAttempts: 2,
+      }),
+    );
+    Result.unwrap(job.start(new Date(1000)));
+    Result.unwrap(
+      job.recordOutcome(
+        {
+          status: "FAILED",
+          failure: {
+            code: "RIOT_RATE_LIMITED",
+            retryAvailableAt: new Date(5000),
+          },
+        },
+        new Date(2000),
+      ),
+    );
+    const db = drizzle({ client: pool });
+    await db.insert(matchCollectionJobs).values({
+      ...serializeMatchCollectionJob(job),
+      executionToken: "finalize-token",
+      executionPurpose: "FINALIZE",
+      leaseExpiresAt: new Date(4000),
+    });
+    const [row] = await db.select().from(matchCollectionJobs);
+    const restored = Result.unwrap(restoreMatchCollectionJob(row));
+    expect(restored.snapshot).toEqual(job.snapshot);
+    Result.unwrap(restored.finish(new Date(3000)));
+    expect(restored.snapshot).toMatchObject({
+      status: "FAILED",
+      finishedAt: new Date(3000),
+      lastFailure: {
+        code: "RIOT_RATE_LIMITED",
+        retryAvailableAt: new Date(5000),
+      },
+    });
+  });
+
+  it("같은 대상의 활성 작업 중복은 막고 다른 큐의 작업은 허용한다", async () => {
+    await pool.query(`INSERT INTO match_collection_jobs (job_id, puuid, queue_id, status, max_attempts, attempt_count, requested_at, updated_at)
+      VALUES ('job-1', 'player', 420, 'QUEUED', 2, 0, to_timestamp(0), to_timestamp(0))`);
+    await expect(
+      pool.query(`INSERT INTO match_collection_jobs (job_id, puuid, queue_id, status, max_attempts, attempt_count, requested_at, updated_at)
+      VALUES ('job-2', 'player', 420, 'QUEUED', 2, 0, to_timestamp(0), to_timestamp(0))`),
+    ).rejects.toMatchObject({ code: "23505" });
+    await pool.query(`INSERT INTO match_collection_jobs (job_id, puuid, queue_id, status, max_attempts, attempt_count, requested_at, updated_at)
+      VALUES ('job-3', 'player', 440, 'QUEUED', 2, 0, to_timestamp(0), to_timestamp(0))`);
+    expect(
+      (
+        await pool.query(
+          "SELECT job_id FROM match_collection_jobs ORDER BY job_id",
+        )
+      ).rows,
+    ).toEqual([{ job_id: "job-1" }, { job_id: "job-3" }]);
+  });
+
+  it("실행 권한 없는 실행 상태와 다른 대상의 활성 작업 연결을 거부한다", async () => {
+    await expect(
+      pool.query(`INSERT INTO match_collection_jobs (job_id, puuid, queue_id, status, max_attempts, attempt_count, requested_at, updated_at, started_at)
+      VALUES ('job-1', 'player', 420, 'RUNNING', 2, 1, to_timestamp(0), to_timestamp(1), to_timestamp(1))`),
+    ).rejects.toMatchObject({ code: "23514" });
+    await pool.query(`INSERT INTO match_collection_jobs (job_id, puuid, queue_id, status, max_attempts, attempt_count, requested_at, updated_at)
+      VALUES ('job-1', 'player', 420, 'QUEUED', 2, 0, to_timestamp(0), to_timestamp(0))`);
+    await expect(
+      pool.query(
+        `INSERT INTO match_syncs (puuid, queue_id, status, active_job_id) VALUES ('other-player', 420, 'IN_PROGRESS', 'job-1')`,
+      ),
+    ).rejects.toMatchObject({ code: "23503" });
+    await pool.query(
+      `INSERT INTO match_syncs (puuid, queue_id, status, active_job_id) VALUES ('player', 420, 'IN_PROGRESS', 'job-1')`,
+    );
+  });
 
   it("확보·미제공·판별 불가 상태를 SQL과 JSONB에 저장하고 복원한다", async () => {
     // Arrange
@@ -420,7 +503,9 @@ function createRepositoryContext() {
   });
 
   beforeEach(async () => {
-    await pool.query("TRUNCATE match_syncs, player_matches");
+    await pool.query(
+      "TRUNCATE match_syncs, player_matches, match_collection_jobs",
+    );
   });
   afterAll(async () => {
     await pool.end();
