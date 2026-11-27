@@ -14,7 +14,8 @@
     "db:stop": "docker compose stop",
     "db:check": "tsx scripts/db-check.ts",
     "db:generate": "drizzle-kit generate --config=src/backend/drizzle.config.ts",
-    "db:migrate": "drizzle-kit migrate --config=src/backend/drizzle.config.ts"
+    "db:migrate": "drizzle-kit migrate --config=src/backend/drizzle.config.ts",
+    "worker:match-collection": "tsx scripts/match-collection-worker.ts"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.2.0",
