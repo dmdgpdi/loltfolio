@@ -1,6 +1,6 @@
 # 비동기 경기 수집 작업 설계
 
-기준일: 2026-11-21. **1~3단계 도메인·Application·기존 수집 연결과 spec은 구현했고 4~6단계는 미구현**이다. DB 실행 권한·HTTP·배포 설정은 아직 구현하지 않았다. 수집 연결은 외부 HTTP·저장소 경계를 대체해 검증했으며 실제 Riot·앱 DB 실행은 확인하지 않았다.
+기준일: 2026-11-27. **1~5단계 도메인·Application·DB 저장소·HTTP·워커 연결은 구현했다.** 로컬 임시 DB에서 실제 Route 접수 → fixture 수집 → 분석 조회와 독립 워커 종료를 검증했다. 실제 Riot·앱 DB 적용·배포와 운영 설정 조정은 남아 있다.
 
 ## 목적과 흐름
 
@@ -146,7 +146,7 @@ Domain은 상태 전이·시도 한도·선택 목록·종료 결과 불변식�
 
 ### 운영 설정
 
-`leaseDurationMs`, `heartbeatIntervalMs`, `maxAttempts`(수집 실행 한도), `retryDelayMs`, `idlePollIntervalMs`를 실행 설정으로 주입한다. 값은 미정이며 양수·유한값, 시도 수는 양의 정수, 갱신 간격은 유효기간보다 짧도록 검증한다. 종료 처리의 저장 재시도에도 대기 간격을 적용해 장애 중 반복 요청을 제한한다. 실제 DB 지연·경쟁·프로세스 종료 실험으로 조정한다. 기존 성공 후 20분 제한은 별도의 비즈니스 규칙으로 유지한다.
+`leaseDurationMs`, `heartbeatIntervalMs`, `maxAttempts`(수집 실행 한도), `retryDelayMs`, `idlePollIntervalMs`는 개발·운영 공통 `config.ts`에서 관리하며 테스트에는 별도 설정을 주입할 수 있다. 양수·유한값, 시도 수는 양의 정수, 갱신 간격은 유효기간보다 짧도록 검증한다. 종료 처리의 저장 재시도에도 대기 간격을 적용해 장애 중 반복 요청을 제한한다. 실제 DB 지연·경쟁·프로세스 종료 실험으로 조정한다. 기존 성공 후 20분 제한은 별도의 비즈니스 규칙으로 유지한다.
 
 초기에는 워커의 작업 동시 실행 수를 1로 둔다는 **운영 제안**이다. 경기 두 개 병렬 조회는 한 작업 내부 정책이며, 여러 워커의 Riot 전역 호출 제한을 보장하지 않는다. 전역 호출량 제어와 확장 정책은 별도 설계다.
 
@@ -181,7 +181,7 @@ Domain은 상태 전이·시도 한도·선택 목록·종료 결과 불변식�
 
 ## 구현 순서와 spec
 
-1~4단계는 완료했다. 다음은 5단계의 HTTP·워커·Composition 연결이다. DB 통합 검증은 로컬 임시 스키마에서 수행했으며 앱 DB 적용·배포는 별도다.
+1~5단계는 완료했다. 다음은 6단계 운영 설정·배포 검증과 화면 연결이다. DB 통합 검증은 로컬 임시 스키마에서 수행했으며 앱 DB 적용·배포는 별도다.
 
 | 단계 | 작업 범위 | 완료 기준 |
 | --- | --- | --- |
@@ -219,9 +219,9 @@ Domain은 상태 전이·시도 한도·선택 목록·종료 결과 불변식�
 
 접수·실행 권한·진행 저장·결과 확정의 영속성 포트, 읽기 전용 Query/Reader, `ExecutionLease`·선점 작업·공개 DTO 계약을 추가했다. 실제 DB 시간 판정·직렬화·원자성은 각 포트의 요구 계약이며 구현·증명은 4단계다.
 
-[MatchCollectionSource](../src/backend/match/application/MatchCollectionSource.ts)는 목록 조회와 고정 목록 수집을 나누는 포트다. 3단계에서 기존 알고리즘을 공유하는 구현을 연결했다. 수집 구현은 저장 경기를 읽고 누락만 요청한 뒤 신규 경기와 결론을 반환한다. 작업·경기 저장 및 완료 표본 공개는 Application의 권한 검증 포트를 통해 수행한다. 긴 수집 중 주기적 권한 갱신과 중단 신호 전달은 5단계 워커에서 연결하며 현재 유스케이스는 외부 수집 전후의 경계에서 권한을 재확인한다.
+[MatchCollectionSource](../src/backend/match/application/MatchCollectionSource.ts)는 목록 조회와 고정 목록 수집을 나누는 포트다. 3단계에서 기존 알고리즘을 공유하는 구현을 연결했다. 수집 구현은 저장 경기를 읽고 누락만 요청한 뒤 신규 경기와 결론을 반환한다. 작업·경기 저장 및 완료 표본 공개는 Application의 권한 검증 포트를 통해 수행한다. 5단계 워커는 긴 수집 중 주기적으로 권한을 갱신하고 중단 신호를 전달한다. 유스케이스도 외부 수집 전후 경계에서 권한을 재확인한다.
 
-429는 미저장 경기 캐시보다 결과 기록을 우선한다. 다른 영구 수집 실패도 캐시 저장 장애 때문에 일반 수집 복구로 바꾸지 않는다. 결과 기록의 저장 실패는 `MatchCollectionOutcomeSaveError`에 관측한 결과·권한·원인을 남긴다. 호출자는 DB 상태 확인 후 `recordOutcome`만 재시도해야 하며 `RunMatchCollection.execute`를 재실행해서는 안 된다. 이 호출자 복구 루프는 5단계에서 연결한다.
+429는 미저장 경기 캐시보다 결과 기록을 우선한다. 다른 영구 수집 실패도 캐시 저장 장애 때문에 일반 수집 복구로 바꾸지 않는다. 결과 기록의 저장 실패는 `MatchCollectionOutcomeSaveError`에 관측한 결과·권한·원인을 남긴다. 호출자는 DB 상태 확인 후 `recordOutcome`만 재시도해야 하며 `RunMatchCollection.execute`를 재실행해서는 안 된다. 이 호출자 복구 루프는 아래 5단계 워커에서 구현했다.
 
 Application spec 71개는 실제 작업·MatchSync를 사용하는 [메모리 대역](../src/backend/match/testing/MemoryMatchCollectionJobs.ts)으로 기본·무작위 순서에서 통과했다. 접수부터 완료까지의 대표 Application 흐름, 활성 작업 공유·20분 경계, 429·권한 상실·저장 장애·커밋 응답 유실을 검증했다. 대역은 DB 경쟁·트랜잭션 원자성·실제 워커 중단 복구를 검증한 증거가 아니다.
 
@@ -260,4 +260,28 @@ Application spec 71개는 실제 작업·MatchSync를 사용하는 [메모리 �
 
 `leaseDurationMs`, `retryDelayMs`는 생성자로 주입하며 1~2147483647 밀리초 정수로 검증한다. 운영값은 고정하지 않는다. 알려진 PostgreSQL 직렬화 실패·교착·연결 장애만 `retryable`로 분류하며 미분류 오류·잘못된 기록은 자동 재시도 대상으로 추측하지 않는다. 활성 연결이 없는 기존 IN_PROGRESS는 복구 대상을 추정하지 않고 저장 오류로 반환한다.
 
-새 [DB spec](../src/backend/match/infrastructure/persistence/DrizzleMatchCollectionJobs.integration.spec.ts) 16개가 접수부터 표본 공개까지의 대표 흐름, 동시 접수/선점, 잠금 건너뛰기, 갱신·늦은 쓰기, 복구·한도 소진·기록된 429, 기존 표본 보존, SQL 도중 만료와 완료 장애 롤백, 순수 Query·오류 분류를 검증한다. 기존 DB spec 17개와 함께 로컬 임시 스키마에서 검증했다. 스키마 변경과 앱 DB 적용은 없다. 다음은 HTTP·워커 연결, 결과 기록 응답 유실의 호출자 복구 루프·종료 신호 처리이며 운영 환경의 중단·지연 검증은 남아 있다.
+새 [DB spec](../src/backend/match/infrastructure/persistence/DrizzleMatchCollectionJobs.integration.spec.ts) 16개가 접수부터 표본 공개까지의 대표 흐름, 동시 접수/선점, 잠금 건너뛰기, 갱신·늦은 쓰기, 복구·한도 소진·기록된 429, 기존 표본 보존, SQL 도중 만료와 완료 장애 롤백, 순수 Query·오류 분류를 검증한다. 기존 DB spec 17개와 함께 로컬 임시 스키마에서 검증했다. 스키마 변경과 앱 DB 적용은 없다. 후속 HTTP·워커 연결은 아래와 같으며 운영 환경의 중단·지연 검증은 남아 있다.
+
+### 5단계 완료: HTTP와 독립 워커
+
+[MatchCollectionController](../src/backend/match/presentation/MatchCollectionController.ts)는 위 POST·GET 계약을 구현한다. Route Handler는 위임만 하며 웹 Composition은 유효 요청부터 설정·DB를 지연 초기화해 한 번 조립한다. 입력 오류는 인프라 초기화 전에 반환한다. 모든 응답은 no-store이며 내부 상태·토큰·원본 오류를 노출하지 않는다. 웹 요청에서 Riot 수집을 시작하지 않는다.
+
+[MatchCollectionWorker](../src/backend/match/infrastructure/worker/MatchCollectionWorker.ts)는 한 번에 한 작업을 처리하고 수집·종료 확정 단계별로 heartbeat를 운용한다. 수집 결과 저장에서 새 종료 권한을 받으면 이전 권한의 갱신 실패가 겹쳐도 새 권한으로 종료를 이어간다. 갱신 실패와 SIGINT/SIGTERM은 외부 요청에 취소 신호를 전달하며 새 선점을 중단한다. 타이머·신호 리스너·진행 중 갱신·DB 연결을 정리하고, 미완료 작업은 DB 만료 복구에 맡긴다. 강제 종료 유예 시간과 배포 플랫폼의 종료 정책은 아직 정하지 않았다.
+
+결과 기록 실패는 Query로 확인한 뒤 RUNNING에서 알려진 결과 기록만 재시도한다. 이미 FINALIZING이면 이전 COLLECT 토큰을 재사용하지 않고 만료 후 FINALIZE 재선점에 맡긴다. 완료 응답 유실은 종료 상태 조회로 재확인하고, 미확정 상태에는 지연을 두고 완료만 재시도한다. 알려진 결과가 미저장인데 heartbeat도 실패하면 오류를 상위로 전달해 프로세스를 종료하며 같은 프로세스가 그 결과를 잊고 수집을 다시 실행하지 않게 한다. 프로세스 종료 전 결과 사실을 DB에 저장하지 못했다면 다른 워커의 재수집까지 막을 수 없다는 기존 보장 한계는 유지한다.
+
+웹과 별도로 `pnpm run worker:match-collection`을 실행한다. 웹·워커 모두 `DATABASE_URL`을 사용하고, 워커에는 기존 `LOL_API_KEY`, `LOL_MATCH_REGION`을 제공한다. 시작·오류 로그는 이벤트·작업 ID·오류 이름만 기록한다.
+
+실행 설정은 [config.ts](../src/backend/match/config.ts) 한 곳에서 관리하며 개발·운영을 분리하지 않는다. 환경변수로 덮어쓰지 않고, 테스트는 경계 조건을 검증할 때만 다른 값을 주입한다.
+
+| 설정 | 공통 초기값 | 의미 |
+| --- | --- | --- |
+| `maxAttempts` | 3회 | 최초 실행을 포함한 수집 시도 한도 |
+| `leaseDurationMs` | 60초 | 실행 권한 유효기간 |
+| `heartbeatIntervalMs` | 10초 | 실행 권한 갱신 간격 |
+| `retryDelayMs` | 5초 | 수집 복구·저장/조회 장애의 재시도 대기 |
+| `idlePollIntervalMs` | 1초 | 실행 대상이 없을 때의 조회 간격 |
+
+위 값은 실측으로 확정한 운영값이 아니다. 실측 후에도 공통 설정을 변경하고 검증해 개발·운영에 함께 적용한다. 밀리초 값은 1~2147483647 정수이고 갱신 간격은 유효기간보다 짧아야 한다. 앱 DB 마이그레이션과 운영 워커 실행은 아직 하지 않았다.
+
+HTTP·워커 spec 18개와 새 로컬 통합 spec 3개를 추가했다. 실제 Route·DB 저장소·Application·Riot Adapter/파서·분석 Query를 연결하고 외부 Riot HTTP 응답만 fixture로 대체했다. 독립 Node 프로세스의 SIGINT/SIGTERM 정상 종료도 검증했다. 남은 작업은 6단계 운영 설정·배포·실제 Riot/DB 환경 확인과 검색·상태 폴링·분석 Query 재시도 화면 연결이다.
